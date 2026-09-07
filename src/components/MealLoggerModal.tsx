@@ -175,7 +175,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                   cursor: 'pointer',
                   marginBottom: '0.4rem',
                   display: 'flex',
-                  justify: 'space-between',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
                 }}
               >

@@ -37,7 +37,7 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
             <div
               style={{
                 display: 'flex',
-                justifySpace: 'between',
+                justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: '1rem',
                 borderBottom: '1px solid var(--border-color)',
