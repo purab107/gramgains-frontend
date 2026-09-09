@@ -1,60 +1,52 @@
 import React from 'react';
+import { Card, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
+import { Progress } from './ui/progress';
 
 interface MacroCardProps {
   label: string;
   value: number;
   unit: string;
   target?: number;
-  color: string;
+  color?: string;
 }
 
-export const MacroCard: React.FC<MacroCardProps> = ({ label, value, unit, target, color }) => {
+export const MacroCard: React.FC<MacroCardProps> = ({ label, value, unit, target }) => {
   const percentage = target ? Math.min(Math.round((value / target) * 100), 100) : 0;
 
   return (
-    <div className="glass-panel" style={{ borderTop: `4px solid ${color}` }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600 }}>{label}</span>
-        {target && (
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-            {percentage}%
+    <Card className="hover:border-primary/40 transition-all flex flex-col justify-between">
+      <CardContent className="pt-4 flex flex-col gap-3">
+        {/* Header row */}
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {label}
           </span>
-        )}
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
-        <span style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-main)' }}>
-          {value}
-        </span>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{unit}</span>
-        {target && (
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginLeft: 'auto' }}>
-            / {target}{unit}
-          </span>
-        )}
-      </div>
-
-      {target && (
-        <div
-          style={{
-            height: '6px',
-            background: 'rgba(255, 255, 255, 0.08)',
-            borderRadius: '3px',
-            marginTop: '0.8rem',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              height: '100%',
-              width: `${percentage}%`,
-              background: color,
-              borderRadius: '3px',
-              transition: 'width 0.4s ease-in-out',
-            }}
-          />
+          {target && (
+            <Badge variant="secondary" className="normal-case tracking-normal font-mono">
+              {percentage}%
+            </Badge>
+          )}
         </div>
-      )}
-    </div>
+
+        {/* Value row */}
+        <div className="flex items-baseline gap-1">
+          <span className="text-2xl font-bold font-mono text-foreground">
+            {value}
+          </span>
+          <span className="text-xs text-muted-foreground font-medium">{unit}</span>
+          {target && (
+            <span className="text-xs font-mono text-muted-foreground ml-auto">
+              / {target}{unit}
+            </span>
+          )}
+        </div>
+
+        {/* Progress bar */}
+        {target && (
+          <Progress value={value} max={target} className="h-2 mt-1" />
+        )}
+      </CardContent>
+    </Card>
   );
 };

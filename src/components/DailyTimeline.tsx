@@ -2,7 +2,11 @@
 
 import React from 'react';
 import { MealLogItem, ApiService } from '../services/api';
-import { Trash2, Utensils } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
 
 interface DailyTimelineProps {
   logs: MealLogItem[];
@@ -27,76 +31,74 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+    <div className="flex flex-col gap-4">
       {MEAL_TYPES.map(({ key, label, icon }) => {
         const mealLogs = logs.filter((log) => log.mealType === key);
         const mealCalories = mealLogs.reduce((sum, item) => sum + item.calories, 0);
 
         return (
-          <div key={key} className="glass-panel" style={{ padding: '1.25rem' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '1rem',
-                borderBottom: '1px solid var(--border-color)',
-                paddingBottom: '0.6rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <span style={{ fontSize: '1.3rem' }}>{icon}</span>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{label}</h3>
+          <Card key={key}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">{icon}</span>
+                  <CardTitle className="text-sm">{label}</CardTitle>
+                </div>
+                <Badge variant="muted" className="font-mono normal-case tracking-normal">
+                  {Math.round(mealCalories)} kcal
+                </Badge>
               </div>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                {Math.round(mealCalories)} kcal
-              </span>
-            </div>
+            </CardHeader>
 
-            {mealLogs.length === 0 ? (
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontStyle: 'italic', padding: '0.4rem 0' }}>
-                No food logged for {label.toLowerCase()} yet.
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                {mealLogs.map((log) => (
-                  <div
-                    key={log.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      padding: '0.75rem 1rem',
-                      borderRadius: '12px',
-                      border: '1px solid var(--border-color)',
-                    }}
-                  >
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{log.food.name}</span>
-                        <span className={log.food.layer === 1 ? 'badge badge-layer1' : 'badge badge-layer2'}>
-                          {log.food.source}
+            <Separator />
+
+            <CardContent className="pt-3">
+              {mealLogs.length === 0 ? (
+                <p className="text-muted-foreground text-xs italic py-1">
+                  No food logged for {label.toLowerCase()} yet.
+                </p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {mealLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="flex justify-between items-center bg-background border border-border p-3 rounded-lg hover:border-primary/30 transition-colors"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-xs text-foreground">
+                            {log.food.name}
+                          </span>
+                          <Badge variant="outline" className="normal-case tracking-normal font-mono">
+                            {log.food.source}
+                          </Badge>
+                        </div>
+                        <div className="text-[11px] font-mono text-muted-foreground mt-1">
+                          {log.weightGrams}g ({log.servings} serving{log.servings !== 1 ? 's' : ''})
+                          {' '}• P: {log.protein}g | C: {log.carbohydrates}g | F: {log.fat}g
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="font-bold font-mono text-xs text-foreground">
+                          {log.calories} kcal
                         </span>
-                      </div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                        {log.weightGrams}g ({log.servings} serving{log.servings !== 1 ? 's' : ''}) • P: {log.protein}g | C: {log.carbohydrates}g | F: {log.fat}g
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          onClick={() => handleDelete(log.id)}
+                          title="Delete log"
+                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 size={14} />
+                        </Button>
                       </div>
                     </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <span style={{ fontWeight: 700, color: 'var(--accent-orange)', fontSize: '0.95rem' }}>
-                        {log.calories} kcal
-                      </span>
-                      <button onClick={() => handleDelete(log.id)} className="btn-icon" title="Delete log">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         );
       })}
     </div>

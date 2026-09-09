@@ -6,15 +6,9 @@ import { Sidebar } from '../../components/Sidebar';
 import { Navbar } from '../../components/Navbar';
 import { 
   Calculator, 
-  Flame, 
-  TrendingUp, 
-  Target, 
   CheckCircle2, 
   Sparkles, 
   User, 
-  Ruler, 
-  Weight, 
-  Activity,
   Save
 } from 'lucide-react';
 
@@ -63,9 +57,7 @@ export default function CalculatorPage() {
     }
   };
 
-  // Real-time formula calculation
   const calculateMetabolics = () => {
-    // Mifflin-St Jeor Equation
     let bmr = 10 * weightKg + 6.25 * heightCm - 5 * age;
     bmr += gender === 'MALE' ? 5 : -161;
 
@@ -83,7 +75,6 @@ export default function CalculatorPage() {
     if (goal === 'WEIGHT_LOSS') targetCalories = Math.max(1200, tdee - 500);
     if (goal === 'BULK') targetCalories = tdee + 350;
 
-    // Macro Ratios: Protein 2g/kg, Fat 25% of calories, Rest Carbs
     const targetProtein = Math.round(weightKg * 2.0);
     const fatCalories = targetCalories * 0.25;
     const targetFat = Math.round(fatCalories / 9);
@@ -137,10 +128,10 @@ export default function CalculatorPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0B0F19] text-white">
+    <div className="flex min-h-screen bg-[#F7F9F8] text-[#171C1B]">
       <Sidebar userProfile={userProfile} />
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#F7F9F8]">
         <Navbar
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
@@ -149,16 +140,16 @@ export default function CalculatorPage() {
 
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Header Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel p-6 rounded-2xl bg-slate-900/80 border border-white/10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
-                <Calculator className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#0A7C6E] uppercase tracking-wider mb-1">
+                <Calculator className="w-4 h-4 text-[#0A7C6E]" />
                 <span>Metabolic Science Calculator</span>
               </div>
-              <h1 className="text-2xl font-extrabold text-white tracking-tight">
+              <h1 className="text-2xl font-bold text-[#171C1B] tracking-tight">
                 TDEE & Target Macro Calculator
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-xs text-[#68716F] mt-1">
                 Calculate your Basal Metabolic Rate (BMR), Maintenance TDEE, and target protein/carbs/fat ratios.
               </p>
             </div>
@@ -166,7 +157,7 @@ export default function CalculatorPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+              className="px-4 py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0A7C6E]"
             >
               <Save className="w-4 h-4" />
               <span>{saving ? 'Saving...' : 'Save & Sync Targets'}</span>
@@ -174,8 +165,8 @@ export default function CalculatorPage() {
           </div>
 
           {saveSuccess && (
-            <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center gap-2 animate-fadeIn">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            <div className="p-4 rounded-lg bg-[#E6F3F1] border border-[#B8E2DC] text-[#075E54] font-bold text-xs flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#0A7C6E]" />
               <span>Profile updated! Your new TDEE and daily macro goals are now synced with your dashboard.</span>
             </div>
           )}
@@ -183,17 +174,17 @@ export default function CalculatorPage() {
           {/* Grid Layout: Inputs Left, Live Results Right */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Input Form Column */}
-            <div className="lg:col-span-7 glass-panel p-6 rounded-2xl bg-slate-900/80 border border-white/10 space-y-6">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <User className="w-4 h-4 text-emerald-400" />
+            <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm space-y-5">
+              <h2 className="text-base font-bold text-[#171C1B] flex items-center gap-2">
+                <User className="w-4 h-4 text-[#0A7C6E]" />
                 <span>Personal & Body Metrics</span>
               </h2>
 
-              <form onSubmit={handleSave} className="space-y-5">
+              <form onSubmit={handleSave} className="space-y-4">
                 {/* Name & Gender */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-[#68716F] mb-1">
                       Athlete Name
                     </label>
                     <input
@@ -201,22 +192,22 @@ export default function CalculatorPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Purab"
-                      className="w-full px-3 py-2 bg-slate-950 border border-white/10 rounded-xl text-white text-xs outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs outline-none focus:border-[#0A7C6E]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-[#68716F] mb-1">
                       Gender
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => setGender('MALE')}
-                        className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                        className={`py-2 rounded-lg text-xs font-bold border transition-all ${
                           gender === 'MALE'
-                            ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400'
-                            : 'bg-slate-950 border-white/10 text-slate-400'
+                            ? 'bg-[#0A7C6E] border-[#0A7C6E] text-white'
+                            : 'bg-white border-[#E1E7E5] text-[#171C1B] hover:bg-[#E6F3F1]'
                         }`}
                       >
                         Male
@@ -224,10 +215,10 @@ export default function CalculatorPage() {
                       <button
                         type="button"
                         onClick={() => setGender('FEMALE')}
-                        className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                        className={`py-2 rounded-lg text-xs font-bold border transition-all ${
                           gender === 'FEMALE'
-                            ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400'
-                            : 'bg-slate-950 border-white/10 text-slate-400'
+                            ? 'bg-[#0A7C6E] border-[#0A7C6E] text-white'
+                            : 'bg-white border-[#E1E7E5] text-[#171C1B] hover:bg-[#E6F3F1]'
                         }`}
                       >
                         Female
@@ -237,9 +228,9 @@ export default function CalculatorPage() {
                 </div>
 
                 {/* Age, Height, Weight */}
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-3 font-mono">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-sans font-semibold text-[#68716F] mb-1">
                       Age (yrs)
                     </label>
                     <input
@@ -248,11 +239,11 @@ export default function CalculatorPage() {
                       max="100"
                       value={age}
                       onChange={(e) => setAge(Number(e.target.value))}
-                      className="w-full px-3 py-2 bg-slate-950 border border-white/10 rounded-xl text-white text-xs font-semibold outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0A7C6E]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-sans font-semibold text-[#68716F] mb-1">
                       Height (cm)
                     </label>
                     <input
@@ -261,11 +252,11 @@ export default function CalculatorPage() {
                       max="250"
                       value={heightCm}
                       onChange={(e) => setHeightCm(Number(e.target.value))}
-                      className="w-full px-3 py-2 bg-slate-950 border border-white/10 rounded-xl text-white text-xs font-semibold outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0A7C6E]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-sans font-semibold text-[#68716F] mb-1">
                       Weight (kg)
                     </label>
                     <input
@@ -274,20 +265,20 @@ export default function CalculatorPage() {
                       max="250"
                       value={weightKg}
                       onChange={(e) => setWeightKg(Number(e.target.value))}
-                      className="w-full px-3 py-2 bg-slate-950 border border-white/10 rounded-xl text-white text-xs font-semibold outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0A7C6E]"
                     />
                   </div>
                 </div>
 
                 {/* Activity Level */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-2">
+                  <label className="block text-xs font-semibold text-[#68716F] mb-1">
                     Activity Level
                   </label>
                   <select
                     value={activityLevel}
                     onChange={(e: any) => setActivityLevel(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-white text-xs outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs outline-none focus:border-[#0A7C6E]"
                   >
                     <option value="SEDENTARY">Sedentary (Little or no exercise - 1.2x)</option>
                     <option value="LIGHT">Lightly Active (Exercise 1-3 days/week - 1.375x)</option>
@@ -299,7 +290,7 @@ export default function CalculatorPage() {
 
                 {/* Primary Fitness Goal */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-2">
+                  <label className="block text-xs font-semibold text-[#68716F] mb-1">
                     Primary Fitness Goal Strategy
                   </label>
                   <div className="grid grid-cols-3 gap-3">
@@ -312,14 +303,14 @@ export default function CalculatorPage() {
                         key={g.id}
                         type="button"
                         onClick={() => setGoal(g.id as any)}
-                        className={`p-3 rounded-xl border text-center transition-all ${
+                        className={`p-3 rounded-lg border text-center transition-all ${
                           goal === g.id
-                            ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 font-bold'
-                            : 'bg-slate-950 border-white/10 text-slate-400 hover:text-white'
+                            ? 'bg-[#0A7C6E] border-[#0A7C6E] text-white font-bold'
+                            : 'bg-white border-[#E1E7E5] text-[#171C1B] hover:bg-[#E6F3F1]'
                         }`}
                       >
                         <div className="text-xs font-bold">{g.label}</div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">{g.sub}</div>
+                        <div className={`text-[10px] mt-0.5 ${goal === g.id ? 'text-teal-100' : 'text-[#68716F]'}`}>{g.sub}</div>
                       </button>
                     ))}
                   </div>
@@ -329,83 +320,83 @@ export default function CalculatorPage() {
 
             {/* Live Calculated Output Column */}
             <div className="lg:col-span-5 space-y-5">
-              <div className="glass-panel p-6 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 border border-emerald-500/30 space-y-6">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm space-y-5">
+                <div className="flex items-center justify-between border-b border-[#E1E7E5] pb-3">
                   <div>
-                    <span className="text-xs text-emerald-400 font-semibold uppercase tracking-wider">
+                    <span className="text-xs text-[#68716F] font-semibold uppercase tracking-wider">
                       Metabolic Calculations
                     </span>
-                    <h3 className="text-xl font-bold text-white mt-0.5">Calculated Results</h3>
+                    <h3 className="text-lg font-bold text-[#171C1B] mt-0.5">Calculated Results</h3>
                   </div>
-                  <Sparkles className="w-5 h-5 text-emerald-400" />
+                  <Sparkles className="w-4 h-4 text-[#0A7C6E]" />
                 </div>
 
                 {/* BMR & TDEE Cards */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/5">
-                    <div className="text-[11px] text-slate-400 font-medium">BMR (Basal Rate)</div>
-                    <div className="text-xl font-extrabold text-white mt-1">
-                      {metabolics.bmr} <span className="text-xs text-slate-400">kcal</span>
+                <div className="grid grid-cols-2 gap-3 font-mono">
+                  <div className="p-3 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5]">
+                    <div className="text-[11px] text-[#68716F] font-sans font-medium">BMR (Basal Rate)</div>
+                    <div className="text-lg font-bold text-[#171C1B] mt-1">
+                      {metabolics.bmr} <span className="text-xs font-normal text-[#68716F]">kcal</span>
                     </div>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/5">
-                    <div className="text-[11px] text-slate-400 font-medium">Maintenance TDEE</div>
-                    <div className="text-xl font-extrabold text-blue-400 mt-1">
-                      {metabolics.tdee} <span className="text-xs text-slate-400">kcal</span>
+                  <div className="p-3 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5]">
+                    <div className="text-[11px] text-[#68716F] font-sans font-medium">Maintenance TDEE</div>
+                    <div className="text-lg font-bold text-[#171C1B] mt-1">
+                      {metabolics.tdee} <span className="text-xs font-normal text-[#68716F]">kcal</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Daily Recommended Target Hero */}
-                <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-teal-500/10 border border-emerald-500/40 text-center">
-                  <div className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                    Recommended Daily Target Calories
+                <div className="p-4 rounded-xl bg-[#0A7C6E] text-white text-center font-mono shadow-sm">
+                  <div className="text-xs font-semibold font-sans uppercase tracking-wider text-teal-100">
+                    Recommended Daily Target
                   </div>
-                  <div className="text-4xl font-black text-white mt-1">
+                  <div className="text-3xl font-black text-white mt-1">
                     {metabolics.targetCalories}{' '}
-                    <span className="text-sm font-normal text-slate-400">kcal/day</span>
+                    <span className="text-xs font-normal text-teal-100">kcal/day</span>
                   </div>
-                  <div className="text-xs text-slate-300 mt-2 font-medium">
-                    Goal Strategy: <span className="text-emerald-300 font-bold">{goal}</span>
+                  <div className="text-xs text-teal-100 mt-1 font-sans">
+                    Strategy: <span className="font-bold">{goal}</span>
                   </div>
                 </div>
 
                 {/* Target Macros Breakdown */}
-                <div className="space-y-3">
-                  <div className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                <div className="space-y-2 font-mono">
+                  <div className="text-xs font-sans font-semibold text-[#171C1B] uppercase tracking-wider">
                     Daily Macro Distribution
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-emerald-500/20 flex justify-between items-center">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2.5 rounded-lg bg-[#E6F3F1] border border-[#B8E2DC] flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-emerald-400 font-bold">PROTEIN</div>
-                        <div className="text-base font-bold text-white">{metabolics.targetProtein}g</div>
+                        <div className="text-[10px] text-[#075E54] font-sans font-bold">PROTEIN</div>
+                        <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetProtein}g</div>
                       </div>
-                      <span className="text-xs text-slate-500 font-mono">2.0g/kg</span>
+                      <span className="text-[11px] text-[#68716F] font-mono">2.0g/kg</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-blue-500/20 flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-blue-400 font-bold">CARBS</div>
-                        <div className="text-base font-bold text-white">{metabolics.targetCarbs}g</div>
+                        <div className="text-[10px] text-[#68716F] font-sans font-bold">CARBS</div>
+                        <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetCarbs}g</div>
                       </div>
-                      <span className="text-xs text-slate-500 font-mono">Balance</span>
+                      <span className="text-[11px] text-[#68716F] font-mono">Balance</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-purple-500/20 flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-purple-400 font-bold">FAT</div>
-                        <div className="text-base font-bold text-white">{metabolics.targetFat}g</div>
+                        <div className="text-[10px] text-[#68716F] font-sans font-bold">FAT</div>
+                        <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetFat}g</div>
                       </div>
-                      <span className="text-xs text-slate-500 font-mono">25% Cal</span>
+                      <span className="text-[11px] text-[#68716F] font-mono">25% Cal</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-slate-950/80 border border-amber-500/20 flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-amber-400 font-bold">FIBER</div>
-                        <div className="text-base font-bold text-white">{metabolics.targetFiber}g</div>
+                        <div className="text-[10px] text-[#68716F] font-sans font-bold">FIBER</div>
+                        <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetFiber}g</div>
                       </div>
-                      <span className="text-xs text-slate-500 font-mono">Daily</span>
+                      <span className="text-[11px] text-[#68716F] font-mono">Daily</span>
                     </div>
                   </div>
                 </div>
@@ -414,7 +405,7 @@ export default function CalculatorPage() {
                   type="button"
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+                  className="w-full py-2.5 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0A7C6E]"
                 >
                   <Save className="w-4 h-4" />
                   <span>Sync New Targets to Dashboard</span>

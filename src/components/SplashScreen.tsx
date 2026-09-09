@@ -19,46 +19,43 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
       setFadingOut(true);
       const finishTimer = setTimeout(() => {
         if (onFinish) onFinish();
-      }, 600);
+      }, 500);
       return () => clearTimeout(finishTimer);
-    }, 1800);
+    }, 1200);
 
     return () => clearTimeout(timer);
   }, [onFinish]);
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0B0F19] transition-opacity duration-700 ease-out ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F7F9F8] text-[#171C1B] transition-opacity duration-500 ease-out ${
         fadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      <div className="relative flex flex-col items-center">
-        {/* Animated Glow Backplate */}
-        <div className="absolute -inset-8 bg-gradient-to-r from-emerald-500/30 to-blue-500/30 rounded-full blur-2xl animate-pulse" />
-
+      <div className="flex flex-col items-center">
         {/* Brand Icon */}
-        <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-blue-600 flex items-center justify-center shadow-2xl shadow-emerald-500/40 mb-6 transform transition-transform animate-bounce">
-          <Flame className="w-10 h-10 text-white" />
+        <div className="w-16 h-16 rounded-2xl bg-[#0A7C6E] text-white flex items-center justify-center shadow-md mb-4">
+          <Flame className="w-8 h-8" />
         </div>
 
         {/* Brand Title */}
-        <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-blue-400 bg-clip-text text-transparent mb-2">
+        <h1 className="text-3xl font-extrabold tracking-tight text-[#171C1B] mb-1">
           {appName}
         </h1>
 
-        <p className="text-sm text-slate-400 flex items-center gap-2 font-medium">
-          <Sparkles className="w-4 h-4 text-emerald-400" />
+        <p className="text-xs text-[#68716F] flex items-center gap-1.5 font-medium">
+          <Sparkles className="w-3.5 h-3.5 text-[#0A7C6E]" />
           <span>Precision Indian Nutrition & Calorie Tracking</span>
         </p>
 
         {/* Loading Spinner / Bar */}
-        <div className="mt-8 w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden border border-white/10">
-          <div className="h-full bg-gradient-to-r from-emerald-400 to-blue-500 animate-pulse w-full rounded-full" />
+        <div className="mt-6 w-36 h-1.5 bg-[#E6F3F1] rounded-full overflow-hidden border border-[#E1E7E5]">
+          <div className="h-full bg-[#0A7C6E] animate-pulse w-full rounded-full" />
         </div>
 
-        <div className="mt-4 flex items-center gap-1.5 text-xs text-slate-500">
-          <Activity className="w-3.5 h-3.5 text-emerald-500" />
-          <span>Initializing your metabolic dashboard...</span>
+        <div className="mt-3 flex items-center gap-1 text-[11px] text-[#68716F]">
+          <Activity className="w-3 h-3 text-[#0A7C6E]" />
+          <span>Initializing metabolic dashboard...</span>
         </div>
       </div>
     </div>
