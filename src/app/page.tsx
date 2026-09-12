@@ -9,6 +9,7 @@ import {
 } from '../services/api';
 import { Sidebar } from '../components/Sidebar';
 import { Navbar } from '../components/Navbar';
+import { AuthGuard } from '../components/AuthGuard';
 import { SplashScreen } from '../components/SplashScreen';
 import { OnboardingWizard } from '../components/OnboardingWizard';
 import { Heatmap } from '../components/Heatmap';
@@ -31,7 +32,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
-export default function DashboardHomePage() {
+function DashboardHomePage() {
   const [showSplash, setShowSplash] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -58,11 +59,9 @@ export default function DashboardHomePage() {
         prof = await ApiService.getProfile();
         setUserProfile(prof);
 
-        if (!prof || prof.name === 'Athlete' && prof.weightKg === 70 && prof.heightCm === 175) {
-          const completedOnboarding = localStorage.getItem('gramgains_onboarded');
-          if (!completedOnboarding) {
-            setShowOnboarding(true);
-          }
+        // Trigger onboarding for new users who have the auto-generated default profile
+        if (!prof || (prof.name === 'Athlete' && prof.weightKg === 70 && prof.heightCm === 175)) {
+          setShowOnboarding(true);
         }
       } catch (err) {
         console.warn('Backend profile not available yet, using defaults', err);
@@ -339,5 +338,13 @@ export default function DashboardHomePage() {
         onLogged={loadProfileAndData}
       />
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <AuthGuard>
+      <DashboardHomePage />
+    </AuthGuard>
   );
 }

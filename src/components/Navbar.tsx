@@ -17,6 +17,7 @@ import {
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { Separator } from './ui/separator';
+import { UserNav } from './auth/UserNav';
 
 interface NavbarProps {
   selectedDate: string;
@@ -96,19 +97,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </Button>
         )}
 
-        <div className="flex items-center gap-2.5 bg-background border border-border px-3 py-1.5 rounded-lg">
-          <Avatar className="w-6 h-6">
-            <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
-          </Avatar>
-          <div className="hidden sm:block text-left">
-            <div className="text-xs font-semibold text-foreground leading-none">
-              {userProfile?.name ?? 'Athlete'}
-            </div>
-            <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
-              {userProfile?.targetCalories ?? 2200} kcal
-            </div>
-          </div>
-        </div>
+        <UserNav />
       </div>
 
       {/* Mobile Slide-down Navigation */}

@@ -1,5 +1,12 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+async function apiFetch(input: string, init?: RequestInit): Promise<Response> {
+  return fetch(input, {
+    ...init,
+    credentials: 'include',
+  });
+}
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -124,14 +131,14 @@ export interface SavedMeal {
 export class ApiService {
   // --- PROFILE ---
   static async getProfile(): Promise<UserProfile> {
-    const res = await fetch(`${API_BASE_URL}/profile`);
+    const res = await apiFetch(`${API_BASE_URL}/profile`);
     if (!res.ok) throw new Error('Failed to fetch user profile');
     const json = await res.json();
     return json.data;
   }
 
   static async updateProfile(payload: Partial<UserProfile>): Promise<UserProfile> {
-    const res = await fetch(`${API_BASE_URL}/profile`, {
+    const res = await apiFetch(`${API_BASE_URL}/profile`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -143,14 +150,14 @@ export class ApiService {
 
   // --- DASHBOARD ---
   static async getDashboardSummary(date: string): Promise<DashboardSummaryResponse> {
-    const res = await fetch(`${API_BASE_URL}/dashboard/summary?date=${date}`);
+    const res = await apiFetch(`${API_BASE_URL}/dashboard/summary?date=${date}`);
     if (!res.ok) throw new Error('Failed to fetch dashboard summary');
     const json = await res.json();
     return json.data;
   }
 
   static async getHeatmap(days: number = 90): Promise<HeatmapResponse> {
-    const res = await fetch(`${API_BASE_URL}/dashboard/heatmap?days=${days}`);
+    const res = await apiFetch(`${API_BASE_URL}/dashboard/heatmap?days=${days}`);
     if (!res.ok) throw new Error('Failed to fetch heatmap');
     const json = await res.json();
     return json.data;
@@ -162,7 +169,7 @@ export class ApiService {
     if (query) params.append('q', query);
     if (layer) params.append('layer', layer.toString());
 
-    const res = await fetch(`${API_BASE_URL}/food/search?${params.toString()}`);
+    const res = await apiFetch(`${API_BASE_URL}/food/search?${params.toString()}`);
     if (!res.ok) throw new Error('Failed to fetch foods');
     const json = await res.json();
     return json.data;
@@ -170,7 +177,7 @@ export class ApiService {
 
   // --- DAILY TRACKER ---
   static async getDailyLogs(date: string): Promise<DailyTrackerResponse> {
-    const res = await fetch(`${API_BASE_URL}/tracker/daily?date=${date}`);
+    const res = await apiFetch(`${API_BASE_URL}/tracker/daily?date=${date}`);
     if (!res.ok) throw new Error('Failed to fetch daily logs');
     const json = await res.json();
     return json.data;
@@ -183,7 +190,7 @@ export class ApiService {
     servings?: number;
     customWeightGrams?: number;
   }): Promise<MealLogItem> {
-    const res = await fetch(`${API_BASE_URL}/tracker/log`, {
+    const res = await apiFetch(`${API_BASE_URL}/tracker/log`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -197,7 +204,7 @@ export class ApiService {
     id: string,
     payload: { servings?: number; customWeightGrams?: number; mealType?: string }
   ): Promise<MealLogItem> {
-    const res = await fetch(`${API_BASE_URL}/tracker/log/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/tracker/log/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -208,7 +215,7 @@ export class ApiService {
   }
 
   static async deleteLog(id: string): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/tracker/log/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/tracker/log/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to delete log');
@@ -216,14 +223,14 @@ export class ApiService {
 
   // --- SAVED MEALS ---
   static async getSavedMeals(): Promise<SavedMeal[]> {
-    const res = await fetch(`${API_BASE_URL}/saved-meals`);
+    const res = await apiFetch(`${API_BASE_URL}/saved-meals`);
     if (!res.ok) throw new Error('Failed to fetch saved meals');
     const json = await res.json();
     return json.data;
   }
 
   static async getSavedMealById(id: string): Promise<SavedMeal> {
-    const res = await fetch(`${API_BASE_URL}/saved-meals/${id}`);
+    const res = await apiFetch(`${API_BASE_URL}/saved-meals/${id}`);
     if (!res.ok) throw new Error('Failed to fetch saved meal');
     const json = await res.json();
     return json.data;
@@ -234,7 +241,7 @@ export class ApiService {
     description?: string;
     items: { foodId: string; weightGrams: number }[];
   }): Promise<SavedMeal> {
-    const res = await fetch(`${API_BASE_URL}/saved-meals`, {
+    const res = await apiFetch(`${API_BASE_URL}/saved-meals`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -252,7 +259,7 @@ export class ApiService {
       items?: { foodId: string; weightGrams: number }[];
     }
   ): Promise<SavedMeal> {
-    const res = await fetch(`${API_BASE_URL}/saved-meals/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/saved-meals/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -263,7 +270,7 @@ export class ApiService {
   }
 
   static async deleteSavedMeal(id: string): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/saved-meals/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/saved-meals/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to delete saved meal');
@@ -272,8 +279,8 @@ export class ApiService {
   static async logSavedMealToTracker(
     id: string,
     payload: { date: string; mealType: string }
-  ): Promise<{ message: string; loggedCount: number }> {
-    const res = await fetch(`${API_BASE_URL}/saved-meals/${id}/log`, {
+  ): Promise<{ message: string; count: number; logs: MealLogItem[] }> {
+    const res = await apiFetch(`${API_BASE_URL}/saved-meals/${id}/log`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -282,4 +289,3 @@ export class ApiService {
     return res.json();
   }
 }
-

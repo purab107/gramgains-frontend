@@ -10,6 +10,7 @@ import {
 import { getFoodEmoji } from '../../lib/food-utils';
 import { Sidebar } from '../../components/Sidebar';
 import { Navbar } from '../../components/Navbar';
+import { AuthGuard } from '../../components/AuthGuard';
 import { 
   Bookmark, 
   Plus, 
@@ -22,7 +23,7 @@ import {
   Search
 } from 'lucide-react';
 
-export default function SavedMealsPage() {
+function SavedMealsPage() {
   const [savedMeals, setSavedMeals] = useState<SavedMeal[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -605,5 +606,13 @@ export default function SavedMealsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SavedMealsPageGuarded() {
+  return (
+    <AuthGuard>
+      <SavedMealsPage />
+    </AuthGuard>
   );
 }

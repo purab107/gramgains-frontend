@@ -9,6 +9,7 @@ import {
 } from '../../services/api';
 import { Sidebar } from '../../components/Sidebar';
 import { Navbar } from '../../components/Navbar';
+import { AuthGuard } from '../../components/AuthGuard';
 import { MealLoggerModal } from '../../components/MealLoggerModal';
 import { DailyTimeline } from '../../components/DailyTimeline';
 import { MacroCard } from '../../components/MacroCard';
@@ -22,7 +23,7 @@ import {
   Flame
 } from 'lucide-react';
 
-export default function TrackerPage() {
+function TrackerPage() {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
@@ -190,5 +191,13 @@ export default function TrackerPage() {
         onLogged={loadData}
       />
     </div>
+  );
+}
+
+export default function TrackerPageGuarded() {
+  return (
+    <AuthGuard>
+      <TrackerPage />
+    </AuthGuard>
   );
 }

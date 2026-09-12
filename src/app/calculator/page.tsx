@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ApiService, UserProfile } from '../../services/api';
 import { Sidebar } from '../../components/Sidebar';
 import { Navbar } from '../../components/Navbar';
+import { AuthGuard } from '../../components/AuthGuard';
 import { 
   Calculator, 
   CheckCircle2, 
@@ -12,7 +13,7 @@ import {
   Save
 } from 'lucide-react';
 
-export default function CalculatorPage() {
+function CalculatorPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
@@ -416,5 +417,13 @@ export default function CalculatorPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function CalculatorPageGuarded() {
+  return (
+    <AuthGuard>
+      <CalculatorPage />
+    </AuthGuard>
   );
 }
