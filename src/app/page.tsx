@@ -305,7 +305,7 @@ function DashboardHomePage() {
           </div>
 
           {/* Activity Heatmap Component */}
-          <Heatmap daysCount={90} />
+          <Heatmap />
 
           {/* Today's Logged Meals Timeline */}
           <div className="space-y-3">

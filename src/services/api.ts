@@ -94,12 +94,14 @@ export interface HeatmapItem {
   count: number;
   totalCalories: number;
   level: number;
+  isFuture?: boolean;
 }
 
 export interface HeatmapResponse {
   daysCount: number;
   targetCalories: number;
   heatmap: HeatmapItem[];
+  accountCreatedAt?: string | null;
 }
 
 export interface SavedMealItem {
