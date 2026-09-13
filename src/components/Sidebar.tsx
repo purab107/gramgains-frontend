@@ -2,17 +2,17 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
-  LayoutDashboard, 
-  UtensilsCrossed, 
+  Home, 
+  SquarePen, 
   Bookmark, 
   Calculator, 
-  Flame, 
-  ChevronRight,
-  Target
+  Settings, 
+  LogOut,
+  Flame
 } from 'lucide-react';
-import { Badge } from './ui/badge';
+import { signOut } from '@/lib/auth-client';
 
 interface SidebarProps {
   userProfile?: {
@@ -24,68 +24,58 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.replace('/login');
+    } catch (err) {
+      console.error('Sign out error:', err);
+    }
+  };
 
   const navItems = [
     {
-      label: 'Dashboard',
+      label: 'Home',
       href: '/',
-      icon: LayoutDashboard,
-      description: 'Daily overview & stats',
+      icon: Home,
     },
     {
-      label: 'Meal Tracker',
+      label: 'Tracker',
       href: '/tracker',
-      icon: UtensilsCrossed,
-      description: 'Log food & check macros',
+      icon: SquarePen,
     },
     {
       label: 'Saved Meals',
       href: '/saved-meals',
       icon: Bookmark,
-      description: 'Custom recipes & templates',
     },
     {
-      label: 'TDEE & Goals',
+      label: 'Calculator',
       href: '/calculator',
       icon: Calculator,
-      description: 'Calculate maintenance & targets',
     },
   ];
 
-  const getGoalBadge = (goal?: string) => {
-    switch (goal) {
-      case 'WEIGHT_LOSS':
-        return { label: 'Weight Loss' };
-      case 'BULK':
-        return { label: 'Muscle Bulk' };
-      default:
-        return { label: 'Maintain' };
-    }
-  };
-
-  const goalInfo = getGoalBadge(userProfile?.goal);
-
   return (
-    <aside className="w-64 bg-[#008785] border-r border-[#006f6d] flex flex-col justify-between h-screen sticky top-0 shrink-0 overflow-hidden hidden md:flex z-30 text-white shadow-md">
+    <aside className="w-64 bg-[#fcfdfe] border-r border-[#e5e7eb] flex flex-col justify-between h-screen sticky top-0 shrink-0 overflow-hidden hidden md:flex z-30 text-[#171C1B]">
       <div className="flex flex-col flex-1 min-h-0">
         {/* Brand Header */}
-        <div className="p-5 border-b border-[#006f6d] flex items-center gap-3 shrink-0">
-          <div className="w-9 h-9 rounded-lg bg-[#006f6d] flex items-center justify-center text-white shadow-inner border border-teal-600/30">
+        <div className="p-6 flex items-center gap-3 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#0f8651] flex items-center justify-center text-white shadow-sm">
             <Flame className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-lg tracking-tight text-white">
+            <h1 className="font-bold text-lg tracking-tight text-[#171C1B]">
               GramGains
             </h1>
-            <p className="text-[11px] text-teal-100/80">Calorie & Macro Tracker</p>
+            <p className="text-[11px] text-[#68716F]">Macro & Calorie Tracker</p>
           </div>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="p-3 space-y-1 overflow-y-auto flex-1">
-          <div className="px-3 py-2 text-[10px] font-semibold text-teal-100/70 uppercase tracking-wider">
-            Navigation
-          </div>
+        {/* Main Navigation Items */}
+        <nav className="px-3.5 space-y-1.5 flex-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -93,53 +83,41 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`group flex items-center justify-between p-2.5 rounded-lg transition-all text-sm ${
+                className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
                   isActive
-                    ? 'bg-[#006f6d] text-white font-medium shadow-sm border border-[#005a58]'
-                    : 'text-teal-100 hover:text-white hover:bg-[#006f6d]/60 border border-transparent'
+                    ? 'bg-[#e4f7ee] text-[#0d7649] font-semibold'
+                    : 'text-[#4b5563] hover:text-[#0d7649] hover:bg-[#e4f7ee]/50'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`p-1.5 rounded-md ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-[#006f6d]/70 text-teal-100 group-hover:text-white'
-                  }`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold leading-none text-white">{item.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? 'text-teal-100' : 'text-teal-100/70'}`}>{item.description}</div>
-                  </div>
-                </div>
-                {isActive && (
-                  <ChevronRight className="w-3.5 h-3.5 text-white" />
-                )}
+                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-[#0d7649]' : 'text-[#4b5563]'}`} />
+                <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
       </div>
 
-      {/* User Quick Info Box */}
-      <div className="p-3.5 m-3 rounded-xl bg-[#006f6d] border border-[#005a58] space-y-2.5 shrink-0 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <Target className="w-3.5 h-3.5 text-teal-200" />
-            <span className="text-[11px] font-semibold text-white">Daily Target</span>
-          </div>
-          <Badge variant="secondary" className="normal-case tracking-normal">
-            {goalInfo.label}
-          </Badge>
-        </div>
+      {/* Bottom Navigation Items (Settings & Logout) */}
+      <div className="px-3.5 pb-6 pt-2 space-y-1.5 border-t border-[#e5e7eb]">
+        <Link
+          href="/calculator"
+          className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
+            pathname === '/settings'
+              ? 'bg-[#e4f7ee] text-[#0d7649] font-semibold'
+              : 'text-[#4b5563] hover:text-[#0d7649] hover:bg-[#e4f7ee]/50'
+          }`}
+        >
+          <Settings className="w-5 h-5 shrink-0 text-[#4b5563]" />
+          <span>Settings</span>
+        </Link>
 
-        <div>
-          <div className="text-xl font-bold text-white tracking-tight font-mono">
-            {userProfile?.targetCalories ?? 2200}{' '}
-            <span className="text-xs font-normal text-teal-100/80">kcal/day</span>
-          </div>
-          <p className="text-[10px] text-teal-100/80 mt-0.5">
-            Logged as <span className="text-white font-medium">{userProfile?.name ?? 'Athlete'}</span>
-          </p>
-        </div>
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium text-[#4b5563] hover:text-red-600 hover:bg-red-50"
+        >
+          <LogOut className="w-5 h-5 shrink-0 text-[#4b5563]" />
+          <span>Logout</span>
+        </button>
       </div>
     </aside>
   );

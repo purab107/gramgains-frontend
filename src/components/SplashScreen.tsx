@@ -28,13 +28,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F7F9F8] text-[#171C1B] transition-opacity duration-500 ease-out ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#fcfdfe] text-[#171C1B] transition-opacity duration-500 ease-out ${
         fadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
       <div className="flex flex-col items-center">
         {/* Brand Icon */}
-        <div className="w-16 h-16 rounded-2xl bg-[#0A7C6E] text-white flex items-center justify-center shadow-md mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-[#1a875c] text-white flex items-center justify-center shadow-md mb-4">
           <Flame className="w-8 h-8" />
         </div>
 
@@ -44,17 +44,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         </h1>
 
         <p className="text-xs text-[#68716F] flex items-center gap-1.5 font-medium">
-          <Sparkles className="w-3.5 h-3.5 text-[#0A7C6E]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#0f8651]" />
           <span>Precision Indian Nutrition & Calorie Tracking</span>
         </p>
 
         {/* Loading Spinner / Bar */}
-        <div className="mt-6 w-36 h-1.5 bg-[#E6F3F1] rounded-full overflow-hidden border border-[#E1E7E5]">
-          <div className="h-full bg-[#0A7C6E] animate-pulse w-full rounded-full" />
+        <div className="mt-6 w-36 h-1.5 bg-[#e4f7ee] rounded-full overflow-hidden border border-[#e5e7eb]">
+          <div className="h-full bg-[#0f8651] animate-pulse w-full rounded-full" />
         </div>
 
         <div className="mt-3 flex items-center gap-1 text-[11px] text-[#68716F]">
-          <Activity className="w-3 h-3 text-[#0A7C6E]" />
+          <Activity className="w-3 h-3 text-[#0f8651]" />
           <span>Initializing metabolic dashboard...</span>
         </div>
       </div>

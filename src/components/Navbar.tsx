@@ -9,8 +9,8 @@ import {
   Flame, 
   Plus, 
   Calendar,
-  LayoutDashboard,
-  UtensilsCrossed,
+  Home,
+  SquarePen,
   Bookmark,
   Calculator
 } from 'lucide-react';
@@ -39,10 +39,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   const pathname = usePathname();
 
   const navItems = [
-    { label: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { label: 'Tracker', href: '/tracker', icon: UtensilsCrossed },
+    { label: 'Home', href: '/', icon: Home },
+    { label: 'Tracker', href: '/tracker', icon: SquarePen },
     { label: 'Saved Meals', href: '/saved-meals', icon: Bookmark },
-    { label: 'TDEE & Goals', href: '/calculator', icon: Calculator },
+    { label: 'Calculator', href: '/calculator', icon: Calculator },
   ];
 
   const initials = userProfile?.name

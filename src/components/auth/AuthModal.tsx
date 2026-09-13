@@ -60,25 +60,25 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-950/90 p-6 shadow-2xl backdrop-blur-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="relative w-full max-w-md rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-lg">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg p-1 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
+          className="absolute right-4 top-4 rounded-lg p-1 text-[#68716F] hover:bg-[#f3f4f6] hover:text-[#171C1B] transition-colors"
         >
           <X className="h-5 w-5" />
         </button>
 
         {/* Header */}
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/10">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[#e4f7ee] text-[#0d7649]">
             <Sparkles className="h-6 w-6" />
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-white">
+          <h2 className="text-2xl font-bold tracking-tight text-[#171C1B]">
             {mode === 'login' ? 'Welcome back' : 'Create an account'}
           </h2>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-[#68716F]">
             {mode === 'login'
               ? 'Enter your credentials to access your nutrition tracker'
               : 'Start your fitness journey and track your gains'}
@@ -86,14 +86,14 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
         </div>
 
         {/* Tab Toggle */}
-        <div className="mb-6 grid grid-cols-2 rounded-xl bg-zinc-900 p-1 border border-zinc-800">
+        <div className="mb-6 grid grid-cols-2 rounded-xl bg-[#f8fafc] p-1 border border-[#e5e7eb]">
           <button
             type="button"
             onClick={() => { setMode('login'); setError(null); }}
             className={`rounded-lg py-2 text-sm font-medium transition-all ${
               mode === 'login'
-                ? 'bg-zinc-800 text-white shadow-sm'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-white text-[#171C1B] shadow-sm font-semibold'
+                : 'text-[#68716F] hover:text-[#171C1B]'
             }`}
           >
             Sign In
@@ -103,8 +103,8 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
             onClick={() => { setMode('register'); setError(null); }}
             className={`rounded-lg py-2 text-sm font-medium transition-all ${
               mode === 'register'
-                ? 'bg-zinc-800 text-white shadow-sm'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-white text-[#171C1B] shadow-sm font-semibold'
+                : 'text-[#68716F] hover:text-[#171C1B]'
             }`}
           >
             Register
@@ -113,7 +113,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-4 flex items-center gap-2 rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          <div className="mb-4 flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -123,46 +123,46 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'register' && (
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+              <label className="block text-xs font-medium text-[#68716F] mb-1.5">
                 Full Name
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#68716F]" />
                 <input
                   type="text"
                   required
                   placeholder="e.g. Alex Hunter"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-900/80 py-2.5 pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                  className="w-full rounded-xl border border-[#e5e7eb] bg-white py-2.5 pl-10 pr-4 text-sm text-[#171C1B] placeholder-[#9ca3af] focus:border-[#0f8651] focus:outline-none focus:ring-1 focus:ring-[#0f8651] transition-all"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-[#68716F] mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#68716F]" />
               <input
                 type="email"
                 required
                 placeholder="athlete@gramgains.app"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900/80 py-2.5 pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full rounded-xl border border-[#e5e7eb] bg-white py-2.5 pl-10 pr-4 text-sm text-[#171C1B] placeholder-[#9ca3af] focus:border-[#0f8651] focus:outline-none focus:ring-1 focus:ring-[#0f8651] transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-[#68716F] mb-1.5">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#68716F]" />
               <input
                 type="password"
                 required
@@ -170,7 +170,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900/80 py-2.5 pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full rounded-xl border border-[#e5e7eb] bg-white py-2.5 pl-10 pr-4 text-sm text-[#171C1B] placeholder-[#9ca3af] focus:border-[#0f8651] focus:outline-none focus:ring-1 focus:ring-[#0f8651] transition-all"
               />
             </div>
           </div>
@@ -178,7 +178,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-[#0f8651] hover:bg-[#0d7649] py-3 text-sm font-semibold text-white shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isLoading ? (
               <>

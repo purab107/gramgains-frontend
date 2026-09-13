@@ -5,6 +5,7 @@ interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   value?: number
   max?: number
   indicatorClassName?: string
+  indicatorStyle?: React.CSSProperties
 }
 
 function Progress({
@@ -12,6 +13,7 @@ function Progress({
   value = 0,
   max = 100,
   indicatorClassName,
+  indicatorStyle,
   ...props
 }: ProgressProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
@@ -35,7 +37,7 @@ function Progress({
           "h-full rounded-full bg-primary transition-all duration-500 ease-out",
           indicatorClassName
         )}
-        style={{ width: `${percentage}%` }}
+        style={{ width: `${percentage}%`, ...indicatorStyle }}
       />
     </div>
   )

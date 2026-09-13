@@ -72,10 +72,10 @@ function TrackerPage() {
   const targetFat = userProfile?.targetFat ?? 65;
 
   return (
-    <div className="flex min-h-screen bg-[#F7F9F8] text-[#171C1B]">
+    <div className="flex min-h-screen bg-[#fcfdfe] text-[#171C1B]">
       <Sidebar userProfile={userProfile} />
 
-      <div className="flex-1 flex flex-col min-w-0 bg-[#F7F9F8]">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#fcfdfe]">
         <Navbar
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
@@ -85,10 +85,10 @@ function TrackerPage() {
 
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Header Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#0A7C6E] uppercase tracking-wider mb-1">
-                <UtensilsCrossed className="w-4 h-4 text-[#0A7C6E]" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#0f8651] uppercase tracking-wider mb-1">
+                <UtensilsCrossed className="w-4 h-4 text-[#0f8651]" />
                 <span>Daily Meal Logger</span>
               </div>
               <h1 className="text-2xl font-bold text-[#171C1B] tracking-tight">
@@ -100,23 +100,23 @@ function TrackerPage() {
             </div>
 
             {/* Date Navigator Bar */}
-            <div className="flex items-center gap-2 bg-[#F7F9F8] border border-[#E1E7E5] p-1.5 rounded-lg">
+            <div className="flex items-center gap-2 bg-[#fcfdfe] border border-[#e5e7eb] p-1.5 rounded-lg">
               <button
                 onClick={() => changeDateBy(-1)}
-                className="p-1.5 rounded bg-white hover:bg-[#E6F3F1] border border-[#E1E7E5] text-[#171C1B] transition-colors"
+                className="p-1.5 rounded bg-white hover:bg-[#e4f7ee] border border-[#e5e7eb] text-[#171C1B] transition-colors"
                 title="Previous Day"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
 
               <div className="flex items-center gap-2 px-2 text-xs font-mono font-semibold text-[#171C1B]">
-                <Calendar className="w-4 h-4 text-[#0A7C6E]" />
+                <Calendar className="w-4 h-4 text-[#0f8651]" />
                 <span>{selectedDate}</span>
               </div>
 
               <button
                 onClick={() => changeDateBy(1)}
-                className="p-1.5 rounded bg-white hover:bg-[#E6F3F1] border border-[#E1E7E5] text-[#171C1B] transition-colors"
+                className="p-1.5 rounded bg-white hover:bg-[#e4f7ee] border border-[#e5e7eb] text-[#171C1B] transition-colors"
                 title="Next Day"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -131,31 +131,35 @@ function TrackerPage() {
               value={Math.round(summary.calories)}
               unit="kcal"
               target={targetCals}
+              color="#0f8651"
             />
             <MacroCard
               label="PROTEIN"
               value={Math.round(summary.protein)}
               unit="g"
               target={targetProtein}
+              color="#2873e5"
             />
             <MacroCard
               label="CARBS"
               value={Math.round(summary.carbohydrates)}
               unit="g"
               target={targetCarbs}
+              color="#f15359"
             />
             <MacroCard
               label="FAT"
               value={Math.round(summary.fat)}
               unit="g"
               target={targetFat}
+              color="#feb111"
             />
           </div>
 
           {/* Quick Search CTA & Timeline */}
-          <div className="bg-[#FFFFFF] p-5 rounded-xl border border-[#E1E7E5] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-[#fefeff] p-5 rounded-xl border border-[#e5e7eb] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg bg-[#E6F3F1] text-[#075E54] border border-[#B8E2DC]">
+              <div className="p-2.5 rounded-lg bg-[#e4f7ee] text-[#0d7649] border border-[#e5e7eb]">
                 <Search className="w-4 h-4" />
               </div>
               <div>
@@ -166,7 +170,7 @@ function TrackerPage() {
 
             <button
               onClick={() => setIsLogModalOpen(true)}
-              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0A7C6E]"
+              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0f8651]"
             >
               <Plus className="w-4 h-4" />
               <span>Search & Add Food</span>
@@ -176,7 +180,7 @@ function TrackerPage() {
           {/* Meals Timeline */}
           <div className="space-y-3">
             <h2 className="text-base font-bold text-[#171C1B] flex items-center gap-2">
-              <Flame className="w-4 h-4 text-[#0A7C6E]" />
+              <Flame className="w-4 h-4 text-[#0f8651]" />
               <span>Meals Logged for {selectedDate}</span>
             </h2>
             <DailyTimeline logs={trackerData?.logs || []} onLogDeleted={loadData} />

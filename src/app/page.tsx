@@ -282,24 +282,28 @@ function DashboardHomePage() {
                 value={summary?.macros.protein.consumed ?? 0}
                 unit="g"
                 target={summary?.macros.protein.target ?? userProfile?.targetProtein ?? 140}
+                color="#2873e5"
               />
               <MacroCard
                 label="CARBOHYDRATES"
                 value={summary?.macros.carbohydrates.consumed ?? 0}
                 unit="g"
                 target={summary?.macros.carbohydrates.target ?? userProfile?.targetCarbs ?? 250}
+                color="#f15359"
               />
               <MacroCard
                 label="FAT"
                 value={summary?.macros.fat.consumed ?? 0}
                 unit="g"
                 target={summary?.macros.fat.target ?? userProfile?.targetFat ?? 65}
+                color="#feb111"
               />
               <MacroCard
                 label="FIBER"
                 value={summary?.macros.fiber.consumed ?? 0}
                 unit="g"
                 target={summary?.macros.fiber.target ?? userProfile?.targetFiber ?? 30}
+                color="#4cd593"
               />
             </div>
           </div>

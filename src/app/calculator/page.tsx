@@ -129,10 +129,10 @@ function CalculatorPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F7F9F8] text-[#171C1B]">
+    <div className="flex min-h-screen bg-[#fcfdfe] text-[#171C1B]">
       <Sidebar userProfile={userProfile} />
 
-      <div className="flex-1 flex flex-col min-w-0 bg-[#F7F9F8]">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#fcfdfe]">
         <Navbar
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
@@ -141,10 +141,10 @@ function CalculatorPage() {
 
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Header Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#0A7C6E] uppercase tracking-wider mb-1">
-                <Calculator className="w-4 h-4 text-[#0A7C6E]" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#0f8651] uppercase tracking-wider mb-1">
+                <Calculator className="w-4 h-4 text-[#0f8651]" />
                 <span>Metabolic Science Calculator</span>
               </div>
               <h1 className="text-2xl font-bold text-[#171C1B] tracking-tight">
@@ -158,7 +158,7 @@ function CalculatorPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0A7C6E]"
+              className="px-4 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0f8651]"
             >
               <Save className="w-4 h-4" />
               <span>{saving ? 'Saving...' : 'Save & Sync Targets'}</span>
@@ -166,8 +166,8 @@ function CalculatorPage() {
           </div>
 
           {saveSuccess && (
-            <div className="p-4 rounded-lg bg-[#E6F3F1] border border-[#B8E2DC] text-[#075E54] font-bold text-xs flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#0A7C6E]" />
+            <div className="p-4 rounded-lg bg-[#e4f7ee] border border-[#e5e7eb] text-[#0d7649] font-bold text-xs flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#0f8651]" />
               <span>Profile updated! Your new TDEE and daily macro goals are now synced with your dashboard.</span>
             </div>
           )}
@@ -175,9 +175,9 @@ function CalculatorPage() {
           {/* Grid Layout: Inputs Left, Live Results Right */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Input Form Column */}
-            <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm space-y-5">
+            <div className="lg:col-span-7 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm space-y-5">
               <h2 className="text-base font-bold text-[#171C1B] flex items-center gap-2">
-                <User className="w-4 h-4 text-[#0A7C6E]" />
+                <User className="w-4 h-4 text-[#0f8651]" />
                 <span>Personal & Body Metrics</span>
               </h2>
 
@@ -193,7 +193,7 @@ function CalculatorPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Purab"
-                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs outline-none focus:border-[#0A7C6E]"
+                      className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] text-xs outline-none focus:border-[#0f8651]"
                     />
                   </div>
 
@@ -207,8 +207,8 @@ function CalculatorPage() {
                         onClick={() => setGender('MALE')}
                         className={`py-2 rounded-lg text-xs font-bold border transition-all ${
                           gender === 'MALE'
-                            ? 'bg-[#0A7C6E] border-[#0A7C6E] text-white'
-                            : 'bg-white border-[#E1E7E5] text-[#171C1B] hover:bg-[#E6F3F1]'
+                            ? 'bg-[#0f8651] border-[#0f8651] text-white'
+                            : 'bg-white border-[#e5e7eb] text-[#171C1B] hover:bg-[#e4f7ee]'
                         }`}
                       >
                         Male
@@ -218,8 +218,8 @@ function CalculatorPage() {
                         onClick={() => setGender('FEMALE')}
                         className={`py-2 rounded-lg text-xs font-bold border transition-all ${
                           gender === 'FEMALE'
-                            ? 'bg-[#0A7C6E] border-[#0A7C6E] text-white'
-                            : 'bg-white border-[#E1E7E5] text-[#171C1B] hover:bg-[#E6F3F1]'
+                            ? 'bg-[#0f8651] border-[#0f8651] text-white'
+                            : 'bg-white border-[#e5e7eb] text-[#171C1B] hover:bg-[#e4f7ee]'
                         }`}
                       >
                         Female
@@ -240,7 +240,7 @@ function CalculatorPage() {
                       max="100"
                       value={age}
                       onChange={(e) => setAge(Number(e.target.value))}
-                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0A7C6E]"
+                      className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0f8651]"
                     />
                   </div>
                   <div>
@@ -253,7 +253,7 @@ function CalculatorPage() {
                       max="250"
                       value={heightCm}
                       onChange={(e) => setHeightCm(Number(e.target.value))}
-                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0A7C6E]"
+                      className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0f8651]"
                     />
                   </div>
                   <div>
@@ -266,7 +266,7 @@ function CalculatorPage() {
                       max="250"
                       value={weightKg}
                       onChange={(e) => setWeightKg(Number(e.target.value))}
-                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0A7C6E]"
+                      className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] text-xs font-semibold outline-none focus:border-[#0f8651]"
                     />
                   </div>
                 </div>
@@ -279,7 +279,7 @@ function CalculatorPage() {
                   <select
                     value={activityLevel}
                     onChange={(e: any) => setActivityLevel(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs outline-none focus:border-[#0A7C6E]"
+                    className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] text-xs outline-none focus:border-[#0f8651]"
                   >
                     <option value="SEDENTARY">Sedentary (Little or no exercise - 1.2x)</option>
                     <option value="LIGHT">Lightly Active (Exercise 1-3 days/week - 1.375x)</option>
@@ -306,12 +306,12 @@ function CalculatorPage() {
                         onClick={() => setGoal(g.id as any)}
                         className={`p-3 rounded-lg border text-center transition-all ${
                           goal === g.id
-                            ? 'bg-[#0A7C6E] border-[#0A7C6E] text-white font-bold'
-                            : 'bg-white border-[#E1E7E5] text-[#171C1B] hover:bg-[#E6F3F1]'
+                            ? 'bg-[#0f8651] border-[#0f8651] text-white font-bold'
+                            : 'bg-white border-[#e5e7eb] text-[#171C1B] hover:bg-[#e4f7ee]'
                         }`}
                       >
                         <div className="text-xs font-bold">{g.label}</div>
-                        <div className={`text-[10px] mt-0.5 ${goal === g.id ? 'text-teal-100' : 'text-[#68716F]'}`}>{g.sub}</div>
+                        <div className={`text-[10px] mt-0.5 ${goal === g.id ? 'text-[#e4f7ee]' : 'text-[#68716F]'}`}>{g.sub}</div>
                       </button>
                     ))}
                   </div>
@@ -321,26 +321,26 @@ function CalculatorPage() {
 
             {/* Live Calculated Output Column */}
             <div className="lg:col-span-5 space-y-5">
-              <div className="bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm space-y-5">
-                <div className="flex items-center justify-between border-b border-[#E1E7E5] pb-3">
+              <div className="bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm space-y-5">
+                <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-3">
                   <div>
                     <span className="text-xs text-[#68716F] font-semibold uppercase tracking-wider">
                       Metabolic Calculations
                     </span>
                     <h3 className="text-lg font-bold text-[#171C1B] mt-0.5">Calculated Results</h3>
                   </div>
-                  <Sparkles className="w-4 h-4 text-[#0A7C6E]" />
+                  <Sparkles className="w-4 h-4 text-[#0f8651]" />
                 </div>
 
                 {/* BMR & TDEE Cards */}
                 <div className="grid grid-cols-2 gap-3 font-mono">
-                  <div className="p-3 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5]">
+                  <div className="p-3 rounded-lg bg-[#fcfdfe] border border-[#e5e7eb]">
                     <div className="text-[11px] text-[#68716F] font-sans font-medium">BMR (Basal Rate)</div>
                     <div className="text-lg font-bold text-[#171C1B] mt-1">
                       {metabolics.bmr} <span className="text-xs font-normal text-[#68716F]">kcal</span>
                     </div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5]">
+                  <div className="p-3 rounded-lg bg-[#fcfdfe] border border-[#e5e7eb]">
                     <div className="text-[11px] text-[#68716F] font-sans font-medium">Maintenance TDEE</div>
                     <div className="text-lg font-bold text-[#171C1B] mt-1">
                       {metabolics.tdee} <span className="text-xs font-normal text-[#68716F]">kcal</span>
@@ -349,15 +349,15 @@ function CalculatorPage() {
                 </div>
 
                 {/* Daily Recommended Target Hero */}
-                <div className="p-4 rounded-xl bg-[#0A7C6E] text-white text-center font-mono shadow-sm">
-                  <div className="text-xs font-semibold font-sans uppercase tracking-wider text-teal-100">
+                <div className="p-4 rounded-xl bg-[#0f8651] text-white text-center font-mono shadow-sm">
+                  <div className="text-xs font-semibold font-sans uppercase tracking-wider text-[#e4f7ee]">
                     Recommended Daily Target
                   </div>
                   <div className="text-3xl font-black text-white mt-1">
                     {metabolics.targetCalories}{' '}
-                    <span className="text-xs font-normal text-teal-100">kcal/day</span>
+                    <span className="text-xs font-normal text-[#e4f7ee]">kcal/day</span>
                   </div>
-                  <div className="text-xs text-teal-100 mt-1 font-sans">
+                  <div className="text-xs text-[#e4f7ee] mt-1 font-sans">
                     Strategy: <span className="font-bold">{goal}</span>
                   </div>
                 </div>
@@ -368,33 +368,33 @@ function CalculatorPage() {
                     Daily Macro Distribution
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="p-2.5 rounded-lg bg-[#E6F3F1] border border-[#B8E2DC] flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg bg-[#2873e5]/10 border border-[#2873e5]/30 flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-[#075E54] font-sans font-bold">PROTEIN</div>
+                        <div className="text-[10px] text-[#2873e5] font-sans font-bold">PROTEIN</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetProtein}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">2.0g/kg</span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg bg-[#f15359]/10 border border-[#f15359]/30 flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-[#68716F] font-sans font-bold">CARBS</div>
+                        <div className="text-[10px] text-[#f15359] font-sans font-bold">CARBS</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetCarbs}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">Balance</span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg bg-[#feb111]/10 border border-[#feb111]/30 flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-[#68716F] font-sans font-bold">FAT</div>
+                        <div className="text-[10px] text-[#d99605] font-sans font-bold">FAT</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetFat}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">25% Cal</span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg bg-[#4cd593]/15 border border-[#4cd593]/40 flex justify-between items-center">
                       <div>
-                        <div className="text-[10px] text-[#68716F] font-sans font-bold">FIBER</div>
+                        <div className="text-[10px] text-[#0d7649] font-sans font-bold">FIBER</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetFiber}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">Daily</span>
@@ -406,7 +406,7 @@ function CalculatorPage() {
                   type="button"
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full py-2.5 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0A7C6E]"
+                  className="w-full py-2.5 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0f8651]"
                 >
                   <Save className="w-4 h-4" />
                   <span>Sync New Targets to Dashboard</span>

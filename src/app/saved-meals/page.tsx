@@ -202,10 +202,10 @@ function SavedMealsPage() {
   const totals = calcRecipeTotals();
 
   return (
-    <div className="flex min-h-screen bg-[#F7F9F8] text-[#171C1B]">
+    <div className="flex min-h-screen bg-[#fcfdfe] text-[#171C1B]">
       <Sidebar userProfile={userProfile} />
 
-      <div className="flex-1 flex flex-col min-w-0 bg-[#F7F9F8]">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#fcfdfe]">
         <Navbar
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
@@ -214,10 +214,10 @@ function SavedMealsPage() {
 
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Header Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FFFFFF] border border-[#E1E7E5] p-6 rounded-xl shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#0A7C6E] uppercase tracking-wider mb-1">
-                <Bookmark className="w-4 h-4 text-[#0A7C6E]" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#0f8651] uppercase tracking-wider mb-1">
+                <Bookmark className="w-4 h-4 text-[#0f8651]" />
                 <span>Custom Saved Recipes</span>
               </div>
               <h1 className="text-2xl font-bold text-[#171C1B] tracking-tight">
@@ -230,7 +230,7 @@ function SavedMealsPage() {
 
             <button
               onClick={handleOpenCreateModal}
-              className="px-4 py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0A7C6E]"
+              className="px-4 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0f8651]"
             >
               <Plus className="w-4 h-4" />
               <span>Create New Saved Meal</span>
@@ -243,8 +243,8 @@ function SavedMealsPage() {
               Loading your saved recipes...
             </div>
           ) : savedMeals.length === 0 ? (
-            <div className="bg-[#FFFFFF] p-12 text-center rounded-xl border border-[#E1E7E5] shadow-sm space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#E6F3F1] flex items-center justify-center mx-auto text-[#075E54] border border-[#B8E2DC]">
+            <div className="bg-[#fefeff] p-12 text-center rounded-xl border border-[#e5e7eb] shadow-sm space-y-3">
+              <div className="w-12 h-12 rounded-xl bg-[#e4f7ee] flex items-center justify-center mx-auto text-[#0d7649] border border-[#e5e7eb]">
                 <Bookmark className="w-6 h-6" />
               </div>
               <h3 className="text-base font-bold text-[#171C1B]">No Saved Meals Yet</h3>
@@ -253,7 +253,7 @@ function SavedMealsPage() {
               </p>
               <button
                 onClick={handleOpenCreateModal}
-                className="mt-2 px-4 py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white text-xs font-semibold shadow-sm"
+                className="mt-2 px-4 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white text-xs font-semibold shadow-sm"
               >
                 Build First Meal Template
               </button>
@@ -263,13 +263,13 @@ function SavedMealsPage() {
               {savedMeals.map((meal) => (
                 <div
                   key={meal.id}
-                  className="bg-[#FFFFFF] p-5 rounded-xl border border-[#E1E7E5] shadow-sm flex flex-col justify-between hover:border-[#0A7C6E]/40 transition-all group"
+                  className="bg-[#fefeff] p-5 rounded-xl border border-[#e5e7eb] shadow-sm flex flex-col justify-between hover:border-[#0f8651]/40 transition-all group"
                 >
                   <div>
                     {/* Meal Title & Actions */}
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div>
-                        <h3 className="font-bold text-base text-[#171C1B] group-hover:text-[#0A7C6E] transition-colors">
+                        <h3 className="font-bold text-base text-[#171C1B] group-hover:text-[#0f8651] transition-colors">
                           {meal.name}
                         </h3>
                         {meal.description && (
@@ -281,14 +281,14 @@ function SavedMealsPage() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleOpenEditModal(meal)}
-                          className="p-1.5 rounded bg-[#F7F9F8] hover:bg-[#E6F3F1] text-[#171C1B] border border-[#E1E7E5] transition-colors"
+                          className="p-1.5 rounded bg-[#fcfdfe] hover:bg-[#e4f7ee] text-[#171C1B] border border-[#e5e7eb] transition-colors"
                           title="Edit Meal"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDeleteSavedMeal(meal.id)}
-                          className="p-1.5 rounded bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors"
+                          className="p-1.5 rounded bg-red-50 hover:bg-red-100 text-[#f15359] border border-red-200 transition-colors"
                           title="Delete Meal"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -297,9 +297,9 @@ function SavedMealsPage() {
                     </div>
 
                     {/* Total Calorie Banner */}
-                    <div className="p-3 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] my-3 flex items-center justify-between font-mono">
+                    <div className="p-3 rounded-lg bg-[#fcfdfe] border border-[#e5e7eb] my-3 flex items-center justify-between font-mono">
                       <div className="flex items-center gap-2">
-                        <Flame className="w-4 h-4 text-[#0A7C6E]" />
+                        <Flame className="w-4 h-4 text-[#0f8651]" />
                         <span className="text-xs text-[#68716F] font-sans font-medium">Total Calories</span>
                       </div>
                       <span className="text-base font-bold text-[#171C1B]">
@@ -309,20 +309,20 @@ function SavedMealsPage() {
 
                     {/* Macro Breakdown Pills */}
                     <div className="grid grid-cols-4 gap-1.5 text-center text-[11px] font-mono mb-4">
-                      <div className="p-2 rounded bg-[#E6F3F1] border border-[#B8E2DC]">
-                        <div className="text-[9px] text-[#075E54] font-sans font-bold">PRO</div>
+                      <div className="p-2 rounded bg-[#2873e5]/10 border border-[#2873e5]/30">
+                        <div className="text-[9px] text-[#2873e5] font-sans font-bold">PRO</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalProtein)}g</div>
                       </div>
-                      <div className="p-2 rounded bg-[#F7F9F8] border border-[#E1E7E5]">
-                        <div className="text-[9px] text-[#68716F] font-sans font-bold">CARB</div>
+                      <div className="p-2 rounded bg-[#f15359]/10 border border-[#f15359]/30">
+                        <div className="text-[9px] text-[#f15359] font-sans font-bold">CARB</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalCarbs)}g</div>
                       </div>
-                      <div className="p-2 rounded bg-[#F7F9F8] border border-[#E1E7E5]">
-                        <div className="text-[9px] text-[#68716F] font-sans font-bold">FAT</div>
+                      <div className="p-2 rounded bg-[#feb111]/10 border border-[#feb111]/30">
+                        <div className="text-[9px] text-[#d99605] font-sans font-bold">FAT</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalFat)}g</div>
                       </div>
-                      <div className="p-2 rounded bg-[#F7F9F8] border border-[#E1E7E5]">
-                        <div className="text-[9px] text-[#68716F] font-sans font-bold">FIBER</div>
+                      <div className="p-2 rounded bg-[#4cd593]/15 border border-[#4cd593]/40">
+                        <div className="text-[9px] text-[#0d7649] font-sans font-bold">FIBER</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalFiber)}g</div>
                       </div>
                     </div>
@@ -335,7 +335,7 @@ function SavedMealsPage() {
                       {meal.items.map((item, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center justify-between text-xs py-1 px-2 rounded bg-[#F7F9F8] border border-[#E1E7E5] text-[#171C1B]"
+                          className="flex items-center justify-between text-xs py-1 px-2 rounded bg-[#fcfdfe] border border-[#e5e7eb] text-[#171C1B]"
                         >
                           <span className="truncate">{item.food?.name || 'Ingredient'}</span>
                           <span className="font-mono text-[#68716F] text-[11px]">
@@ -349,7 +349,7 @@ function SavedMealsPage() {
                   {/* One-click Log Button */}
                   <button
                     onClick={() => setLogMealTarget(meal)}
-                    className="w-full py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 border border-[#0A7C6E]"
+                    className="w-full py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 border border-[#0f8651]"
                   >
                     <Utensils className="w-3.5 h-3.5" />
                     <span>Log to Daily Tracker</span>
@@ -364,8 +364,8 @@ function SavedMealsPage() {
       {/* CREATE / EDIT SAVED MEAL MODAL */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content max-w-xl">
-            <div className="flex items-center justify-between mb-4 border-b border-[#E1E7E5] pb-3">
+          <div className="modal-content max-w-xl bg-[#fefeff] border border-[#e5e7eb]">
+            <div className="flex items-center justify-between mb-4 border-b border-[#e5e7eb] pb-3">
               <h2 className="text-base font-bold text-[#171C1B]">
                 {editingMealId ? 'Edit Saved Recipe' : 'Create New Saved Recipe'}
               </h2>
@@ -385,7 +385,7 @@ function SavedMealsPage() {
                   placeholder="e.g. High Protein Chicken Oats Bowl"
                   value={mealName}
                   onChange={(e) => setMealName(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] outline-none focus:border-[#0A7C6E] text-xs"
+                  className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] outline-none focus:border-[#0f8651] text-xs"
                 />
               </div>
 
@@ -398,13 +398,13 @@ function SavedMealsPage() {
                   placeholder="e.g. Post-workout meal cooked with 1 tsp ghee"
                   value={mealDescription}
                   onChange={(e) => setMealDescription(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] outline-none focus:border-[#0A7C6E] text-xs"
+                  className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] outline-none focus:border-[#0f8651] text-xs"
                 />
               </div>
 
               {/* Add Ingredient Section */}
-              <div className="p-3.5 rounded-xl bg-[#F7F9F8] border border-[#E1E7E5] space-y-3">
-                <div className="text-xs font-semibold text-[#0A7C6E] flex items-center gap-1.5">
+              <div className="p-3.5 rounded-xl bg-[#fcfdfe] border border-[#e5e7eb] space-y-3">
+                <div className="text-xs font-semibold text-[#0f8651] flex items-center gap-1.5">
                   <Plus className="w-4 h-4" />
                   <span>Add Ingredient to Recipe</span>
                 </div>
@@ -416,20 +416,20 @@ function SavedMealsPage() {
                     placeholder="Search food ingredient (e.g. Oats, Eggs, Chicken)..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-xs text-[#171C1B] outline-none focus:border-[#0A7C6E]"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-xs text-[#171C1B] outline-none focus:border-[#0f8651]"
                   />
                 </div>
 
                 {searchResults.length > 0 && (
-                  <div className="max-h-36 overflow-y-auto space-y-1 bg-white p-2 rounded-lg border border-[#E1E7E5]">
+                  <div className="max-h-36 overflow-y-auto space-y-1 bg-white p-2 rounded-lg border border-[#e5e7eb]">
                     {searchResults.map((food) => (
                       <div
                         key={food.id}
                         onClick={() => setSelectedFood(food)}
                         className={`p-2 rounded-lg text-xs cursor-pointer flex justify-between items-center transition-all ${
                           selectedFood?.id === food.id
-                            ? 'bg-[#E6F3F1] text-[#075E54] font-semibold border border-[#B8E2DC]'
-                            : 'hover:bg-[#F7F9F8] text-[#171C1B]'
+                            ? 'bg-[#e4f7ee] text-[#0d7649] font-semibold border border-[#e5e7eb]'
+                            : 'hover:bg-[#fcfdfe] text-[#171C1B]'
                         }`}
                       >
                         <div className="flex items-center gap-2">
@@ -441,7 +441,7 @@ function SavedMealsPage() {
                             </span>
                           </div>
                         </div>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#E6F3F1] text-[#075E54] border border-[#B8E2DC]">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#e4f7ee] text-[#0d7649] border border-[#e5e7eb]">
                           {food.category}
                         </span>
                       </div>
@@ -450,7 +450,7 @@ function SavedMealsPage() {
                 )}
 
                 {selectedFood && (
-                  <div className="flex items-center gap-3 pt-2 border-t border-[#E1E7E5]">
+                  <div className="flex items-center gap-3 pt-2 border-t border-[#e5e7eb]">
                     <div className="flex-1">
                       <label className="text-[11px] text-[#68716F]">Weight (grams)</label>
                       <input
@@ -458,13 +458,13 @@ function SavedMealsPage() {
                         min="1"
                         value={addWeightGrams}
                         onChange={(e) => setAddWeightGrams(Number(e.target.value))}
-                        className="w-full px-2.5 py-1.5 bg-white border border-[#E1E7E5] rounded-lg text-xs text-[#171C1B] font-mono font-bold"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#e5e7eb] rounded-lg text-xs text-[#171C1B] font-mono font-bold"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={handleAddIngredient}
-                      className="mt-4 px-3 py-1.5 rounded-lg bg-[#0A7C6E] text-white text-xs font-bold hover:bg-[#075E54]"
+                      className="mt-4 px-3 py-1.5 rounded-lg bg-[#0f8651] text-white text-xs font-bold hover:bg-[#0d7649]"
                     >
                       Add Item
                     </button>
@@ -481,7 +481,7 @@ function SavedMealsPage() {
                   {recipeItems.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-2 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] text-xs"
+                      className="flex items-center justify-between p-2 rounded-lg bg-[#fcfdfe] border border-[#e5e7eb] text-xs"
                     >
                       <div>
                         <span className="font-semibold text-[#171C1B]">{item.food.name}</span>
@@ -490,7 +490,7 @@ function SavedMealsPage() {
                       <button
                         type="button"
                         onClick={() => handleRemoveIngredient(idx)}
-                        className="text-red-600 hover:text-red-700 p-1"
+                        className="text-[#f15359] hover:text-red-700 p-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -500,37 +500,37 @@ function SavedMealsPage() {
               </div>
 
               {/* Live Totals Card */}
-              <div className="p-3 rounded-xl bg-[#F7F9F8] border border-[#E1E7E5] flex items-center justify-around text-center font-mono">
+              <div className="p-3 rounded-xl bg-[#fcfdfe] border border-[#e5e7eb] flex items-center justify-around text-center font-mono">
                 <div>
                   <div className="text-[10px] text-[#68716F] font-sans font-semibold uppercase">Calories</div>
                   <div className="text-sm font-bold text-[#171C1B]">{totals.calories} kcal</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[#68716F] font-sans font-semibold uppercase">Protein</div>
-                  <div className="text-sm font-bold text-[#075E54]">{totals.protein}g</div>
+                  <div className="text-[10px] text-[#2873e5] font-sans font-semibold uppercase">Protein</div>
+                  <div className="text-sm font-bold text-[#2873e5]">{totals.protein}g</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[#68716F] font-sans font-semibold uppercase">Carbs</div>
-                  <div className="text-sm font-bold text-[#171C1B]">{totals.carbs}g</div>
+                  <div className="text-[10px] text-[#f15359] font-sans font-semibold uppercase">Carbs</div>
+                  <div className="text-sm font-bold text-[#f15359]">{totals.carbs}g</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[#68716F] font-sans font-semibold uppercase">Fat</div>
-                  <div className="text-sm font-bold text-[#68716F]">{totals.fat}g</div>
+                  <div className="text-[10px] text-[#d99605] font-sans font-semibold uppercase">Fat</div>
+                  <div className="text-sm font-bold text-[#d99605]">{totals.fat}g</div>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-[#E1E7E5]">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[#e5e7eb]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-[#F7F9F8] text-[#68716F] border border-[#E1E7E5] text-xs font-semibold hover:bg-[#E6F3F1]"
+                  className="px-4 py-2 rounded-lg bg-[#fcfdfe] text-[#68716F] border border-[#e5e7eb] text-xs font-semibold hover:bg-[#e4f7ee]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={recipeItems.length === 0}
-                  className="px-5 py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] disabled:opacity-50 text-white text-xs font-bold shadow-sm"
+                  className="px-5 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] disabled:opacity-50 text-white text-xs font-bold shadow-sm"
                 >
                   Save Recipe
                 </button>
@@ -543,8 +543,8 @@ function SavedMealsPage() {
       {/* QUICK LOG MODAL */}
       {logMealTarget && (
         <div className="modal-overlay">
-          <div className="modal-content max-w-sm text-center space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-[#E6F3F1] border border-[#B8E2DC] text-[#075E54] flex items-center justify-center mx-auto">
+          <div className="modal-content max-w-sm text-center space-y-4 bg-[#fefeff] border border-[#e5e7eb]">
+            <div className="w-10 h-10 rounded-xl bg-[#e4f7ee] border border-[#e5e7eb] text-[#0d7649] flex items-center justify-center mx-auto">
               <Utensils className="w-5 h-5" />
             </div>
 
@@ -562,7 +562,7 @@ function SavedMealsPage() {
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs"
+                  className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] text-xs"
                 />
               </div>
 
@@ -571,7 +571,7 @@ function SavedMealsPage() {
                 <select
                   value={logMealType}
                   onChange={(e: any) => setLogMealType(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-[#171C1B] text-xs"
+                  className="w-full px-3 py-2 bg-white border border-[#e5e7eb] rounded-lg text-[#171C1B] text-xs"
                 >
                   <option value="BREAKFAST">Breakfast</option>
                   <option value="LUNCH">Lunch</option>
@@ -582,7 +582,7 @@ function SavedMealsPage() {
             </div>
 
             {loggingSuccess ? (
-              <div className="p-3 rounded-lg bg-[#E6F3F1] border border-[#B8E2DC] text-[#075E54] font-bold text-xs flex items-center justify-center gap-2">
+              <div className="p-3 rounded-lg bg-[#e4f7ee] border border-[#e5e7eb] text-[#0d7649] font-bold text-xs flex items-center justify-center gap-2">
                 <Check className="w-4 h-4" />
                 <span>Logged to Daily Tracker!</span>
               </div>
@@ -590,13 +590,13 @@ function SavedMealsPage() {
               <div className="flex items-center gap-2 pt-2">
                 <button
                   onClick={() => setLogMealTarget(null)}
-                  className="w-1/2 py-2 rounded-lg bg-[#F7F9F8] border border-[#E1E7E5] text-[#68716F] text-xs font-semibold hover:bg-[#E6F3F1]"
+                  className="w-1/2 py-2 rounded-lg bg-[#fcfdfe] border border-[#e5e7eb] text-[#68716F] text-xs font-semibold hover:bg-[#e4f7ee]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleLogToTracker}
-                  className="w-1/2 py-2 rounded-lg bg-[#0A7C6E] hover:bg-[#075E54] text-white text-xs font-bold shadow-sm"
+                  className="w-1/2 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white text-xs font-bold shadow-sm"
                 >
                   Confirm & Log
                 </button>

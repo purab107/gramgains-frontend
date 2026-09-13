@@ -43,15 +43,15 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
   const getLevelColor = (level: number) => {
     switch (level) {
       case 4:
-        return 'bg-[#075E54] border-[#05443D]';
+        return 'bg-[#0d7649] border-[#0d7649] text-white';
       case 3:
-        return 'bg-[#0A7C6E] border-[#075E54]';
+        return 'bg-[#0f8651] border-[#0f8651] text-white';
       case 2:
-        return 'bg-[#4DACA0] border-[#0A7C6E]';
+        return 'bg-[#4cd593] border-[#4cd593] text-[#171C1B]';
       case 1:
-        return 'bg-[#E6F3F1] border-[#B8E2DC]';
+        return 'bg-[#a8ecca] border-transparent text-[#171C1B]';
       default:
-        return 'bg-[#F7F9F8] border-[#E1E7E5]';
+        return 'bg-[#e4f7ee] border-[#e5e7eb] text-[#68716F]';
     }
   };
 
@@ -86,11 +86,11 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
   };
 
   return (
-    <div className="bg-[#FFFFFF] border border-[#E1E7E5] p-5 rounded-xl shadow-sm relative overflow-hidden text-[#171C1B]">
+    <div className="bg-[#fefeff] border border-[#e5e7eb] p-5 rounded-xl shadow-sm relative overflow-hidden text-[#171C1B]">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-[#E6F3F1] border border-[#B8E2DC] text-[#075E54]">
+          <div className="p-2 rounded-lg bg-[#e4f7ee] border border-[#e5e7eb] text-[#0d7649]">
             <Flame className="w-4 h-4" />
           </div>
           <div>
@@ -98,9 +98,9 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
               Meal Consistency Heatmap
             </h3>
             <p className="text-xs text-[#68716F] mt-1">
-              Logged meals on <span className="text-[#0A7C6E] font-semibold">{loggedDaysCount}</span> of {realDaysCount} active day{realDaysCount === 1 ? '' : 's'}
+              Logged meals on <span className="text-[#0f8651] font-semibold">{loggedDaysCount}</span> of {realDaysCount} active day{realDaysCount === 1 ? '' : 's'}
               {accountCreatedAt && (
-                <span className="text-[11px] text-[#8C9694] ml-1">(Account created: {accountCreatedAt})</span>
+                <span className="text-[11px] text-[#68716F] ml-1">(Account created: {accountCreatedAt})</span>
               )}
             </p>
           </div>
@@ -109,7 +109,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
         {/* Timeframe Toggles & Legend Container */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Timeframe Toggle Buttons */}
-          <div className="flex items-center p-1 bg-[#F4F7F6] border border-[#E1E7E5] rounded-lg">
+          <div className="flex items-center p-1 bg-[#fcfdfe] border border-[#e5e7eb] rounded-lg">
             {TIMEFRAME_OPTIONS.map((opt) => {
               const isActive = daysCount === opt.days;
               return (
@@ -118,8 +118,8 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
                   onClick={() => setDaysCount(opt.days)}
                   className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
                     isActive
-                      ? 'bg-[#075E54] text-white shadow-xs'
-                      : 'text-[#68716F] hover:text-[#171C1B] hover:bg-[#E6F3F1]/50'
+                      ? 'bg-[#0d7649] text-white shadow-xs'
+                      : 'text-[#68716F] hover:text-[#171C1B] hover:bg-[#e4f7ee]'
                   }`}
                 >
                   {opt.label}
@@ -131,11 +131,12 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
           {/* Legend */}
           <div className="hidden md:flex items-center gap-1 text-[11px] text-[#68716F]">
             <span>Less</span>
-            <div className="w-3 h-3 rounded-xs bg-[#F7F9F8] border border-[#E1E7E5]" />
-            <div className="w-3 h-3 rounded-xs bg-[#E6F3F1] border border-[#B8E2DC]" />
-            <div className="w-3 h-3 rounded-xs bg-[#4DACA0] border border-[#0A7C6E]" />
-            <div className="w-3 h-3 rounded-xs bg-[#0A7C6E] border border-[#075E54]" />
-            <div className="w-3 h-3 rounded-xs bg-[#075E54] border border-[#05443D]" />
+            <div className="w-3 h-3 rounded-xs bg-[#fcfdfe] border border-[#e5e7eb]" />
+            <div className="w-3 h-3 rounded-xs bg-[#e4f7ee] border border-[#e5e7eb]" />
+            <div className="w-3 h-3 rounded-xs bg-[#a8ecca] border border-transparent" />
+            <div className="w-3 h-3 rounded-xs bg-[#4cd593] border border-[#4cd593]" />
+            <div className="w-3 h-3 rounded-xs bg-[#0f8651] border border-[#0f8651]" />
+            <div className="w-3 h-3 rounded-xs bg-[#0d7649] border border-[#0d7649]" />
             <span>More</span>
           </div>
         </div>
@@ -188,18 +189,18 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
           )}
 
           {/* Hover Tooltip / Status Footer */}
-          <div className="mt-3 min-h-[24px] flex items-center justify-between text-xs text-[#68716F] pt-2 border-t border-[#E1E7E5]">
+          <div className="mt-3 min-h-[24px] flex items-center justify-between text-xs text-[#68716F] pt-2 border-t border-[#e5e7eb]">
             {hoveredItem ? (
               <div className="flex items-center gap-2 text-[#171C1B] font-medium">
-                <Calendar className="w-3.5 h-3.5 text-[#0A7C6E]" />
+                <Calendar className="w-3.5 h-3.5 text-[#0f8651]" />
                 <span>{getFormattedDate(hoveredItem.date)}</span>
-                <span className="text-[#E1E7E5]">•</span>
+                <span className="text-[#68716F]">•</span>
                 {hoveredItem.isFuture ? (
-                  <span className="text-[#8C9694] italic">Future / Unreached Day</span>
+                  <span className="text-[#68716F] italic">Future / Unreached Day</span>
                 ) : (
                   <>
-                    <span className="text-[#075E54] font-bold font-mono">{hoveredItem.totalCalories} kcal</span>
-                    <span className="text-[#E1E7E5]">•</span>
+                    <span className="text-[#0d7649] font-bold font-mono">{hoveredItem.totalCalories} kcal</span>
+                    <span className="text-[#68716F]">•</span>
                     <span>{hoveredItem.count} meal{hoveredItem.count === 1 ? '' : 's'} logged</span>
                   </>
                 )}
