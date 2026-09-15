@@ -206,7 +206,7 @@ body {
 
 .input-field:focus, .select-field:focus {
   border-color: #0f8651;
-  ring: 2px solid rgba(15, 134, 81, 0.15);
+  box-shadow: 0 0 0 2px rgba(15, 134, 81, 0.15);
 }
 
 .select-field option {

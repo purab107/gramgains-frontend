@@ -13,7 +13,7 @@ import {
   AuthGuard,
   SplashScreen,
   OnboardingWizard,
-  Heatmap,
+  WeeklyCaloriesBarChart,
   TodayOverviewCards,
   DailyTimeline,
   MealLoggerModal
@@ -113,11 +113,11 @@ function DashboardHomePage() {
           {/* New Modern 4-Card Overview (Calories circular gauge + Protein, Carbs, Fats) */}
           <TodayOverviewCards summary={summary} userProfile={userProfile} />
 
-          {/* 2-Column Grid Layout: Left = Heatmap (7/12 cols), Right = Today's Meal Timeline (5/12 cols) */}
+          {/* 2-Column Grid Layout: Left = 7-Day Bar Chart (7/12 cols), Right = Today's Meal Timeline (5/12 cols) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Column: Meal Consistency Heatmap */}
+            {/* Left Column: 7-Day Calorie Bar Chart */}
             <div className="lg:col-span-7">
-              <Heatmap />
+              <WeeklyCaloriesBarChart />
             </div>
 
             {/* Right Column: Today's Logged Meals Timeline */}

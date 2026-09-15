@@ -7,6 +7,7 @@ export * from './auth/UserNav';
 export * from './dashboard/TodayOverviewCards';
 export * from './dashboard/MacroCard';
 export * from './dashboard/Heatmap';
+export * from './dashboard/WeeklyCaloriesBarChart';
 
 // Layout components
 export * from './layout/Navbar';

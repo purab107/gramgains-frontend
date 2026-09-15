@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DashboardSummaryResponse, UserProfile } from '@/services/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -10,7 +10,148 @@ import {
   TooltipProvider, 
   TooltipTrigger 
 } from '@/components/ui/tooltip';
-import { Utensils, Zap, Droplet } from 'lucide-react';
+import { Utensils, Zap, Droplet, Flame, Salad, Target } from 'lucide-react';
+
+// ─── MacroCard Sub-component ────────────────────────────────────────────────
+
+interface MacroCardProps {
+  color: string;
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  target: string;
+  pct: number;
+}
+
+const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target, pct }) => {
+  const [hovered, setHovered] = useState(false);
+
+  // SVG circle gauge values
+  const r = 41;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (pct / 100) * circ;
+
+  return (
+    <Card
+      className="lg:col-span-1 border border-slate-200/80 shadow-sm rounded-2xl bg-card cursor-default"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <CardContent className="relative p-0 h-full min-h-[148px] overflow-hidden rounded-2xl">
+
+        {/* ── DEFAULT VIEW ── fades out on hover */}
+        <div
+          className="absolute inset-0 p-4 sm:p-4 flex flex-col justify-between transition-all duration-300 ease-in-out"
+          style={{
+            opacity: hovered ? 0 : 1,
+            transform: hovered ? 'scale(0.94)' : 'scale(1)',
+            pointerEvents: hovered ? 'none' : 'auto',
+          }}
+        >
+          <div>
+            <div
+              className="w-9 h-9 rounded-2xl flex items-center justify-center mb-2.5 border"
+              style={{
+                backgroundColor: `${color}1A`,
+                color,
+                borderColor: `${color}33`,
+              }}
+            >
+              {icon}
+            </div>
+
+            <h4 className="font-bold text-slate-700 dark:text-slate-200 text-sm mb-0.5">
+              {label}
+            </h4>
+
+            <div className="flex items-baseline gap-1 mb-2.5">
+              <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                {value}
+              </span>
+              <span className="text-xs text-slate-400 font-medium font-mono">
+                {target}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-1">
+            <Progress
+              value={pct}
+              className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 flex-1 [&>div]:rounded-full"
+              indicatorStyle={{ backgroundColor: color }}
+            />
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 font-mono">
+              {pct}%
+            </span>
+          </div>
+        </div>
+
+        {/* ── HOVER VIEW ── fades in on hover */}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-0 transition-all duration-300 ease-in-out"
+          style={{
+            opacity: hovered ? 1 : 0,
+            transform: hovered ? 'scale(1)' : 'scale(0.94)',
+            pointerEvents: hovered ? 'auto' : 'none',
+          }}
+        >
+          {/* Circle gauge */}
+          <div className="relative flex items-center justify-center w-28 h-28">
+            <svg
+              viewBox="0 0 100 100"
+              className="w-full h-full"
+              style={{ transform: 'rotate(-90deg)' }}
+            >
+              {/* Track */}
+              <circle
+                cx="50" cy="50" r={r}
+                fill="none"
+                className="stroke-slate-100 dark:stroke-slate-800"
+                strokeWidth="7.5"
+              />
+              {/* Progress arc */}
+              <circle
+                cx="50" cy="50" r={r}
+                fill="none"
+                stroke={color}
+                strokeWidth="7.5"
+                strokeLinecap="round"
+                strokeDasharray={circ}
+                strokeDashoffset={hovered ? offset : circ}
+                style={{
+                  transition: hovered
+                    ? 'stroke-dashoffset 0.65s cubic-bezier(0.4, 0, 0.2, 1)'
+                    : 'none',
+                }}
+              />
+            </svg>
+
+            {/* Percentage label centred inside the ring */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span
+                className="text-2xl font-bold leading-none tracking-tight"
+                style={{ color }}
+              >
+                {pct}%
+              </span>
+            </div>
+          </div>
+
+          {/* Label below the ring */}
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">
+            {label}
+          </span>
+          <span className="text-[11px] text-slate-400 font-mono mt-0.5">
+            {value} {target}
+          </span>
+        </div>
+
+      </CardContent>
+    </Card>
+  );
+};
+
+// ─── Main Component ──────────────────────────────────────────────────────────
 
 interface TodayOverviewCardsProps {
   summary: DashboardSummaryResponse | null;
@@ -44,186 +185,190 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
   const fatTarget = Math.round(summary?.macros.fat.target ?? userProfile?.targetFat ?? 70);
   const fatPct = fatTarget > 0 ? Math.min(100, Math.round((fatConsumed / fatTarget) * 100)) : 0;
 
-  // SVG Gauge calculations (Larger Circle: r=58, viewBox 140x140)
-  const radius = 58;
+  // SVG Gauge calculations (Circle: r=54, viewBox 140x140, strokeWidth 13)
+  const radius = 54;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (calPercent / 100) * circumference;
 
+  // Hover state for calorie gauge text cross-fade
+  const [gaugeHovered, setGaugeHovered] = useState(false);
+
   return (
     <TooltipProvider>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 w-full">
-        {/* Card 1: Today's Calories (Spans 2 columns on desktop) */}
-        <Card className="lg:col-span-2 border border-slate-200/80 shadow-sm rounded-2xl bg-card">
-          <CardContent className="p-3.5 sm:p-4 flex flex-col justify-between h-full">
-            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base mb-2">
-              Today's Calories
-            </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5 w-full">
 
-            <div className="flex flex-row items-center justify-between gap-4 sm:gap-6 my-auto">
-              {/* SVG Gauge with Tooltip */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="relative w-36 h-36 sm:w-38 sm:h-38 shrink-0 flex items-center justify-center cursor-pointer transition-transform hover:scale-[1.02]">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 140 140">
-                      {/* Background Ring */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r={radius}
-                        className="stroke-slate-100 dark:stroke-slate-800"
-                        strokeWidth="11"
-                        fill="transparent"
-                      />
-                      {/* Progress Ring */}
-                      <circle
-                        cx="70"
-                        cy="70"
-                        r={radius}
-                        className="stroke-[#0d7649] transition-all duration-500 ease-out"
-                        strokeWidth="11"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        strokeLinecap="round"
-                        fill="transparent"
-                      />
-                    </svg>
-                    {/* Gauge Content */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
-                      <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-                        {roundedConsumed.toLocaleString()}
+        {/* Card 1: Today's Calories (Spans 2 columns on desktop) */}
+        <Card className="lg:col-span-2 border border-slate-200/80 dark:border-slate-800 shadow-sm rounded-3xl bg-card">
+          <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full">
+            {/* Header */}
+            <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
+              <Flame className="w-6 h-6 text-[#169b55] stroke-[2.3]" />
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg tracking-tight">
+                Today's Calories
+              </h3>
+            </div>
+
+            <div className="flex flex-row items-center justify-between gap-3 sm:gap-6 my-auto">
+              {/* Gauge Left Column */}
+              <div className="flex flex-col items-center justify-center shrink-0">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="relative w-36 h-36 sm:w-40 sm:h-40 shrink-0 flex items-center justify-center cursor-pointer"
+                      onMouseEnter={() => setGaugeHovered(true)}
+                      onMouseLeave={() => setGaugeHovered(false)}
+                    >
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 140 140">
+                        {/* Background Ring */}
+                        <circle
+                          cx="70"
+                          cy="70"
+                          r={radius}
+                          className="stroke-[#e8edf5] dark:stroke-slate-800"
+                          strokeWidth="13"
+                          fill="transparent"
+                        />
+                        {/* Progress Ring */}
+                        <circle
+                          cx="70"
+                          cy="70"
+                          r={radius}
+                          className="stroke-[#169b55] transition-all duration-700 ease-out"
+                          strokeWidth="13"
+                          strokeDasharray={circumference}
+                          strokeDashoffset={strokeDashoffset}
+                          strokeLinecap="round"
+                          fill="transparent"
+                        />
+                      </svg>
+
+                      {/* ── DEFAULT TEXT ── fades out on hover */}
+                      <div
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out"
+                        style={{
+                          opacity: gaugeHovered ? 0 : 1,
+                          transform: gaugeHovered ? 'scale(0.88)' : 'scale(1)',
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        <span className="text-2xl sm:text-3xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-none">
+                          {roundedConsumed.toLocaleString()}
+                        </span>
+                        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+                          kcal
+                        </span>
+                        <span className="text-[11px] sm:text-xs font-normal text-slate-400 dark:text-slate-500">
+                          consumed
+                        </span>
+                      </div>
+
+                      {/* ── HOVER TEXT ── fades in on hover */}
+                      <div
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out"
+                        style={{
+                          opacity: gaugeHovered ? 1 : 0,
+                          transform: gaugeHovered ? 'scale(1)' : 'scale(0.88)',
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        <span className="text-3xl sm:text-4xl font-bold text-[#169b55] tracking-tight leading-none">
+                          {calPercent}%
+                        </span>
+                        <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-1.5">
+                          complete
+                        </span>
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="bg-slate-900 text-white font-medium text-xs px-3 py-1.5 rounded-lg">
+                    Consumed: {roundedConsumed.toLocaleString()} kcal ({calPercent}% of {roundedTarget.toLocaleString()} kcal goal)
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+
+              {/* Stats Right Column */}
+              <div className="flex-1 min-w-0 flex flex-col justify-center gap-5 sm:gap-6 pl-1 sm:pl-2">
+                {/* Row 1: Remaining */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#e8f8f0] dark:bg-emerald-950/50 flex items-center justify-center text-[#169b55] shrink-0">
+                    <Salad className="w-5 h-5 stroke-[2]" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
+                      Remaining
+                    </span>
+                    <div className="text-lg sm:text-xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-tight">
+                      {roundedRemaining.toLocaleString()}{' '}
+                      <span className="text-xs sm:text-sm font-normal text-slate-400 dark:text-slate-500 font-sans">
+                        kcal
                       </span>
-                      <span className="text-xs font-semibold text-slate-400 mt-0.5">kcal</span>
                     </div>
                   </div>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="bg-slate-900 text-white font-medium text-xs px-3 py-1.5 rounded-lg">
-                  Consumed: {roundedConsumed.toLocaleString()} kcal ({calPercent}% of {roundedTarget.toLocaleString()} kcal goal)
-                </TooltipContent>
-              </Tooltip>
-
-              {/* Calories Stats */}
-              <div className="flex-1 min-w-0">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-0.5">
-                  Remaining
-                </span>
-                <div className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">
-                  {roundedRemaining.toLocaleString()} kcal
                 </div>
-                <span className="text-xs text-slate-400 font-medium block mb-2">
-                  of {roundedTarget.toLocaleString()} kcal
-                </span>
 
-                {/* Progress bar */}
-                <Progress 
-                  value={calPercent} 
-                  className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 [&>div]:bg-[#0d7649] [&>div]:rounded-full" 
-                />
+                {/* Row 2: Daily goal */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#f1f4f9] dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
+                    <Target className="w-4.5 h-4.5 stroke-[2]" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
+                      Daily goal
+                    </span>
+                    <div className="text-lg sm:text-xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-tight">
+                      {roundedTarget.toLocaleString()}{' '}
+                      <span className="text-xs sm:text-sm font-normal text-slate-400 dark:text-slate-500 font-sans">
+                        kcal
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
           </CardContent>
         </Card>
 
-        {/* Card 2: Protein (Color: #2873e5) */}
-        <Card className="lg:col-span-1 border border-slate-200/80 shadow-sm rounded-2xl bg-card">
-          <CardContent className="p-4 sm:p-4.5 flex flex-col justify-between h-full">
-            <div>
-              <div className="w-9 h-9 rounded-2xl bg-[#2873e5]/10 text-[#2873e5] border border-[#2873e5]/20 flex items-center justify-center mb-2.5">
-                <Utensils className="w-4.5 h-4.5" />
-              </div>
+        {/* Card 2: Protein */}
+        <MacroCard
+          color="#8b5cf6"
+          icon={<Utensils className="w-4.5 h-4.5" />}
+          label="Protein"
+          value={`${proteinConsumed} g`}
+          target={`/ ${proteinTarget} g`}
+          pct={proteinPct}
+        />
 
-              <h4 className="font-bold text-slate-700 dark:text-slate-200 text-sm mb-0.5">
-                Protein
-              </h4>
+        {/* Card 3: Carbs */}
+        <MacroCard
+          color="#f15359"
+          icon={<Zap className="w-4.5 h-4.5 fill-[#f15359]" />}
+          label="Carbs"
+          value={`${carbsConsumed} g`}
+          target={`/ ${carbsTarget} g`}
+          pct={carbsPct}
+        />
 
-              <div className="flex items-baseline gap-1 mb-2.5">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  {proteinConsumed} g
-                </span>
-                <span className="text-xs text-slate-400 font-medium font-mono">
-                  / {proteinTarget} g
-                </span>
-              </div>
-            </div>
+        {/* Card 4: Fats */}
+        <MacroCard
+          color="#feb111"
+          icon={<Flame className="w-4.5 h-4.5 fill-[#feb111]" />}
+          label="Fats"
+          value={`${fatConsumed} g`}
+          target={`/ ${fatTarget} g`}
+          pct={fatPct}
+        />
 
-            <div className="flex items-center gap-2 pt-1">
-              <Progress 
-                value={proteinPct} 
-                className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 flex-1 [&>div]:bg-[#2873e5] [&>div]:rounded-full" 
-              />
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 font-mono">
-                {proteinPct}%
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Card 5: Water */}
+        <MacroCard
+          color="#2196f3"
+          icon={<Droplet className="w-4.5 h-4.5 fill-[#2196f3]" />}
+          label="Water"
+          value="0 ml"
+          target="/ 2000 ml"
+          pct={0}
+        />
 
-        {/* Card 3: Carbs (Color: #f15359) */}
-        <Card className="lg:col-span-1 border border-slate-200/80 shadow-sm rounded-2xl bg-card">
-          <CardContent className="p-4 sm:p-4.5 flex flex-col justify-between h-full">
-            <div>
-              <div className="w-9 h-9 rounded-2xl bg-[#f15359]/10 text-[#f15359] border border-[#f15359]/20 flex items-center justify-center mb-2.5">
-                <Zap className="w-4.5 h-4.5 fill-[#f15359]" />
-              </div>
-
-              <h4 className="font-bold text-slate-700 dark:text-slate-200 text-sm mb-0.5">
-                Carbs
-              </h4>
-
-              <div className="flex items-baseline gap-1 mb-2.5">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  {carbsConsumed} g
-                </span>
-                <span className="text-xs text-slate-400 font-medium font-mono">
-                  / {carbsTarget} g
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 pt-1">
-              <Progress 
-                value={carbsPct} 
-                className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 flex-1 [&>div]:bg-[#f15359] [&>div]:rounded-full" 
-              />
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 font-mono">
-                {carbsPct}%
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Card 4: Fats (Color: #feb111) */}
-        <Card className="lg:col-span-1 border border-slate-200/80 shadow-sm rounded-2xl bg-card">
-          <CardContent className="p-4 sm:p-4.5 flex flex-col justify-between h-full">
-            <div>
-              <div className="w-9 h-9 rounded-2xl bg-[#feb111]/10 text-[#feb111] border border-[#feb111]/20 flex items-center justify-center mb-2.5">
-                <Droplet className="w-4.5 h-4.5 fill-[#feb111]" />
-              </div>
-
-              <h4 className="font-bold text-slate-700 dark:text-slate-200 text-sm mb-0.5">
-                Fats
-              </h4>
-
-              <div className="flex items-baseline gap-1 mb-2.5">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  {fatConsumed} g
-                </span>
-                <span className="text-xs text-slate-400 font-medium font-mono">
-                  / {fatTarget} g
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 pt-1">
-              <Progress 
-                value={fatPct} 
-                className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 flex-1 [&>div]:bg-[#feb111] [&>div]:rounded-full" 
-              />
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 font-mono">
-                {fatPct}%
-              </span>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </TooltipProvider>
   );
