@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ApiService, HeatmapItem } from '../services/api';
+import { ApiService, HeatmapItem } from '@/services/api';
 import { Flame, Calendar, Info } from 'lucide-react';
 
 interface HeatmapProps {
@@ -88,7 +88,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
   return (
     <div className="bg-[#fefeff] border border-[#e5e7eb] p-5 rounded-xl shadow-sm relative overflow-hidden text-[#171C1B]">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-lg bg-[#e4f7ee] border border-[#e5e7eb] text-[#0d7649]">
             <Flame className="w-4 h-4" />

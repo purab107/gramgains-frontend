@@ -8,9 +8,11 @@ import {
   UserProfile 
 } from '../../services/api';
 import { getFoodEmoji } from '../../lib/food-utils';
-import { Sidebar } from '../../components/Sidebar';
-import { Navbar } from '../../components/Navbar';
-import { AuthGuard } from '../../components/AuthGuard';
+import { 
+  Sidebar,
+  Navbar,
+  AuthGuard
+} from '@/components';
 import { 
   Bookmark, 
   Plus, 

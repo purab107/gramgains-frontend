@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent } from './ui/card';
-import { Badge } from './ui/badge';
-import { Progress } from './ui/progress';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 
 interface MacroCardProps {
   label: string;

@@ -7,12 +7,14 @@ import {
   DailyTrackerResponse, 
   UserProfile 
 } from '../../services/api';
-import { Sidebar } from '../../components/Sidebar';
-import { Navbar } from '../../components/Navbar';
-import { AuthGuard } from '../../components/AuthGuard';
-import { MealLoggerModal } from '../../components/MealLoggerModal';
-import { DailyTimeline } from '../../components/DailyTimeline';
-import { MacroCard } from '../../components/MacroCard';
+import { 
+  Sidebar,
+  Navbar,
+  AuthGuard,
+  MealLoggerModal,
+  DailyTimeline,
+  MacroCard
+} from '@/components';
 import { 
   UtensilsCrossed, 
   Calendar, 

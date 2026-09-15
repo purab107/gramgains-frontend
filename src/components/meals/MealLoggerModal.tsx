@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ApiService, FoodItem } from '../services/api';
-import { getFoodEmoji, getCleanCategoryLabel, calculatePer100g } from '../lib/food-utils';
+import { ApiService, FoodItem } from '@/services/api';
+import { getFoodEmoji, getCleanCategoryLabel, calculatePer100g } from '@/lib/food-utils';
 import { 
   Search, 
   X, 
@@ -58,7 +58,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
     if (isOpen) {
       const timer = setTimeout(() => {
         fetchFoods();
-      }, 200);
+      }, 250);
       return () => clearTimeout(timer);
     }
   }, [searchQuery, selectedCategory]);
@@ -66,25 +66,10 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
   const fetchFoods = async () => {
     try {
       setSearching(true);
-      const data = await ApiService.searchFoods(searchQuery);
-      
-      let filtered = data;
-      if (selectedCategory !== 'ALL') {
-        filtered = data.filter((item) => {
-          const cat = (item.category || '').toLowerCase();
-          const name = item.name.toLowerCase();
-          if (selectedCategory === 'DISHES') return item.layer === 2 || cat.includes('dish') || cat.includes('curry') || cat.includes('rice');
-          if (selectedCategory === 'BREADS') return cat.includes('bread') || name.includes('roti') || name.includes('naan') || name.includes('paratha');
-          if (selectedCategory === 'CURRIES') return cat.includes('curry') || cat.includes('dal') || name.includes('curry') || name.includes('dal') || name.includes('sambar');
-          if (selectedCategory === 'SNACKS') return cat.includes('snack') || cat.includes('dessert') || cat.includes('sweet');
-          if (selectedCategory === 'DRINKS') return cat.includes('beverage') || name.includes('tea') || name.includes('coffee') || name.includes('shake') || name.includes('juice');
-          return true;
-        });
-      }
-
-      setFoods(filtered);
+      const res = await ApiService.searchFoods(searchQuery);
+      setFoods(res);
     } catch (err) {
-      console.error('Failed to search foods:', err);
+      console.error('Failed searching foods:', err);
     } finally {
       setSearching(false);
     }
@@ -100,13 +85,11 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
   const handleBackToSearch = () => {
     setView('search');
+    setSelectedFood(null);
   };
 
   const handleAdjustServings = (delta: number) => {
-    setServings((prev) => {
-      const next = Math.round((prev + delta) * 10) / 10;
-      return next > 0.1 ? next : 0.1;
-    });
+    setServings((prev) => Math.max(0.5, Math.round((prev + delta) * 2) / 2));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

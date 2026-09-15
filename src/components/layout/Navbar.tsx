@@ -12,12 +12,13 @@ import {
   Home,
   SquarePen,
   Bookmark,
-  Calculator
+  Calculator,
+  Bell,
+  Moon
 } from 'lucide-react';
-import { Button } from './ui/button';
-import { Avatar, AvatarFallback } from './ui/avatar';
-import { Separator } from './ui/separator';
-import { UserNav } from './auth/UserNav';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { UserNav } from '@/components/auth/UserNav';
 
 interface NavbarProps {
   selectedDate: string;
@@ -45,13 +46,25 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Calculator', href: '/calculator', icon: Calculator },
   ];
 
-  const initials = userProfile?.name
-    ? userProfile.name.charAt(0).toUpperCase()
-    : '?';
+  const fullName = userProfile?.name || 'Alex Carter';
+  const firstName = fullName.split(' ')[0] || 'Alex';
+
+  const formatHeaderDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-').map(Number);
+    if (!year || !month || !day) return dateStr;
+    const d = new Date(year, month - 1, day);
+    return d.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
 
   return (
-    <header className="sticky top-0 z-20 w-full bg-card border-b border-border px-4 lg:px-8 py-3 flex items-center justify-between">
-      {/* Mobile Brand / Toggle */}
+    <header className="sticky top-0 z-20 w-full bg-card border-b border-border px-4 lg:px-8 py-4 flex items-center justify-between">
+      {/* Mobile Brand / Toggle & Desktop Main Header Title */}
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
@@ -71,33 +84,49 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="font-bold text-base text-foreground">GramGains</span>
         </div>
 
-        {/* Date Selector for desktop */}
-        <div className="hidden md:flex items-center gap-2 bg-background border border-border px-3 py-1.5 rounded-lg">
-          <Calendar className="w-4 h-4 text-primary" />
-          <span className="text-xs text-muted-foreground font-medium">Date:</span>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => onDateChange(e.target.value)}
-            className="bg-transparent text-xs font-semibold text-foreground outline-none cursor-pointer"
-          />
+        {/* Main Header Title & Subtitle for Desktop */}
+        <div className="hidden md:block">
+          <h1 className="text-2xl font-bold tracking-tight text-[#173b28] dark:text-emerald-400">
+            Welcome back, {firstName}!
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Fuel your goals, one meal at a time.
+          </p>
         </div>
       </div>
 
-      {/* Action CTA & Profile info */}
-      <div className="flex items-center gap-3">
-        {onOpenLogModal && (
-          <Button
-            size="sm"
-            onClick={onOpenLogModal}
-            className="gap-1.5 shadow-sm"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Log Meal</span>
-          </Button>
-        )}
+      {/* Header Right Actions: Date | Divider | Profile Nav | Bell | Dark Mode Toggle */}
+      <div className="flex items-center gap-3 sm:gap-4">
+        {/* Static Date Display */}
+        <div className="flex items-center gap-2.5 text-[#5e716d]">
+          <Calendar className="w-5 h-5 text-[#5e716d] shrink-0" />
+          <span className="text-sm font-normal text-[#5e716d]">
+            {formatHeaderDate(selectedDate)}
+          </span>
+        </div>
 
-        <UserNav />
+        {/* Vertical Divider */}
+        <div className="h-7 w-[1px] bg-border mx-0.5 hidden sm:block" />
+
+        {/* User Profile Dropdown */}
+        <UserNav userProfileName={userProfile?.name} />
+
+        {/* Notification Bell with Green Indicator Badge */}
+        <div className="relative p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-full hover:bg-muted/50">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#4cd593] rounded-full ring-2 ring-card" />
+        </div>
+
+        {/* Dark Theme Button (Placeholder) */}
+        <button
+          type="button"
+          onClick={() => {}}
+          className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-muted/50 focus:outline-none"
+          title="Toggle Dark Theme (Coming Soon)"
+          aria-label="Toggle Dark Theme"
+        >
+          <Moon className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Mobile Slide-down Navigation */}

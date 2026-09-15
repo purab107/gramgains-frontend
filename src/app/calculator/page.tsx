@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { ApiService, UserProfile } from '../../services/api';
-import { Sidebar } from '../../components/Sidebar';
-import { Navbar } from '../../components/Navbar';
-import { AuthGuard } from '../../components/AuthGuard';
+import { 
+  Sidebar,
+  Navbar,
+  AuthGuard
+} from '@/components';
 import { 
   Calculator, 
   CheckCircle2, 

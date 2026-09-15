@@ -10,7 +10,7 @@ import {
   CheckCircle2,
   Flame
 } from 'lucide-react';
-import { ApiService, UserProfile } from '../services/api';
+import { ApiService, UserProfile } from '@/services/api';
 
 interface OnboardingWizardProps {
   onComplete: (profile: UserProfile) => void;
@@ -58,7 +58,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     const targetProtein = Math.round(weightKg * 2.0);
     const fatCalories = targetCalories * 0.25;
     const targetFat = Math.round(fatCalories / 9);
-    const carbCalories = targetCalories - (targetProtein * 4 + fatCalories);
+    const carbCalories = targetCalories - (targetProtein * 4 + targetFat * 9);
     const targetCarbs = Math.max(50, Math.round(carbCalories / 4));
     const targetFiber = 30;
 
@@ -78,52 +78,32 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const handleFinish = async () => {
     try {
       setLoading(true);
-      const payload: Partial<UserProfile> = {
-        name: name.trim() || 'Athlete',
+      const updated = await ApiService.updateProfile({
+        name: name || 'Athlete',
         gender,
-        age: Number(age),
-        heightCm: Number(heightCm),
-        weightKg: Number(weightKg),
+        age,
+        heightCm,
+        weightKg,
         activityLevel,
         goal,
-        bmr: metabolics.bmr,
-        tdee: metabolics.tdee,
-        targetCalories: metabolics.targetCalories,
-        targetProtein: metabolics.targetProtein,
-        targetCarbs: metabolics.targetCarbs,
-        targetFat: metabolics.targetFat,
-        targetFiber: metabolics.targetFiber,
-      };
-
-      const updated = await ApiService.updateProfile(payload);
-      onComplete(updated);
-    } catch (err) {
-      console.error('Failed to save profile during onboarding:', err);
-      onComplete({
-        id: 'default-user',
-        name: name.trim() || 'Athlete',
-        gender,
-        age: Number(age),
-        heightCm: Number(heightCm),
-        weightKg: Number(weightKg),
-        activityLevel,
-        goal,
-        bmr: metabolics.bmr,
-        tdee: metabolics.tdee,
         targetCalories: metabolics.targetCalories,
         targetProtein: metabolics.targetProtein,
         targetCarbs: metabolics.targetCarbs,
         targetFat: metabolics.targetFat,
         targetFiber: metabolics.targetFiber,
       });
+
+      onComplete(updated);
+    } catch (err) {
+      console.error('Failed to update profile:', err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9F8] flex items-center justify-center p-4">
-      <div className="w-full max-w-xl bg-white border border-[#E1E7E5] rounded-2xl p-6 sm:p-10 shadow-xl relative overflow-hidden text-[#171C1B]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#F7F9F8]/90 backdrop-blur-sm p-4 overflow-y-auto">
+      <div className="w-full max-w-xl bg-white border border-[#E1E7E5] rounded-2xl p-6 sm:p-8 shadow-xl text-[#171C1B]">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#E1E7E5]">
           <div className="flex items-center gap-3">
