@@ -17,6 +17,7 @@ export * from './layout/SplashScreen';
 // Meals & Tracking components
 export * from './meals/DailyTimeline';
 export * from './meals/MealLoggerModal';
+export * from './tracker';
 
 // Onboarding components
 export * from './onboarding/OnboardingWizard';

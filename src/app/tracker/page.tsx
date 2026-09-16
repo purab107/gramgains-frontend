@@ -1,29 +1,53 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ApiService, 
-  MealLogItem, 
   DailyTrackerResponse, 
   UserProfile 
-} from '../../services/api';
+} from '@/services/api';
 import { 
   Sidebar,
-  Navbar,
   AuthGuard,
-  MealLoggerModal,
-  DailyTimeline,
-  MacroCard
+  TrackerOverviewCard,
+  FoodSearchBlock,
+  MealSectionCard,
+  MealTypeKey,
+  WaterTrackerSection
 } from '@/components';
 import { 
   UtensilsCrossed, 
   Calendar, 
   ChevronLeft, 
   ChevronRight, 
-  Plus, 
-  Search,
-  Flame
+  RotateCcw,
+  Sparkles,
+  Flame,
+  Loader2
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+function formatDisplayDate(dateStr: string) {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+    if (dateStr === today) return 'Today';
+    if (dateStr === yesterday) return 'Yesterday';
+    if (dateStr === tomorrow) return 'Tomorrow';
+
+    const [y, m, d] = dateStr.split('-');
+    const dateObj = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+    return dateObj.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 function TrackerPage() {
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -31,12 +55,21 @@ function TrackerPage() {
   );
   const [trackerData, setTrackerData] = useState<DailyTrackerResponse | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [activeMealFilter, setActiveMealFilter] = useState<MealTypeKey>('BREAKFAST');
 
   useEffect(() => {
-    loadData();
-  }, [selectedDate]);
+    // Dynamically set meal filter based on user's current time of day
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
+    const time = hour + minute / 60;
+    if (time >= 5 && time < 11.5) setActiveMealFilter('BREAKFAST');
+    else if (time >= 11.5 && time < 16) setActiveMealFilter('LUNCH');
+    else if (time >= 16 && time < 19.5) setActiveMealFilter('SNACK');
+    else setActiveMealFilter('DINNER');
+  }, []);
+
+  const searchBlockRef = useRef<HTMLDivElement | null>(null);
 
   const loadData = async () => {
     try {
@@ -54,10 +87,29 @@ function TrackerPage() {
     }
   };
 
+  useEffect(() => {
+    loadData();
+  }, [selectedDate]);
+
   const changeDateBy = (days: number) => {
     const current = new Date(selectedDate);
     current.setDate(current.getDate() + days);
     setSelectedDate(current.toISOString().split('T')[0]);
+  };
+
+  const handleJumpToday = () => {
+    setSelectedDate(new Date().toISOString().split('T')[0]);
+  };
+
+  const handleAddMealForType = (mealType: MealTypeKey) => {
+    setActiveMealFilter(mealType);
+    if (searchBlockRef.current) {
+      searchBlockRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const searchInput = searchBlockRef.current.querySelector('input');
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }
   };
 
   const summary = trackerData?.summary || {
@@ -68,134 +120,181 @@ function TrackerPage() {
     fiber: 0,
   };
 
-  const targetCals = userProfile?.targetCalories ?? 2200;
-  const targetProtein = userProfile?.targetProtein ?? 140;
-  const targetCarbs = userProfile?.targetCarbs ?? 250;
-  const targetFat = userProfile?.targetFat ?? 65;
+  const targets = {
+    calories: userProfile?.targetCalories ?? 2200,
+    protein: userProfile?.targetProtein ?? 140,
+    carbs: userProfile?.targetCarbs ?? 250,
+    fat: userProfile?.targetFat ?? 65,
+    fiber: userProfile?.targetFiber ?? 30,
+    water: 3000,
+  };
+
+  const logs = trackerData?.logs || [];
+  const morningLogs = logs.filter((l) => l.mealType === 'BREAKFAST');
+  const afternoonLogs = logs.filter((l) => l.mealType === 'LUNCH');
+  const eveningLogs = logs.filter((l) => l.mealType === 'SNACK');
+  const dinnerLogs = logs.filter((l) => l.mealType === 'DINNER');
+
+  const waterTotalMl = trackerData?.water?.totalMl || 0;
+  const waterLogs = trackerData?.water?.logs || [];
+
+  const isToday = selectedDate === new Date().toISOString().split('T')[0];
 
   return (
-    <div className="flex min-h-screen bg-[#fcfdfe] text-[#171C1B]">
+    <div className="flex min-h-screen bg-[#f8fafc] text-slate-900 font-sans">
       <Sidebar userProfile={userProfile} />
 
-      <div className="flex-1 flex flex-col min-w-0 bg-[#fcfdfe]">
-        <Navbar
-          selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
-          userProfile={userProfile}
-          onOpenLogModal={() => setIsLogModalOpen(true)}
-        />
+      <div className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] mx-auto w-full space-y-6">
+          
+          {/* Main 2-Column Responsive Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* ========================================================= */}
+            {/* LEFT COLUMN: Overview Card + Food Search Block */}
+            {/* ========================================================= */}
+            <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-6">
+              
+              {/* 1. Total Overview Card (Circular Calories + Linear Macros & Water) */}
+              <TrackerOverviewCard
+                summary={summary}
+                targets={targets}
+                waterTotalMl={waterTotalMl}
+              />
 
-        <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
-          {/* Header Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#0f8651] uppercase tracking-wider mb-1">
-                <UtensilsCrossed className="w-4 h-4 text-[#0f8651]" />
-                <span>Daily Meal Logger</span>
-              </div>
-              <h1 className="text-2xl font-bold text-[#171C1B] tracking-tight">
-                Log Your Meals & Track Macros
-              </h1>
-              <p className="text-xs text-[#68716F] mt-1">
-                Search Indian food database (IFCT 2017 & INDB recipes) and log custom portions.
-              </p>
-            </div>
-
-            {/* Date Navigator Bar */}
-            <div className="flex items-center gap-2 bg-[#fcfdfe] border border-[#e5e7eb] p-1.5 rounded-lg">
-              <button
-                onClick={() => changeDateBy(-1)}
-                className="p-1.5 rounded bg-white hover:bg-[#e4f7ee] border border-[#e5e7eb] text-[#171C1B] transition-colors"
-                title="Previous Day"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-
-              <div className="flex items-center gap-2 px-2 text-xs font-mono font-semibold text-[#171C1B]">
-                <Calendar className="w-4 h-4 text-[#0f8651]" />
-                <span>{selectedDate}</span>
-              </div>
-
-              <button
-                onClick={() => changeDateBy(1)}
-                className="p-1.5 rounded bg-white hover:bg-[#e4f7ee] border border-[#e5e7eb] text-[#171C1B] transition-colors"
-                title="Next Day"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Target Macro Bars */}
-          <div className="grid-macros">
-            <MacroCard
-              label="TOTAL CALORIES"
-              value={Math.round(summary.calories)}
-              unit="kcal"
-              target={targetCals}
-              color="#0f8651"
-            />
-            <MacroCard
-              label="PROTEIN"
-              value={Math.round(summary.protein)}
-              unit="g"
-              target={targetProtein}
-              color="#2873e5"
-            />
-            <MacroCard
-              label="CARBS"
-              value={Math.round(summary.carbohydrates)}
-              unit="g"
-              target={targetCarbs}
-              color="#f15359"
-            />
-            <MacroCard
-              label="FAT"
-              value={Math.round(summary.fat)}
-              unit="g"
-              target={targetFat}
-              color="#feb111"
-            />
-          </div>
-
-          {/* Quick Search CTA & Timeline */}
-          <div className="bg-[#fefeff] p-5 rounded-xl border border-[#e5e7eb] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg bg-[#e4f7ee] text-[#0d7649] border border-[#e5e7eb]">
-                <Search className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="font-bold text-[#171C1B] text-sm">Quick Search Food Database</h3>
-                <p className="text-xs text-[#68716F]">Search raw ingredients, prepared Indian dishes, or custom items.</p>
+              {/* 2. Food Database Search Block */}
+              <div ref={searchBlockRef}>
+                <FoodSearchBlock
+                  selectedDate={selectedDate}
+                  defaultMealType={activeMealFilter}
+                  onFoodLogged={loadData}
+                />
               </div>
             </div>
 
-            <button
-              onClick={() => setIsLogModalOpen(true)}
-              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0f8651]"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Search & Add Food</span>
-            </button>
-          </div>
+            {/* ========================================================= */}
+            {/* RIGHT COLUMN: Date Toggle + Stacked Meals + Water Tracker */}
+            {/* ========================================================= */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* Header & Date Toggle Navigator */}
+              <div className="bg-white border border-slate-200/90 p-4 sm:p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 uppercase tracking-wider mb-0.5">
+                    <UtensilsCrossed className="w-4 h-4 text-emerald-600" />
+                    <span>Daily Meal Logs</span>
+                  </div>
+                  <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                    {formatDisplayDate(selectedDate)}
+                    <span className="text-xs sm:text-sm font-normal text-slate-500 ml-2 font-mono">
+                      ({selectedDate})
+                    </span>
+                  </h1>
+                </div>
 
-          {/* Meals Timeline */}
-          <div className="space-y-3">
-            <h2 className="text-base font-bold text-[#171C1B] flex items-center gap-2">
-              <Flame className="w-4 h-4 text-[#0f8651]" />
-              <span>Meals Logged for {selectedDate}</span>
-            </h2>
-            <DailyTimeline logs={trackerData?.logs || []} onLogDeleted={loadData} />
+                {/* Date Navigation Bar */}
+                <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 p-1 rounded-xl self-start sm:self-auto">
+                  <Button
+                    onClick={() => changeDateBy(-1)}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
+                    title="Previous Day"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+
+                  <div className="relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-bold text-slate-800 bg-white rounded-lg border border-slate-200 shadow-2xs">
+                    <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>{selectedDate}</span>
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
+                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                    />
+                  </div>
+
+                  <Button
+                    onClick={() => changeDateBy(1)}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
+                    title="Next Day"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+
+                  {!isToday && (
+                    <Button
+                      onClick={handleJumpToday}
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-2.5 text-xs font-bold rounded-lg border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 ml-1"
+                    >
+                      <RotateCcw className="w-3 h-3 mr-1" />
+                      Today
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Loading Indicator */}
+              {loading && (
+                <div className="flex items-center justify-center gap-2 py-2 text-xs font-medium text-emerald-700 bg-emerald-50/50 rounded-xl border border-emerald-100">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Updating tracker entries...</span>
+                </div>
+              )}
+
+              {/* Stacked Meal Sections */}
+              <div className="space-y-4">
+                {/* 1. Morning (Breakfast) */}
+                <MealSectionCard
+                  mealType="BREAKFAST"
+                  logs={morningLogs}
+                  onAddMealClick={handleAddMealForType}
+                  onLogDeleted={loadData}
+                />
+
+                {/* 2. Afternoon (Lunch) */}
+                <MealSectionCard
+                  mealType="LUNCH"
+                  logs={afternoonLogs}
+                  onAddMealClick={handleAddMealForType}
+                  onLogDeleted={loadData}
+                />
+
+                {/* 3. Evening (Snack) */}
+                <MealSectionCard
+                  mealType="SNACK"
+                  logs={eveningLogs}
+                  onAddMealClick={handleAddMealForType}
+                  onLogDeleted={loadData}
+                />
+
+                {/* 4. Dinner */}
+                <MealSectionCard
+                  mealType="DINNER"
+                  logs={dinnerLogs}
+                  onAddMealClick={handleAddMealForType}
+                  onLogDeleted={loadData}
+                />
+              </div>
+
+              {/* Water Adding & Tracking Section Beneath Meal Logs */}
+              <WaterTrackerSection
+                selectedDate={selectedDate}
+                waterLogs={waterLogs}
+                waterTotalMl={waterTotalMl}
+                targetMl={targets.water}
+                onWaterUpdated={loadData}
+              />
+            </div>
+
           </div>
         </main>
       </div>
-
-      <MealLoggerModal
-        date={selectedDate}
-        isOpen={isLogModalOpen}
-        onClose={() => setIsLogModalOpen(false)}
-        onLogged={loadData}
-      />
     </div>
   );
 }

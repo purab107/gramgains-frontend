@@ -33,56 +33,56 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
 
   return (
     <Card
-      className="lg:col-span-1 border border-slate-200/80 shadow-sm rounded-2xl bg-card cursor-default"
+      className="lg:col-span-1 border border-slate-200/80 dark:border-slate-800 shadow-sm rounded-2xl bg-card cursor-default"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <CardContent className="relative p-0 h-full min-h-[148px] overflow-hidden rounded-2xl">
+      <CardContent className="relative p-0 h-full min-h-[160px] overflow-hidden rounded-2xl">
 
         {/* ── DEFAULT VIEW ── fades out on hover */}
         <div
-          className="absolute inset-0 p-4 sm:p-4 flex flex-col justify-between transition-all duration-300 ease-in-out"
+          className="absolute inset-0 p-4.5 sm:p-5 flex flex-col justify-between transition-all duration-300 ease-in-out"
           style={{
             opacity: hovered ? 0 : 1,
-            transform: hovered ? 'scale(0.94)' : 'scale(1)',
+            transform: hovered ? 'scale(0.95)' : 'scale(1)',
             pointerEvents: hovered ? 'none' : 'auto',
           }}
         >
           <div>
+            {/* Icon Container */}
             <div
-              className="w-9 h-9 rounded-2xl flex items-center justify-center mb-2.5 border"
+              className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3.5 border border-transparent shadow-xs"
               style={{
-                backgroundColor: `${color}1A`,
+                backgroundColor: `${color}18`,
                 color,
-                borderColor: `${color}33`,
               }}
             >
               {icon}
             </div>
 
-            <h4 className="font-bold text-slate-700 dark:text-slate-200 text-sm mb-0.5">
+            {/* Label */}
+            <h4 className="font-semibold text-slate-600 dark:text-slate-300 text-sm sm:text-base mb-1">
               {label}
             </h4>
 
-            <div className="flex items-baseline gap-1 mb-2.5">
-              <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            {/* Value & Target Stacked */}
+            <div className="flex flex-col">
+              <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
                 {value}
               </span>
-              <span className="text-xs text-slate-400 font-medium font-mono">
+              <span className="text-sm sm:text-[15px] text-slate-400 dark:text-slate-500 font-medium mt-1">
                 {target}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 pt-1">
+          {/* Progress Bar (Percentage visible on hover) */}
+          <div className="pt-2">
             <Progress
               value={pct}
-              className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 flex-1 [&>div]:rounded-full"
+              className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 w-full [&>div]:rounded-full"
               indicatorStyle={{ backgroundColor: color }}
             />
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 font-mono">
-              {pct}%
-            </span>
           </div>
         </div>
 
@@ -332,7 +332,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
         {/* Card 2: Protein */}
         <MacroCard
           color="#8b5cf6"
-          icon={<Utensils className="w-4.5 h-4.5" />}
+          icon={<Utensils className="w-5 h-5" />}
           label="Protein"
           value={`${proteinConsumed} g`}
           target={`/ ${proteinTarget} g`}
@@ -342,7 +342,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
         {/* Card 3: Carbs */}
         <MacroCard
           color="#f15359"
-          icon={<Zap className="w-4.5 h-4.5 fill-[#f15359]" />}
+          icon={<Zap className="w-5 h-5 fill-[#f15359]" />}
           label="Carbs"
           value={`${carbsConsumed} g`}
           target={`/ ${carbsTarget} g`}
@@ -352,7 +352,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
         {/* Card 4: Fats */}
         <MacroCard
           color="#feb111"
-          icon={<Flame className="w-4.5 h-4.5 fill-[#feb111]" />}
+          icon={<Flame className="w-5 h-5 fill-[#feb111]" />}
           label="Fats"
           value={`${fatConsumed} g`}
           target={`/ ${fatTarget} g`}
@@ -362,7 +362,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
         {/* Card 5: Water */}
         <MacroCard
           color="#2196f3"
-          icon={<Droplet className="w-4.5 h-4.5 fill-[#2196f3]" />}
+          icon={<Droplet className="w-5 h-5 fill-[#2196f3]" />}
           label="Water"
           value="0 ml"
           target="/ 2000 ml"

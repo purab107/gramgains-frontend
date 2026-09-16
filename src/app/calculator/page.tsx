@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { ApiService, UserProfile } from '../../services/api';
 import { 
   Sidebar,
-  Navbar,
   AuthGuard
 } from '@/components';
 import { 
@@ -17,9 +16,6 @@ import {
 
 function CalculatorPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -135,12 +131,6 @@ function CalculatorPage() {
       <Sidebar userProfile={userProfile} />
 
       <div className="flex-1 flex flex-col min-w-0 bg-[#fcfdfe]">
-        <Navbar
-          selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
-          userProfile={userProfile}
-        />
-
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Header Banner */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm">

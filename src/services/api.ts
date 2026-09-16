@@ -58,6 +58,20 @@ export interface MealLogItem {
   createdAt: string;
 }
 
+export interface WaterLogItem {
+  id: string;
+  userId: string;
+  amountMl: number;
+  date: string;
+  createdAt: string;
+}
+
+export interface WaterSummary {
+  date: string;
+  totalMl: number;
+  logs: WaterLogItem[];
+}
+
 export interface DailySummary {
   calories: number;
   protein: number;
@@ -70,6 +84,7 @@ export interface DailyTrackerResponse {
   date: string;
   summary: DailySummary;
   logs: MealLogItem[];
+  water?: WaterSummary;
 }
 
 export interface DashboardSummaryResponse {
@@ -221,6 +236,32 @@ export class ApiService {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to delete log');
+  }
+
+  // --- WATER TRACKING ---
+  static async getDailyWater(date: string): Promise<WaterSummary> {
+    const res = await apiFetch(`${API_BASE_URL}/tracker/water?date=${date}`);
+    if (!res.ok) throw new Error('Failed to fetch water logs');
+    const json = await res.json();
+    return json.data;
+  }
+
+  static async logWater(payload: { date: string; amountMl: number }): Promise<WaterLogItem> {
+    const res = await apiFetch(`${API_BASE_URL}/tracker/water`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Failed to log water');
+    const json = await res.json();
+    return json.data;
+  }
+
+  static async deleteWater(id: string): Promise<void> {
+    const res = await apiFetch(`${API_BASE_URL}/tracker/water/${id}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete water log');
   }
 
   // --- SAVED MEALS ---

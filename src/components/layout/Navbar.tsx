@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-20 w-full bg-card border-b border-border px-4 lg:px-8 py-4 flex items-center justify-between">
+    <header className="w-full bg-transparent px-4 lg:px-8 py-4 flex items-center justify-between">
       {/* Mobile Brand / Toggle & Desktop Main Header Title */}
       <div className="flex items-center gap-3">
         <Button
@@ -95,8 +95,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Header Right Actions: Date | Divider | Profile Nav | Bell | Dark Mode Toggle */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      {/* Header Right Actions: Date | Divider | Bell | Dark Mode Toggle | Profile PFP */}
+      <div className="flex items-center gap-2.5 sm:gap-3.5">
         {/* Static Date Display */}
         <div className="flex items-center gap-2.5 text-[#5e716d]">
           <Calendar className="w-5 h-5 text-[#5e716d] shrink-0" />
@@ -107,9 +107,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Vertical Divider */}
         <div className="h-7 w-[1px] bg-border mx-0.5 hidden sm:block" />
-
-        {/* User Profile Dropdown */}
-        <UserNav userProfileName={userProfile?.name} />
 
         {/* Notification Bell with Green Indicator Badge */}
         <div className="relative p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-full hover:bg-muted/50">
@@ -127,6 +124,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <Moon className="w-5 h-5" />
         </button>
+
+        {/* User Profile Dropdown (Circle PFP at last) */}
+        <UserNav userProfileName={userProfile?.name} />
       </div>
 
       {/* Mobile Slide-down Navigation */}

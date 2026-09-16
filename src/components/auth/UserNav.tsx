@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { AuthModal } from './AuthModal';
-import { User as UserIcon, LogOut, LogIn, ChevronDown } from 'lucide-react';
+import { LogOut, LogIn } from 'lucide-react';
 
 interface UserNavProps {
   userProfileName?: string;
@@ -33,10 +33,7 @@ export function UserNav({ userProfileName }: UserNavProps) {
 
   if (isPending) {
     return (
-      <div className="flex items-center gap-2 px-2 py-1.5 animate-pulse">
-        <div className="h-8 w-8 rounded-full bg-slate-200" />
-        <div className="h-4 w-20 rounded bg-slate-200 hidden sm:block" />
-      </div>
+      <div className="h-8 w-8 rounded-full bg-slate-200 animate-pulse shrink-0" />
     );
   }
 
@@ -49,7 +46,8 @@ export function UserNav({ userProfileName }: UserNavProps) {
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2.5 rounded-full py-1 px-1 text-sm text-[#171C1B] hover:bg-[#f3f4f6] transition-all"
+              className="flex items-center justify-center rounded-full p-0.5 hover:ring-2 hover:ring-[#0f8651]/30 transition-all focus:outline-none"
+              aria-label="User Profile Menu"
             >
               <div className="relative w-8 h-8 rounded-full overflow-hidden bg-[#e4f7ee] border border-[#d2f3e3] flex items-center justify-center shrink-0">
                 {user?.image ? (
@@ -64,10 +62,6 @@ export function UserNav({ userProfileName }: UserNavProps) {
                   </span>
                 )}
               </div>
-              <span className="font-medium text-sm text-[#171C1B] max-w-[140px] truncate hidden sm:inline">
-                {displayName}
-              </span>
-              <ChevronDown className="h-4 w-4 text-[#68716F] shrink-0" />
             </button>
 
             {isDropdownOpen && (
