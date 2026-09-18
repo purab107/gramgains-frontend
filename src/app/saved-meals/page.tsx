@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { 
   ApiService, 
   SavedMeal, 
@@ -32,6 +33,7 @@ function SavedMealsPage() {
     new Date().toISOString().split('T')[0]
   );
   const [loading, setLoading] = useState(true);
+  const [filterQuery, setFilterQuery] = useState('');
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -203,6 +205,15 @@ function SavedMealsPage() {
 
   const totals = calcRecipeTotals();
 
+  const filteredSavedMeals = savedMeals.filter((meal) => {
+    if (!filterQuery.trim()) return true;
+    const q = filterQuery.toLowerCase();
+    return (
+      meal.name.toLowerCase().includes(q) ||
+      (meal.description && meal.description.toLowerCase().includes(q))
+    );
+  });
+
   return (
     <div className="flex min-h-screen bg-[#fcfdfe] text-[#171C1B]">
       <Sidebar userProfile={userProfile} />
@@ -211,54 +222,66 @@ function SavedMealsPage() {
         <Navbar userProfile={userProfile} />
 
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
-          {/* Header Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#0f8651] uppercase tracking-wider mb-1">
-                <Bookmark className="w-4 h-4 text-[#0f8651]" />
-                <span>Custom Saved Recipes</span>
-              </div>
-              <h1 className="text-2xl font-bold text-[#171C1B] tracking-tight">
-                Saved Meals & Meal Prep Recipes
-              </h1>
-              <p className="text-xs text-[#68716F] mt-1">
-                Create reusable meal templates and log them to your daily tracker with one click.
-              </p>
+          {/* Top Search Bar & Create Action Row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="relative flex-1 w-full">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search saved meals..."
+                value={filterQuery}
+                onChange={(e) => setFilterQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200/90 rounded-xl text-sm outline-none focus:border-[#0f8651] focus:ring-1 focus:ring-[#0f8651] text-slate-900 placeholder:text-slate-400 shadow-2xs transition-all"
+              />
             </div>
 
             <button
               onClick={handleOpenCreateModal}
-              className="px-4 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0f8651]"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-[#0f8651] shrink-0"
             >
               <Plus className="w-4 h-4" />
-              <span>Create New Saved Meal</span>
+              <span>Create Meal</span>
             </button>
           </div>
 
-          {/* Saved Meals Grid */}
+          {/* Saved Meals Grid or Centered Hero Empty State */}
           {loading ? (
-            <div className="text-center py-12 text-[#68716F] text-xs animate-pulse">
+            <div className="text-center py-20 text-[#68716F] text-xs animate-pulse">
               Loading your saved recipes...
             </div>
           ) : savedMeals.length === 0 ? (
-            <div className="bg-[#fefeff] p-12 text-center rounded-xl border border-[#e5e7eb] shadow-sm space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#e4f7ee] flex items-center justify-center mx-auto text-[#0d7649] border border-[#e5e7eb]">
-                <Bookmark className="w-6 h-6" />
+            <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4 text-center">
+              <div className="w-32 h-32 relative mb-6 flex items-center justify-center">
+                <Image
+                  src="/images/saved-meal-empty.png"
+                  alt="No saved meals"
+                  width={140}
+                  height={140}
+                  className="object-contain"
+                  priority
+                />
               </div>
-              <h3 className="text-base font-bold text-[#171C1B]">No Saved Meals Yet</h3>
-              <p className="text-xs text-[#68716F] max-w-sm mx-auto">
-                Create custom meal templates like "High Protein Oats Bowl" or "Post-Workout Smoothie" for instant logging.
+              <h2 className="text-2xl font-extrabold text-[#0f172a] tracking-tight mb-2">
+                No saved meals yet
+              </h2>
+              <p className="text-sm text-slate-500 max-w-md mx-auto mb-6 leading-relaxed font-normal">
+                Create custom recipes by combining ingredients and save them for quick logging.
               </p>
               <button
                 onClick={handleOpenCreateModal}
-                className="mt-2 px-4 py-2 rounded-lg bg-[#0f8651] hover:bg-[#0d7649] text-white text-xs font-semibold shadow-sm"
+                className="px-6 py-3 rounded-xl bg-[#0f8651] hover:bg-[#0d7649] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 border border-[#0f8651]"
               >
-                Build First Meal Template
+                <Plus className="w-4 h-4" />
+                <span>Create Your First Meal</span>
               </button>
+            </div>
+          ) : filteredSavedMeals.length === 0 ? (
+            <div className="text-center py-16 text-slate-500 text-sm">
+              No saved meals found matching "<span className="font-semibold text-slate-700">{filterQuery}</span>".
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {savedMeals.map((meal) => (
+              {filteredSavedMeals.map((meal) => (
                 <div
                   key={meal.id}
                   className="bg-[#fefeff] p-5 rounded-xl border border-[#e5e7eb] shadow-sm flex flex-col justify-between hover:border-[#0f8651]/40 transition-all group"
