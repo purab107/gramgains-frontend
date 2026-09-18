@@ -10,18 +10,21 @@ import {
   Sidebar,
   Navbar,
   AuthGuard,
-  TrackerOverviewCard,
+  TotalCaloriesCard,
+  BreakfastCard,
+  LunchCard,
+  SnacksCard,
+  DinnerCard,
   MealSectionCard,
-  MealTypeKey,
   WaterTrackerSection
 } from '@/components';
 import { 
-  UtensilsCrossed, 
   Calendar, 
   ChevronLeft, 
   ChevronRight, 
   RotateCcw,
   Loader2,
+  Flame,
   Sun,
   SunMedium,
   Cookie,
@@ -135,204 +138,121 @@ function TrackerPage() {
 
         <main className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           
-          {/* Main 2-Column Responsive Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
-            {/* ========================================================= */}
-            {/* LEFT COLUMN: Total Overview Card */}
-            {/* ========================================================= */}
-            <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-6">
-              <TrackerOverviewCard
-                summary={summary}
-                targets={targets}
-                waterTotalMl={waterTotalMl}
-              />
+          {/* Top Control Bar: Date Navigation & Actions */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                {formatDisplayDate(selectedDate)}
+              </h2>
+              <span className="text-xs font-normal text-slate-500 font-mono">
+                ({selectedDate})
+              </span>
             </div>
 
-            {/* ========================================================= */}
-            {/* RIGHT COLUMN: Date Toggle + 4 Meal Summary Cards + Detail Logs */}
-            {/* ========================================================= */}
-            <div className="lg:col-span-7 space-y-6">
-              
-              {/* Header & Date Toggle Navigator */}
-              <div className="bg-white border border-slate-200/90 p-4 sm:p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 uppercase tracking-wider mb-0.5">
-                    <UtensilsCrossed className="w-4 h-4 text-emerald-600" />
-                    <span>Daily Meal Logs</span>
-                  </div>
-                  <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                    {formatDisplayDate(selectedDate)}
-                    <span className="text-xs sm:text-sm font-normal text-slate-500 ml-2 font-mono">
-                      ({selectedDate})
-                    </span>
-                  </h1>
-                </div>
+            {/* Date Navigation Bar */}
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 p-1 rounded-xl">
+              <Button
+                onClick={() => changeDateBy(-1)}
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
+                title="Previous Day"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
 
-                {/* Date Navigation Bar */}
-                <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 p-1 rounded-xl self-start sm:self-auto">
-                  <Button
-                    onClick={() => changeDateBy(-1)}
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
-                    title="Previous Day"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
-
-                  <div className="relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-bold text-slate-800 bg-white rounded-lg border border-slate-200 shadow-2xs">
-                    <Calendar className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{selectedDate}</span>
-                    <input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
-                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                    />
-                  </div>
-
-                  <Button
-                    onClick={() => changeDateBy(1)}
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
-                    title="Next Day"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-
-                  {!isToday && (
-                    <Button
-                      onClick={handleJumpToday}
-                      variant="outline"
-                      size="sm"
-                      className="h-8 px-2.5 text-xs font-bold rounded-lg border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 ml-1"
-                    >
-                      <RotateCcw className="w-3 h-3 mr-1" />
-                      Today
-                    </Button>
-                  )}
-                </div>
+              <div className="relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-bold text-slate-800 bg-white rounded-lg border border-slate-200 shadow-2xs">
+                <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                <span>{selectedDate}</span>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                />
               </div>
 
-              {/* Loading Indicator */}
-              {loading && (
-                <div className="flex items-center justify-center gap-2 py-2 text-xs font-medium text-emerald-700 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Updating tracker entries...</span>
-                </div>
+              <Button
+                onClick={() => changeDateBy(1)}
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
+                title="Next Day"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+
+              {!isToday && (
+                <Button
+                  onClick={handleJumpToday}
+                  variant="outline"
+                  size="sm"
+                  className="h-8 px-2.5 text-xs font-bold rounded-lg border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 ml-1"
+                >
+                  <RotateCcw className="w-3 h-3 mr-1" />
+                  Today
+                </Button>
               )}
-
-              {/* 4 Meal Summary Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* 1. Breakfast Card */}
-                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
-                    <Sun className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Morning</span>
-                    <h3 className="text-base font-bold text-slate-900">Breakfast</h3>
-                    <p className="text-lg font-extrabold text-amber-700 mt-0.5">
-                      {Math.round(breakfastCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
-                    </p>
-                    <p className="text-[11px] text-slate-400">{morningLogs.length} {morningLogs.length === 1 ? 'item' : 'items'} logged</p>
-                  </div>
-                </div>
-
-                {/* 2. Lunch Card */}
-                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
-                    <SunMedium className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Afternoon</span>
-                    <h3 className="text-base font-bold text-slate-900">Lunch</h3>
-                    <p className="text-lg font-extrabold text-emerald-700 mt-0.5">
-                      {Math.round(lunchCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
-                    </p>
-                    <p className="text-[11px] text-slate-400">{afternoonLogs.length} {afternoonLogs.length === 1 ? 'item' : 'items'} logged</p>
-                  </div>
-                </div>
-
-                {/* 3. Snacks Card */}
-                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 border border-orange-100">
-                    <Cookie className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Evening</span>
-                    <h3 className="text-base font-bold text-slate-900">Snacks</h3>
-                    <p className="text-lg font-extrabold text-orange-700 mt-0.5">
-                      {Math.round(snackCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
-                    </p>
-                    <p className="text-[11px] text-slate-400">{eveningLogs.length} {eveningLogs.length === 1 ? 'item' : 'items'} logged</p>
-                  </div>
-                </div>
-
-                {/* 4. Dinner Card */}
-                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100">
-                    <Moon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Night</span>
-                    <h3 className="text-base font-bold text-slate-900">Dinner</h3>
-                    <p className="text-lg font-extrabold text-indigo-700 mt-0.5">
-                      {Math.round(dinnerCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
-                    </p>
-                    <p className="text-[11px] text-slate-400">{dinnerLogs.length} {dinnerLogs.length === 1 ? 'item' : 'items'} logged</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stacked Meal Sections */}
-              <div className="space-y-4">
-                {/* 1. Morning (Breakfast) */}
-                <MealSectionCard
-                  mealType="BREAKFAST"
-                  logs={morningLogs}
-                  onAddMealClick={() => {}}
-                  onLogDeleted={loadData}
-                />
-
-                {/* 2. Afternoon (Lunch) */}
-                <MealSectionCard
-                  mealType="LUNCH"
-                  logs={afternoonLogs}
-                  onAddMealClick={() => {}}
-                  onLogDeleted={loadData}
-                />
-
-                {/* 3. Evening (Snack) */}
-                <MealSectionCard
-                  mealType="SNACK"
-                  logs={eveningLogs}
-                  onAddMealClick={() => {}}
-                  onLogDeleted={loadData}
-                />
-
-                {/* 4. Dinner */}
-                <MealSectionCard
-                  mealType="DINNER"
-                  logs={dinnerLogs}
-                  onAddMealClick={() => {}}
-                  onLogDeleted={loadData}
-                />
-              </div>
-
-              {/* Water Adding & Tracking Section Beneath Meal Logs */}
-              <WaterTrackerSection
-                selectedDate={selectedDate}
-                waterLogs={waterLogs}
-                waterTotalMl={waterTotalMl}
-                targetMl={targets.water}
-                onWaterUpdated={loadData}
-              />
             </div>
-
           </div>
+
+          {/* Loading Indicator */}
+          {loading && (
+            <div className="flex items-center justify-center gap-2 py-2 text-xs font-medium text-emerald-700 bg-emerald-50/50 rounded-xl border border-emerald-100">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <span>Updating tracker entries...</span>
+            </div>
+          )}
+
+          {/* Single Row: Total Calories + 4 Meal Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+            <TotalCaloriesCard consumed={summary.calories} target={targets.calories} />
+            <BreakfastCard calories={breakfastCalories} itemCount={morningLogs.length} />
+            <LunchCard calories={lunchCalories} itemCount={afternoonLogs.length} />
+            <SnacksCard calories={snackCalories} itemCount={eveningLogs.length} />
+            <DinnerCard calories={dinnerCalories} itemCount={dinnerLogs.length} />
+          </div>
+
+          {/* Full-Width Stacked Meal Section Cards */}
+          <div className="space-y-4">
+            <MealSectionCard
+              mealType="BREAKFAST"
+              logs={morningLogs}
+              onAddMealClick={() => {}}
+              onLogDeleted={loadData}
+            />
+
+            <MealSectionCard
+              mealType="LUNCH"
+              logs={afternoonLogs}
+              onAddMealClick={() => {}}
+              onLogDeleted={loadData}
+            />
+
+            <MealSectionCard
+              mealType="SNACK"
+              logs={eveningLogs}
+              onAddMealClick={() => {}}
+              onLogDeleted={loadData}
+            />
+
+            <MealSectionCard
+              mealType="DINNER"
+              logs={dinnerLogs}
+              onAddMealClick={() => {}}
+              onLogDeleted={loadData}
+            />
+          </div>
+
+          {/* Water Tracking Section */}
+          <WaterTrackerSection
+            selectedDate={selectedDate}
+            waterLogs={waterLogs}
+            waterTotalMl={waterTotalMl}
+            targetMl={targets.water}
+            onWaterUpdated={loadData}
+          />
+
         </main>
       </div>
     </div>
