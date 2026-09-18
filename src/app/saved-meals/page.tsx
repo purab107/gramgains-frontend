@@ -10,6 +10,7 @@ import {
 import { getFoodEmoji } from '../../lib/food-utils';
 import { 
   Sidebar,
+  Navbar,
   AuthGuard
 } from '@/components';
 import { 
@@ -207,6 +208,8 @@ function SavedMealsPage() {
       <Sidebar userProfile={userProfile} />
 
       <div className="flex-1 flex flex-col min-w-0 bg-[#fcfdfe]">
+        <Navbar userProfile={userProfile} />
+
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Header Banner */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#fefeff] border border-[#e5e7eb] p-6 rounded-xl shadow-sm">

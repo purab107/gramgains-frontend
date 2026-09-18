@@ -8,6 +8,7 @@ import {
 } from '@/services/api';
 import { 
   Sidebar,
+  Navbar,
   AuthGuard,
   TrackerOverviewCard,
   FoodSearchBlock,
@@ -145,6 +146,12 @@ function TrackerPage() {
       <Sidebar userProfile={userProfile} />
 
       <div className="flex-1 flex flex-col min-w-0 bg-background">
+        <Navbar
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+          userProfile={userProfile}
+        />
+
         <main className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           
           {/* Main 2-Column Responsive Layout */}

@@ -21,20 +21,24 @@ import { Separator } from '@/components/ui/separator';
 import { UserNav } from '@/components/auth/UserNav';
 
 interface NavbarProps {
-  selectedDate: string;
-  onDateChange: (date: string) => void;
+  selectedDate?: string;
+  onDateChange?: (date: string) => void;
   userProfile?: {
     name: string;
-    targetCalories: number;
+    targetCalories?: number;
   } | null;
   onOpenLogModal?: () => void;
+  title?: string;
+  subtitle?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  selectedDate,
+  selectedDate = new Date().toISOString().split('T')[0],
   onDateChange,
   userProfile,
   onOpenLogModal,
+  title,
+  subtitle,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -46,8 +50,29 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Calculator', href: '/calculator', icon: Calculator },
   ];
 
-  const fullName = userProfile?.name || 'Alex Carter';
-  const firstName = fullName.split(' ')[0] || 'Alex';
+  const fullName = userProfile?.name || 'Purab';
+  const firstName = fullName.split(' ')[0] || 'Purab';
+
+  // Determine title & subtitle dynamically if not explicitly provided
+  let headerTitle = title;
+  let headerSubtitle = subtitle;
+
+  if (!headerTitle || !headerSubtitle) {
+    if (pathname === '/tracker') {
+      headerTitle = headerTitle || 'Daily Tracker';
+      headerSubtitle = headerSubtitle || 'Log your meals, track macros, and monitor water intake.';
+    } else if (pathname === '/saved-meals') {
+      headerTitle = headerTitle || 'Saved Meals';
+      headerSubtitle = headerSubtitle || 'Manage your custom recipes and saved meal preps.';
+    } else if (pathname === '/calculator') {
+      headerTitle = headerTitle || 'Metabolic Calculator';
+      headerSubtitle = headerSubtitle || 'Calculate your TDEE, BMR, and target macronutrient goals.';
+    } else {
+      // Default to Home tab header format
+      headerTitle = headerTitle || `Welcome back, ${firstName}!`;
+      headerSubtitle = headerSubtitle || 'Fuel your goals, one meal at a time.';
+    }
+  }
 
   const formatHeaderDate = (dateStr: string) => {
     if (!dateStr) return '';
@@ -87,10 +112,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Main Header Title & Subtitle for Desktop */}
         <div className="hidden md:block">
           <h1 className="text-2xl font-bold tracking-tight text-[#173b28] dark:text-emerald-400">
-            Welcome back, {firstName}!
+            {headerTitle}
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Fuel your goals, one meal at a time.
+            {headerSubtitle}
           </p>
         </div>
       </div>
@@ -139,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="date"
               value={selectedDate}
               onChange={(e) => {
-                onDateChange(e.target.value);
+                onDateChange?.(e.target.value);
                 setMobileMenuOpen(false);
               }}
               className="bg-transparent text-xs font-semibold text-foreground outline-none"
