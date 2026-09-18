@@ -204,9 +204,15 @@ function TrackerPage() {
             </div>
           )}
 
-          {/* Single Row: Total Calories + 4 Meal Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
-            <TotalCaloriesCard consumed={summary.calories} target={targets.calories} />
+          {/* Section 1: Total Calories Card matching Reference UI */}
+          <TotalCaloriesCard
+            summary={summary}
+            targets={targets}
+            waterTotalMl={waterTotalMl}
+          />
+
+          {/* Section 2: 4 Meal Summary Cards Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <BreakfastCard calories={breakfastCalories} itemCount={morningLogs.length} />
             <LunchCard calories={lunchCalories} itemCount={afternoonLogs.length} />
             <SnacksCard calories={snackCalories} itemCount={eveningLogs.length} />
