@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 
 function DashboardHomePage() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
@@ -36,6 +36,19 @@ function DashboardHomePage() {
   const [logs, setLogs] = useState<MealLogItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Only show splash screen once per browser session
+    const hasSeenSplash = sessionStorage.getItem('gramgains_splash_seen');
+    if (!hasSeenSplash) {
+      setShowSplash(true);
+    }
+  }, []);
+
+  const handleSplashFinish = () => {
+    sessionStorage.setItem('gramgains_splash_seen', 'true');
+    setShowSplash(false);
+  };
 
   useEffect(() => {
     loadProfileAndData();
@@ -83,7 +96,7 @@ function DashboardHomePage() {
   };
 
   if (showSplash) {
-    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+    return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
   if (showOnboarding) {

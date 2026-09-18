@@ -141,11 +141,11 @@ function TrackerPage() {
   const isToday = selectedDate === new Date().toISOString().split('T')[0];
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc] text-slate-900 font-sans">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar userProfile={userProfile} />
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] mx-auto w-full space-y-6">
+      <div className="flex-1 flex flex-col min-w-0 bg-background">
+        <main className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           
           {/* Main 2-Column Responsive Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
