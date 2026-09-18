@@ -11,6 +11,7 @@ import {
   TooltipTrigger 
 } from '@/components/ui/tooltip';
 import { Utensils, Zap, Droplet, Flame, Salad, Target } from 'lucide-react';
+import { MACRO_COLORS } from '@/lib/constants';
 
 // ─── MacroCard Sub-component ────────────────────────────────────────────────
 
@@ -331,7 +332,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
         {/* Card 2: Protein */}
         <MacroCard
-          color="#8b5cf6"
+          color={MACRO_COLORS.protein}
           icon={<Utensils className="w-5 h-5" />}
           label="Protein"
           value={`${proteinConsumed} g`}
@@ -341,8 +342,8 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
         {/* Card 3: Carbs */}
         <MacroCard
-          color="#f15359"
-          icon={<Zap className="w-5 h-5 fill-[#f15359]" />}
+          color={MACRO_COLORS.carbs}
+          icon={<Zap className="w-5 h-5" style={{ fill: MACRO_COLORS.carbs }} />}
           label="Carbs"
           value={`${carbsConsumed} g`}
           target={`/ ${carbsTarget} g`}
@@ -351,8 +352,8 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
         {/* Card 4: Fats */}
         <MacroCard
-          color="#feb111"
-          icon={<Flame className="w-5 h-5 fill-[#feb111]" />}
+          color={MACRO_COLORS.fat}
+          icon={<Flame className="w-5 h-5" style={{ fill: MACRO_COLORS.fat }} />}
           label="Fats"
           value={`${fatConsumed} g`}
           target={`/ ${fatTarget} g`}
@@ -361,8 +362,8 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
         {/* Card 5: Water */}
         <MacroCard
-          color="#2196f3"
-          icon={<Droplet className="w-5 h-5 fill-[#2196f3]" />}
+          color={MACRO_COLORS.water}
+          icon={<Droplet className="w-5 h-5" style={{ fill: MACRO_COLORS.water }} />}
           label="Water"
           value="0 ml"
           target="/ 2000 ml"

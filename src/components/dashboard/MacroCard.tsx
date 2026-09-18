@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Utensils, Zap, Flame, Salad, Droplet } from 'lucide-react';
+import { MACRO_COLORS } from '@/lib/constants';
 
 interface MacroCardProps {
   label: string;
@@ -18,10 +19,10 @@ export const MacroCard: React.FC<MacroCardProps> = ({ label, value, unit, target
 
   const getMacroDetails = () => {
     const l = label.toUpperCase();
-    if (l.includes('PROTEIN')) return { color: color || '#8b5cf6', defaultIcon: <Utensils className="w-5 h-5" /> };
-    if (l.includes('CARB')) return { color: color || '#f15359', defaultIcon: <Zap className="w-5 h-5 fill-[#f15359]" /> };
-    if (l.includes('FAT')) return { color: color || '#feb111', defaultIcon: <Flame className="w-5 h-5 fill-[#feb111]" /> };
-    if (l.includes('WATER')) return { color: color || '#2196f3', defaultIcon: <Droplet className="w-5 h-5 fill-[#2196f3]" /> };
+    if (l.includes('PROTEIN')) return { color: color || MACRO_COLORS.protein, defaultIcon: <Utensils className="w-5 h-5" /> };
+    if (l.includes('CARB')) return { color: color || MACRO_COLORS.carbs, defaultIcon: <Zap className="w-5 h-5" style={{ fill: MACRO_COLORS.carbs }} /> };
+    if (l.includes('FAT')) return { color: color || MACRO_COLORS.fat, defaultIcon: <Flame className="w-5 h-5" style={{ fill: MACRO_COLORS.fat }} /> };
+    if (l.includes('WATER')) return { color: color || MACRO_COLORS.water, defaultIcon: <Droplet className="w-5 h-5" style={{ fill: MACRO_COLORS.water }} /> };
     return { color: color || '#169b55', defaultIcon: <Salad className="w-5 h-5" /> };
   };
 

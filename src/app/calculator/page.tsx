@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ApiService, UserProfile } from '../../services/api';
+import { MACRO_COLORS } from '@/lib/constants';
 import { 
   Sidebar,
   Navbar,
@@ -363,33 +364,33 @@ function CalculatorPage() {
                     Daily Macro Distribution
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="p-2.5 rounded-lg bg-[#2873e5]/10 border border-[#2873e5]/30 flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg border flex justify-between items-center" style={{ backgroundColor: `${MACRO_COLORS.protein}15`, borderColor: `${MACRO_COLORS.protein}35` }}>
                       <div>
-                        <div className="text-[10px] text-[#2873e5] font-sans font-bold">PROTEIN</div>
+                        <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.protein }}>PROTEIN</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetProtein}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">2.0g/kg</span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#f15359]/10 border border-[#f15359]/30 flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg border flex justify-between items-center" style={{ backgroundColor: `${MACRO_COLORS.carbs}15`, borderColor: `${MACRO_COLORS.carbs}35` }}>
                       <div>
-                        <div className="text-[10px] text-[#f15359] font-sans font-bold">CARBS</div>
+                        <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.carbs }}>CARBS</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetCarbs}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">Balance</span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#feb111]/10 border border-[#feb111]/30 flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg border flex justify-between items-center" style={{ backgroundColor: `${MACRO_COLORS.fat}15`, borderColor: `${MACRO_COLORS.fat}35` }}>
                       <div>
-                        <div className="text-[10px] text-[#d99605] font-sans font-bold">FAT</div>
+                        <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.fat }}>FAT</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetFat}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">25% Cal</span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#4cd593]/15 border border-[#4cd593]/40 flex justify-between items-center">
+                    <div className="p-2.5 rounded-lg border flex justify-between items-center" style={{ backgroundColor: `${MACRO_COLORS.fiber}15`, borderColor: `${MACRO_COLORS.fiber}35` }}>
                       <div>
-                        <div className="text-[10px] text-[#0d7649] font-sans font-bold">FIBER</div>
+                        <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.fiber }}>FIBER</div>
                         <div className="text-sm font-bold text-[#171C1B]">{metabolics.targetFiber}g</div>
                       </div>
                       <span className="text-[11px] text-[#68716F] font-mono">Daily</span>

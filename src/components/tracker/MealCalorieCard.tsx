@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Sun, SunMedium, Cookie, Moon } from 'lucide-react';
 import { ChartContainer, ChartConfig } from '@/components/ui/chart';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { MACRO_COLORS } from '@/lib/constants';
 
 export type MealType = 'BREAKFAST' | 'LUNCH' | 'SNACK' | 'DINNER';
 
@@ -53,12 +54,6 @@ const MEAL_CONFIG: Record<
     color: '#6366f1',
     icon: <Moon className="w-5 h-5" />,
   },
-};
-
-const MACRO_COLORS = {
-  protein: '#8b5cf6', // Purple
-  carbs: '#f15359',   // Red
-  fat: '#feb111',     // Yellow
 };
 
 const chartConfig = {
@@ -187,7 +182,7 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
           {/* Center: Pie Chart */}
           <div className="w-full flex-1 flex items-center justify-center relative min-h-[90px]">
             {hasMacros ? (
-              <ChartContainer config={chartConfig} className="w-full h-full max-h-[105px]">
+              <ChartContainer config={chartConfig} className="w-full h-full max-h-[120px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Tooltip
@@ -210,8 +205,8 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                       data={pieData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={25}
-                      outerRadius={40}
+                      innerRadius={30}
+                      outerRadius={48}
                       paddingAngle={3}
                       dataKey="value"
                       stroke="none"
@@ -243,22 +238,6 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                 </span>
               </div>
             )}
-          </div>
-
-          {/* Bottom: Macro Pills */}
-          <div className="w-full grid grid-cols-3 gap-1 pt-1 border-t border-slate-100 text-center">
-            <div className="flex flex-col items-center p-1 rounded-lg bg-slate-50">
-              <span className="text-[9px] font-bold text-[#8b5cf6] uppercase">Protein</span>
-              <span className="text-xs font-extrabold text-slate-800">{proteinG}g</span>
-            </div>
-            <div className="flex flex-col items-center p-1 rounded-lg bg-slate-50">
-              <span className="text-[9px] font-bold text-[#f15359] uppercase">Carbs</span>
-              <span className="text-xs font-extrabold text-slate-800">{carbsG}g</span>
-            </div>
-            <div className="flex flex-col items-center p-1 rounded-lg bg-slate-50">
-              <span className="text-[9px] font-bold text-[#feb111] uppercase">Fat</span>
-              <span className="text-xs font-extrabold text-slate-800">{fatG}g</span>
-            </div>
           </div>
 
         </div>

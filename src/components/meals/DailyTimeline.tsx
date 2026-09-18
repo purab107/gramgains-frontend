@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { MACRO_COLORS } from '@/lib/constants';
 
 interface DailyTimelineProps {
   logs: MealLogItem[];
@@ -75,7 +76,7 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
                         </div>
                         <div className="text-[11px] font-mono text-muted-foreground mt-1">
                           {log.weightGrams}g ({log.servings} serving{log.servings !== 1 ? 's' : ''})
-                          {' '}• P: {log.protein}g | C: {log.carbohydrates}g | F: {log.fat}g
+                          {' '}• <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>P: {log.protein}g</span> | <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>C: {log.carbohydrates}g</span> | <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>F: {log.fat}g</span>
                         </div>
                       </div>
 

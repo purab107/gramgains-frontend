@@ -9,6 +9,7 @@ import {
   UserProfile 
 } from '../../services/api';
 import { getFoodEmoji } from '../../lib/food-utils';
+import { MACRO_COLORS } from '@/lib/constants';
 import { 
   Sidebar,
   Navbar,
@@ -330,20 +331,20 @@ function SavedMealsPage() {
 
                     {/* Macro Breakdown Pills */}
                     <div className="grid grid-cols-4 gap-1.5 text-center text-[11px] font-mono mb-4">
-                      <div className="p-2 rounded bg-[#2873e5]/10 border border-[#2873e5]/30">
-                        <div className="text-[9px] text-[#2873e5] font-sans font-bold">PRO</div>
+                      <div className="p-2 rounded border" style={{ backgroundColor: `${MACRO_COLORS.protein}15`, borderColor: `${MACRO_COLORS.protein}35` }}>
+                        <div className="text-[9px] font-sans font-bold" style={{ color: MACRO_COLORS.protein }}>PRO</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalProtein)}g</div>
                       </div>
-                      <div className="p-2 rounded bg-[#f15359]/10 border border-[#f15359]/30">
-                        <div className="text-[9px] text-[#f15359] font-sans font-bold">CARB</div>
+                      <div className="p-2 rounded border" style={{ backgroundColor: `${MACRO_COLORS.carbs}15`, borderColor: `${MACRO_COLORS.carbs}35` }}>
+                        <div className="text-[9px] font-sans font-bold" style={{ color: MACRO_COLORS.carbs }}>CARB</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalCarbs)}g</div>
                       </div>
-                      <div className="p-2 rounded bg-[#feb111]/10 border border-[#feb111]/30">
-                        <div className="text-[9px] text-[#d99605] font-sans font-bold">FAT</div>
+                      <div className="p-2 rounded border" style={{ backgroundColor: `${MACRO_COLORS.fat}15`, borderColor: `${MACRO_COLORS.fat}35` }}>
+                        <div className="text-[9px] font-sans font-bold" style={{ color: MACRO_COLORS.fat }}>FAT</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalFat)}g</div>
                       </div>
-                      <div className="p-2 rounded bg-[#4cd593]/15 border border-[#4cd593]/40">
-                        <div className="text-[9px] text-[#0d7649] font-sans font-bold">FIBER</div>
+                      <div className="p-2 rounded border" style={{ backgroundColor: `${MACRO_COLORS.fiber}15`, borderColor: `${MACRO_COLORS.fiber}35` }}>
+                        <div className="text-[9px] font-sans font-bold" style={{ color: MACRO_COLORS.fiber }}>FIBER</div>
                         <div className="font-bold text-[#171C1B]">{Math.round(meal.totalFiber)}g</div>
                       </div>
                     </div>
@@ -527,16 +528,16 @@ function SavedMealsPage() {
                   <div className="text-sm font-bold text-[#171C1B]">{totals.calories} kcal</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[#2873e5] font-sans font-semibold uppercase">Protein</div>
-                  <div className="text-sm font-bold text-[#2873e5]">{totals.protein}g</div>
+                  <div className="text-[10px] font-sans font-semibold uppercase" style={{ color: MACRO_COLORS.protein }}>Protein</div>
+                  <div className="text-sm font-bold" style={{ color: MACRO_COLORS.protein }}>{totals.protein}g</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[#f15359] font-sans font-semibold uppercase">Carbs</div>
-                  <div className="text-sm font-bold text-[#f15359]">{totals.carbs}g</div>
+                  <div className="text-[10px] font-sans font-semibold uppercase" style={{ color: MACRO_COLORS.carbs }}>Carbs</div>
+                  <div className="text-sm font-bold" style={{ color: MACRO_COLORS.carbs }}>{totals.carbs}g</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[#d99605] font-sans font-semibold uppercase">Fat</div>
-                  <div className="text-sm font-bold text-[#d99605]">{totals.fat}g</div>
+                  <div className="text-[10px] font-sans font-semibold uppercase" style={{ color: MACRO_COLORS.fat }}>Fat</div>
+                  <div className="text-sm font-bold" style={{ color: MACRO_COLORS.fat }}>{totals.fat}g</div>
                 </div>
               </div>
 

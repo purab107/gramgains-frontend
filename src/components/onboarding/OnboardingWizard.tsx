@@ -11,6 +11,7 @@ import {
   Flame
 } from 'lucide-react';
 import { ApiService, UserProfile } from '@/services/api';
+import { MACRO_COLORS } from '@/lib/constants';
 
 interface OnboardingWizardProps {
   onComplete: (profile: UserProfile) => void;
@@ -355,19 +356,19 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 <div className="text-xs font-semibold text-[#171C1B] mb-2">Daily Macro Breakdown</div>
                 <div className="grid grid-cols-4 gap-2 text-center font-mono">
                   <div className="p-2 rounded-lg bg-white border border-[#E1E7E5]">
-                    <div className="text-[10px] text-[#075E54] font-sans font-bold">PROTEIN</div>
+                    <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.protein }}>PROTEIN</div>
                     <div className="text-xs font-bold text-[#171C1B] mt-0.5">{metabolics.targetProtein}g</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white border border-[#E1E7E5]">
-                    <div className="text-[10px] text-[#0A7C6E] font-sans font-bold">CARBS</div>
+                    <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.carbs }}>CARBS</div>
                     <div className="text-xs font-bold text-[#171C1B] mt-0.5">{metabolics.targetCarbs}g</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white border border-[#E1E7E5]">
-                    <div className="text-[10px] text-[#68716F] font-sans font-bold">FAT</div>
+                    <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.fat }}>FAT</div>
                     <div className="text-xs font-bold text-[#171C1B] mt-0.5">{metabolics.targetFat}g</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white border border-[#E1E7E5]">
-                    <div className="text-[10px] text-[#68716F] font-sans font-bold">FIBER</div>
+                    <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.fiber }}>FIBER</div>
                     <div className="text-xs font-bold text-[#171C1B] mt-0.5">{metabolics.targetFiber}g</div>
                   </div>
                 </div>

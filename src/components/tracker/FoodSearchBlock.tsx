@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 
 import { MealTypeKey } from './MealSectionCard';
+import { MACRO_COLORS } from '@/lib/constants';
 
 export function getCurrentTimeMealType(): MealTypeKey {
   const hour = new Date().getHours();
@@ -300,10 +301,11 @@ export function FoodSearchBlock({
           <button
             onClick={() => setActiveTab('high-protein')}
             className={`px-3 py-1 rounded-lg font-medium transition-all shrink-0 ${
-              activeTab === 'high-protein'
-                ? 'bg-[#8b5cf6] text-white shadow-sm'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              activeTab === 'high-protein' ? 'text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
+            style={{
+              backgroundColor: activeTab === 'high-protein' ? MACRO_COLORS.protein : undefined,
+            }}
           >
             High Protein
           </button>
@@ -369,9 +371,9 @@ export function FoodSearchBlock({
                         <span>•</span>
                         <span className="font-bold text-slate-700">{food.calories} kcal</span>
                         <span>•</span>
-                        <span className="font-semibold text-[#8b5cf6]">P: {food.protein}g</span>
-                        <span className="font-semibold text-[#f15359]">C: {food.carbohydrates}g</span>
-                        <span className="font-semibold text-[#feb111]">F: {food.fat}g</span>
+                        <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>P: {food.protein}g</span>
+                        <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>C: {food.carbohydrates}g</span>
+                        <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>F: {food.fat}g</span>
                       </div>
                     </div>
 
@@ -435,9 +437,9 @@ export function FoodSearchBlock({
                         <span className="font-semibold text-slate-600">Portion:</span>
                         <div className="flex items-center gap-2 font-mono font-bold">
                           <span className="text-[#169b55]">{calculated.calories} kcal</span>
-                          <span className="text-[#8b5cf6]">P:{calculated.protein}g</span>
-                          <span className="text-[#f15359]">C:{calculated.carbs}g</span>
-                          <span className="text-[#feb111]">F:{calculated.fat}g</span>
+                          <span style={{ color: MACRO_COLORS.protein }}>P:{calculated.protein}g</span>
+                          <span style={{ color: MACRO_COLORS.carbs }}>C:{calculated.carbs}g</span>
+                          <span style={{ color: MACRO_COLORS.fat }}>F:{calculated.fat}g</span>
                         </div>
                       </div>
 

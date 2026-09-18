@@ -151,7 +151,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
         <div className="flex items-center gap-2">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ backgroundColor: '#feb11118', color: '#feb111' }}
+            style={{ backgroundColor: '#f1535918', color: '#f15359' }}
           >
             <Wheat className="w-4 h-4" />
           </div>
@@ -163,7 +163,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
             <div className="h-3 w-full bg-[#eef2f6] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${carbsPercent}%`, backgroundColor: '#feb111' }}
+                style={{ width: `${carbsPercent}%`, backgroundColor: '#f15359' }}
               />
             </div>
           </div>
@@ -173,7 +173,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
         <div className="flex items-center gap-2">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ backgroundColor: '#f1535918', color: '#f15359' }}
+            style={{ backgroundColor: '#feb11118', color: '#feb111' }}
           >
             <Droplet className="w-4 h-4" />
           </div>
@@ -185,7 +185,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
             <div className="h-3 w-full bg-[#eef2f6] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${fatPercent}%`, backgroundColor: '#f15359' }}
+                style={{ width: `${fatPercent}%`, backgroundColor: '#feb111' }}
               />
             </div>
           </div>

@@ -15,9 +15,9 @@ module.exports = {
           light: "#e4f7ee",
         },
         macro: {
+          protein: "#8b5cf6",
           carb: "#f15359",
           fats: "#feb111",
-          protein: "#2873e5",
         },
         green: {
           dark: "#0d7649",

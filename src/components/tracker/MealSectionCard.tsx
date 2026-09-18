@@ -16,6 +16,7 @@ import {
   UtensilsCrossed, 
   Clock 
 } from 'lucide-react';
+import { MACRO_COLORS } from '@/lib/constants';
 
 export type MealTypeKey = 'BREAKFAST' | 'LUNCH' | 'SNACK' | 'DINNER';
 
@@ -135,9 +136,9 @@ export function MealSectionCard({
             </div>
             <span className="text-slate-300">|</span>
             <div className="flex items-center gap-1.5 text-[11px]">
-              <span className="font-bold text-[#8b5cf6]">{Math.round(totalProtein)}g P</span>
-              <span className="font-bold text-[#f15359]">{Math.round(totalCarbs)}g C</span>
-              <span className="font-bold text-[#feb111]">{Math.round(totalFat)}g F</span>
+              <span className="font-bold" style={{ color: MACRO_COLORS.protein }}>{Math.round(totalProtein)}g P</span>
+              <span className="font-bold" style={{ color: MACRO_COLORS.carbs }}>{Math.round(totalCarbs)}g C</span>
+              <span className="font-bold" style={{ color: MACRO_COLORS.fat }}>{Math.round(totalFat)}g F</span>
             </div>
           </div>
         </div>
@@ -174,9 +175,9 @@ export function MealSectionCard({
                       <span>•</span>
                       <span className="font-bold text-slate-800">{Math.round(item.calories)} kcal</span>
                       <span>•</span>
-                      <span className="font-medium text-[#8b5cf6]">P: {item.protein}g</span>
-                      <span className="font-medium text-[#f15359]">C: {item.carbohydrates}g</span>
-                      <span className="font-medium text-[#feb111]">F: {item.fat}g</span>
+                      <span className="font-medium" style={{ color: MACRO_COLORS.protein }}>P: {item.protein}g</span>
+                      <span className="font-medium" style={{ color: MACRO_COLORS.carbs }}>C: {item.carbohydrates}g</span>
+                      <span className="font-medium" style={{ color: MACRO_COLORS.fat }}>F: {item.fat}g</span>
                     </div>
                   </div>
 

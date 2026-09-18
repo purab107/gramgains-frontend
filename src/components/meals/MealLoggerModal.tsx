@@ -14,6 +14,7 @@ import {
   Sparkles,
   Utensils
 } from 'lucide-react';
+import { MACRO_COLORS } from '@/lib/constants';
 
 interface MealLoggerModalProps {
   date: string;
@@ -275,11 +276,11 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                             {food.servingWeight}{food.servingUnit} · <span className="font-semibold text-[#171C1B]">{food.calories} kcal</span>
                           </div>
                           <div className="text-[10px] text-[#68716F] font-mono mt-0.5 flex items-center gap-1.5">
-                            <span>P <strong className="text-[#075E54] font-semibold">{food.protein}g</strong></span>
+                            <span>P <strong className="font-semibold" style={{ color: MACRO_COLORS.protein }}>{food.protein}g</strong></span>
                             <span>·</span>
-                            <span>C <strong className="text-[#171C1B] font-semibold">{food.carbohydrates}g</strong></span>
+                            <span>C <strong className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>{food.carbohydrates}g</strong></span>
                             <span>·</span>
-                            <span>F <strong className="text-[#68716F] font-semibold">{food.fat}g</strong></span>
+                            <span>F <strong className="font-semibold" style={{ color: MACRO_COLORS.fat }}>{food.fat}g</strong></span>
                           </div>
                         </div>
                       </div>
@@ -342,21 +343,21 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                 MACROS
               </div>
               <div className="grid grid-cols-4 gap-2 font-mono text-center">
-                <div className="p-2.5 rounded-xl bg-[#E6F3F1] border border-[#B8E2DC]">
-                  <div className="text-[10px] text-[#075E54] font-sans font-bold uppercase">Protein</div>
-                  <div className="text-base font-bold text-[#075E54] mt-0.5">{activeProtein}g</div>
+                <div className="p-2.5 rounded-xl border" style={{ backgroundColor: `${MACRO_COLORS.protein}12`, borderColor: `${MACRO_COLORS.protein}30` }}>
+                  <div className="text-[10px] font-sans font-bold uppercase" style={{ color: MACRO_COLORS.protein }}>Protein</div>
+                  <div className="text-base font-bold mt-0.5" style={{ color: MACRO_COLORS.protein }}>{activeProtein}g</div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-[#F7F9F8] border border-[#E1E7E5]">
-                  <div className="text-[10px] text-[#68716F] font-sans font-bold uppercase">Carbs</div>
-                  <div className="text-base font-bold text-[#171C1B] mt-0.5">{activeCarbs}g</div>
+                <div className="p-2.5 rounded-xl border" style={{ backgroundColor: `${MACRO_COLORS.carbs}12`, borderColor: `${MACRO_COLORS.carbs}30` }}>
+                  <div className="text-[10px] font-sans font-bold uppercase" style={{ color: MACRO_COLORS.carbs }}>Carbs</div>
+                  <div className="text-base font-bold mt-0.5" style={{ color: MACRO_COLORS.carbs }}>{activeCarbs}g</div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-[#F7F9F8] border border-[#E1E7E5]">
-                  <div className="text-[10px] text-[#68716F] font-sans font-bold uppercase">Fat</div>
-                  <div className="text-base font-bold text-[#171C1B] mt-0.5">{activeFat}g</div>
+                <div className="p-2.5 rounded-xl border" style={{ backgroundColor: `${MACRO_COLORS.fat}12`, borderColor: `${MACRO_COLORS.fat}30` }}>
+                  <div className="text-[10px] font-sans font-bold uppercase" style={{ color: MACRO_COLORS.fat }}>Fat</div>
+                  <div className="text-base font-bold mt-0.5" style={{ color: MACRO_COLORS.fat }}>{activeFat}g</div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-[#F7F9F8] border border-[#E1E7E5]">
-                  <div className="text-[10px] text-[#68716F] font-sans font-bold uppercase">Fiber</div>
-                  <div className="text-base font-bold text-[#171C1B] mt-0.5">{activeFiber}g</div>
+                <div className="p-2.5 rounded-xl border" style={{ backgroundColor: `${MACRO_COLORS.fiber}12`, borderColor: `${MACRO_COLORS.fiber}30` }}>
+                  <div className="text-[10px] font-sans font-bold uppercase" style={{ color: MACRO_COLORS.fiber }}>Fiber</div>
+                  <div className="text-base font-bold mt-0.5" style={{ color: MACRO_COLORS.fiber }}>{activeFiber}g</div>
                 </div>
               </div>
             </div>
@@ -489,20 +490,20 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
                 <div className="grid grid-cols-4 gap-2 text-center text-xs pt-1 border-t border-[#E1E7E5]/70">
                   <div>
-                    <div className="text-[9px] text-[#68716F] font-sans uppercase">Protein</div>
-                    <div className="font-bold text-[#075E54] mt-0.5">{per100g.protein}g</div>
+                    <div className="text-[9px] font-sans uppercase font-bold" style={{ color: MACRO_COLORS.protein }}>Protein</div>
+                    <div className="font-bold mt-0.5" style={{ color: MACRO_COLORS.protein }}>{per100g.protein}g</div>
                   </div>
                   <div>
-                    <div className="text-[9px] text-[#68716F] font-sans uppercase">Carbs</div>
-                    <div className="font-bold text-[#171C1B] mt-0.5">{per100g.carbs}g</div>
+                    <div className="text-[9px] font-sans uppercase font-bold" style={{ color: MACRO_COLORS.carbs }}>Carbs</div>
+                    <div className="font-bold mt-0.5" style={{ color: MACRO_COLORS.carbs }}>{per100g.carbs}g</div>
                   </div>
                   <div>
-                    <div className="text-[9px] text-[#68716F] font-sans uppercase">Fat</div>
-                    <div className="font-bold text-[#68716F] mt-0.5">{per100g.fat}g</div>
+                    <div className="text-[9px] font-sans uppercase font-bold" style={{ color: MACRO_COLORS.fat }}>Fat</div>
+                    <div className="font-bold mt-0.5" style={{ color: MACRO_COLORS.fat }}>{per100g.fat}g</div>
                   </div>
                   <div>
-                    <div className="text-[9px] text-[#68716F] font-sans uppercase">Fiber</div>
-                    <div className="font-bold text-[#68716F] mt-0.5">{per100g.fiber}g</div>
+                    <div className="text-[9px] font-sans uppercase font-bold" style={{ color: MACRO_COLORS.fiber }}>Fiber</div>
+                    <div className="font-bold mt-0.5" style={{ color: MACRO_COLORS.fiber }}>{per100g.fiber}g</div>
                   </div>
                 </div>
               </div>
