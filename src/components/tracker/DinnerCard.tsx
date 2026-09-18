@@ -13,7 +13,7 @@ export const DinnerCard: React.FC<DinnerCardProps> = ({
   itemCount,
 }) => {
   return (
-    <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+    <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4 h-full">
       <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100">
         <Moon className="w-6 h-6" />
       </div>

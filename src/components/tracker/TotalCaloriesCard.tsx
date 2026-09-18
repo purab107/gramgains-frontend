@@ -44,119 +44,112 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
   const targetWaterLiters = (targetWater / 1000).toFixed(1);
 
   return (
-    <Card className="border border-slate-100/90 shadow-sm bg-white rounded-3xl p-6 sm:p-8">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
-        
-        {/* Left: Circular Calorie Progress Gauge matching reference UI */}
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <CircularCalorieProgress
-            consumed={summary.calories}
-            target={targetCalories}
-            size={200}
-            strokeWidth={18}
-          />
+    <Card className="border border-slate-100/90 shadow-sm bg-white rounded-3xl p-5 flex flex-row items-center gap-5 h-full">
+
+      {/* Left: Circular Calorie Progress */}
+      <div className="flex items-center justify-center shrink-0">
+        <CircularCalorieProgress
+          consumed={summary.calories}
+          target={targetCalories}
+          size={145}
+          strokeWidth={13}
+        />
+      </div>
+
+      {/* Divider */}
+      <div className="w-px self-stretch bg-slate-100 shrink-0" />
+
+      {/* Right: Macro Progress Bars */}
+      <div className="flex flex-col gap-3 flex-1 min-w-0 justify-center">
+
+        {/* Protein */}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: '#8b5cf618', color: '#8b5cf6' }}
+          >
+            <Dumbbell className="w-3.5 h-3.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between text-[11px] font-semibold mb-1">
+              <span className="text-slate-600">Protein</span>
+              <span className="text-slate-400 font-medium tabular-nums">{Math.round(summary.protein)}/{targetProtein}g</span>
+            </div>
+            <div className="h-1.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${proteinPercent}%`, backgroundColor: '#8b5cf6' }}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Right: Macro & Water Progress Rows matching reference UI layout */}
-        <div className="flex-1 w-full flex flex-col justify-center space-y-5">
-          
-          {/* 1. Protein (#8b5cf6 - Predefined Purple) */}
-          <div className="flex items-center gap-3.5">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: '#8b5cf618', color: '#8b5cf6' }}
-            >
-              <Dumbbell className="w-5 h-5" />
+        {/* Carbs */}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: '#feb11118', color: '#feb111' }}
+          >
+            <Wheat className="w-3.5 h-3.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between text-[11px] font-semibold mb-1">
+              <span className="text-slate-600">Carbs</span>
+              <span className="text-slate-400 font-medium tabular-nums">{Math.round(summary.carbohydrates)}/{targetCarbs}g</span>
             </div>
-            <div className="flex-1 min-w-0 space-y-1.5">
-              <div className="flex items-center justify-between text-sm font-semibold">
-                <span className="text-slate-700">Protein</span>
-                <span className="text-slate-500 font-medium">
-                  {Math.round(summary.protein)} / {targetProtein} g
-                </span>
-              </div>
-              <div className="h-2.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${proteinPercent}%`, backgroundColor: '#8b5cf6' }}
-                />
-              </div>
+            <div className="h-1.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${carbsPercent}%`, backgroundColor: '#feb111' }}
+              />
             </div>
           </div>
-
-          {/* 2. Carbs (#feb111 - Predefined Amber/Gold) */}
-          <div className="flex items-center gap-3.5">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: '#feb11118', color: '#feb111' }}
-            >
-              <Wheat className="w-5 h-5" />
-            </div>
-            <div className="flex-1 min-w-0 space-y-1.5">
-              <div className="flex items-center justify-between text-sm font-semibold">
-                <span className="text-slate-700">Carbs</span>
-                <span className="text-slate-500 font-medium">
-                  {Math.round(summary.carbohydrates)} / {targetCarbs} g
-                </span>
-              </div>
-              <div className="h-2.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${carbsPercent}%`, backgroundColor: '#feb111' }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 3. Fat (#f15359 - Predefined Red/Coral) */}
-          <div className="flex items-center gap-3.5">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: '#f1535918', color: '#f15359' }}
-            >
-              <Droplet className="w-5 h-5 text-[#f15359]" />
-            </div>
-            <div className="flex-1 min-w-0 space-y-1.5">
-              <div className="flex items-center justify-between text-sm font-semibold">
-                <span className="text-slate-700">Fat</span>
-                <span className="text-slate-500 font-medium">
-                  {Math.round(summary.fat)} / {targetFat} g
-                </span>
-              </div>
-              <div className="h-2.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${fatPercent}%`, backgroundColor: '#f15359' }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 4. Water (#2196f3 - Predefined Sky Blue) */}
-          <div className="flex items-center gap-3.5">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: '#2196f318', color: '#2196f3' }}
-            >
-              <Droplet className="w-5 h-5 fill-[#2196f3]" />
-            </div>
-            <div className="flex-1 min-w-0 space-y-1.5">
-              <div className="flex items-center justify-between text-sm font-semibold">
-                <span className="text-slate-700">Water</span>
-                <span className="text-slate-500 font-medium">
-                  {waterLiters} / {targetWaterLiters} L
-                </span>
-              </div>
-              <div className="h-2.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${waterPercent}%`, backgroundColor: '#2196f3' }}
-                />
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        {/* Fat */}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: '#f1535918', color: '#f15359' }}
+          >
+            <Droplet className="w-3.5 h-3.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between text-[11px] font-semibold mb-1">
+              <span className="text-slate-600">Fat</span>
+              <span className="text-slate-400 font-medium tabular-nums">{Math.round(summary.fat)}/{targetFat}g</span>
+            </div>
+            <div className="h-1.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${fatPercent}%`, backgroundColor: '#f15359' }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Water */}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: '#2196f318', color: '#2196f3' }}
+          >
+            <Droplet className="w-3.5 h-3.5 fill-[#2196f3]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between text-[11px] font-semibold mb-1">
+              <span className="text-slate-600">Water</span>
+              <span className="text-slate-400 font-medium tabular-nums">{waterLiters}/{targetWaterLiters}L</span>
+            </div>
+            <div className="h-1.5 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${waterPercent}%`, backgroundColor: '#2196f3' }}
+              />
+            </div>
+          </div>
+        </div>
+
       </div>
     </Card>
   );

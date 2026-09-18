@@ -13,7 +13,7 @@ export const LunchCard: React.FC<LunchCardProps> = ({
   itemCount,
 }) => {
   return (
-    <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+    <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4 h-full">
       <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
         <SunMedium className="w-6 h-6" />
       </div>
