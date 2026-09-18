@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ApiService, 
   DailyTrackerResponse, 
@@ -11,7 +11,6 @@ import {
   Navbar,
   AuthGuard,
   TrackerOverviewCard,
-  FoodSearchBlock,
   MealSectionCard,
   MealTypeKey,
   WaterTrackerSection
@@ -22,9 +21,11 @@ import {
   ChevronLeft, 
   ChevronRight, 
   RotateCcw,
-  Sparkles,
-  Flame,
-  Loader2
+  Loader2,
+  Sun,
+  SunMedium,
+  Cookie,
+  Moon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -57,20 +58,6 @@ function TrackerPage() {
   const [trackerData, setTrackerData] = useState<DailyTrackerResponse | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeMealFilter, setActiveMealFilter] = useState<MealTypeKey>('BREAKFAST');
-
-  useEffect(() => {
-    // Dynamically set meal filter based on user's current time of day
-    const hour = new Date().getHours();
-    const minute = new Date().getMinutes();
-    const time = hour + minute / 60;
-    if (time >= 5 && time < 11.5) setActiveMealFilter('BREAKFAST');
-    else if (time >= 11.5 && time < 16) setActiveMealFilter('LUNCH');
-    else if (time >= 16 && time < 19.5) setActiveMealFilter('SNACK');
-    else setActiveMealFilter('DINNER');
-  }, []);
-
-  const searchBlockRef = useRef<HTMLDivElement | null>(null);
 
   const loadData = async () => {
     try {
@@ -102,17 +89,6 @@ function TrackerPage() {
     setSelectedDate(new Date().toISOString().split('T')[0]);
   };
 
-  const handleAddMealForType = (mealType: MealTypeKey) => {
-    setActiveMealFilter(mealType);
-    if (searchBlockRef.current) {
-      searchBlockRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      const searchInput = searchBlockRef.current.querySelector('input');
-      if (searchInput) {
-        searchInput.focus();
-      }
-    }
-  };
-
   const summary = trackerData?.summary || {
     calories: 0,
     protein: 0,
@@ -136,6 +112,11 @@ function TrackerPage() {
   const eveningLogs = logs.filter((l) => l.mealType === 'SNACK');
   const dinnerLogs = logs.filter((l) => l.mealType === 'DINNER');
 
+  const breakfastCalories = morningLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
+  const lunchCalories = afternoonLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
+  const snackCalories = eveningLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
+  const dinnerCalories = dinnerLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
+
   const waterTotalMl = trackerData?.water?.totalMl || 0;
   const waterLogs = trackerData?.water?.logs || [];
 
@@ -158,29 +139,18 @@ function TrackerPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             {/* ========================================================= */}
-            {/* LEFT COLUMN: Overview Card + Food Search Block */}
+            {/* LEFT COLUMN: Total Overview Card */}
             {/* ========================================================= */}
             <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-6">
-              
-              {/* 1. Total Overview Card (Circular Calories + Linear Macros & Water) */}
               <TrackerOverviewCard
                 summary={summary}
                 targets={targets}
                 waterTotalMl={waterTotalMl}
               />
-
-              {/* 2. Food Database Search Block */}
-              <div ref={searchBlockRef}>
-                <FoodSearchBlock
-                  selectedDate={selectedDate}
-                  defaultMealType={activeMealFilter}
-                  onFoodLogged={loadData}
-                />
-              </div>
             </div>
 
             {/* ========================================================= */}
-            {/* RIGHT COLUMN: Date Toggle + Stacked Meals + Water Tracker */}
+            {/* RIGHT COLUMN: Date Toggle + 4 Meal Summary Cards + Detail Logs */}
             {/* ========================================================= */}
             <div className="lg:col-span-7 space-y-6">
               
@@ -254,13 +224,76 @@ function TrackerPage() {
                 </div>
               )}
 
+              {/* 4 Meal Summary Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* 1. Breakfast Card */}
+                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
+                    <Sun className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Morning</span>
+                    <h3 className="text-base font-bold text-slate-900">Breakfast</h3>
+                    <p className="text-lg font-extrabold text-amber-700 mt-0.5">
+                      {Math.round(breakfastCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
+                    </p>
+                    <p className="text-[11px] text-slate-400">{morningLogs.length} {morningLogs.length === 1 ? 'item' : 'items'} logged</p>
+                  </div>
+                </div>
+
+                {/* 2. Lunch Card */}
+                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+                    <SunMedium className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Afternoon</span>
+                    <h3 className="text-base font-bold text-slate-900">Lunch</h3>
+                    <p className="text-lg font-extrabold text-emerald-700 mt-0.5">
+                      {Math.round(lunchCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
+                    </p>
+                    <p className="text-[11px] text-slate-400">{afternoonLogs.length} {afternoonLogs.length === 1 ? 'item' : 'items'} logged</p>
+                  </div>
+                </div>
+
+                {/* 3. Snacks Card */}
+                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 border border-orange-100">
+                    <Cookie className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Evening</span>
+                    <h3 className="text-base font-bold text-slate-900">Snacks</h3>
+                    <p className="text-lg font-extrabold text-orange-700 mt-0.5">
+                      {Math.round(snackCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
+                    </p>
+                    <p className="text-[11px] text-slate-400">{eveningLogs.length} {eveningLogs.length === 1 ? 'item' : 'items'} logged</p>
+                  </div>
+                </div>
+
+                {/* 4. Dinner Card */}
+                <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100">
+                    <Moon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Night</span>
+                    <h3 className="text-base font-bold text-slate-900">Dinner</h3>
+                    <p className="text-lg font-extrabold text-indigo-700 mt-0.5">
+                      {Math.round(dinnerCalories)} <span className="text-xs font-normal text-slate-500">kcal</span>
+                    </p>
+                    <p className="text-[11px] text-slate-400">{dinnerLogs.length} {dinnerLogs.length === 1 ? 'item' : 'items'} logged</p>
+                  </div>
+                </div>
+              </div>
+
               {/* Stacked Meal Sections */}
               <div className="space-y-4">
                 {/* 1. Morning (Breakfast) */}
                 <MealSectionCard
                   mealType="BREAKFAST"
                   logs={morningLogs}
-                  onAddMealClick={handleAddMealForType}
+                  onAddMealClick={() => {}}
                   onLogDeleted={loadData}
                 />
 
@@ -268,7 +301,7 @@ function TrackerPage() {
                 <MealSectionCard
                   mealType="LUNCH"
                   logs={afternoonLogs}
-                  onAddMealClick={handleAddMealForType}
+                  onAddMealClick={() => {}}
                   onLogDeleted={loadData}
                 />
 
@@ -276,7 +309,7 @@ function TrackerPage() {
                 <MealSectionCard
                   mealType="SNACK"
                   logs={eveningLogs}
-                  onAddMealClick={handleAddMealForType}
+                  onAddMealClick={() => {}}
                   onLogDeleted={loadData}
                 />
 
@@ -284,7 +317,7 @@ function TrackerPage() {
                 <MealSectionCard
                   mealType="DINNER"
                   logs={dinnerLogs}
-                  onAddMealClick={handleAddMealForType}
+                  onAddMealClick={() => {}}
                   onLogDeleted={loadData}
                 />
               </div>
