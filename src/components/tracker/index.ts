@@ -5,6 +5,7 @@ export * from './BreakfastCard';
 export * from './LunchCard';
 export * from './SnacksCard';
 export * from './DinnerCard';
+export * from './MealCalorieCard';
 export * from './FoodSearchBlock';
 export * from './MealSectionCard';
 export * from './WaterTrackerSection';

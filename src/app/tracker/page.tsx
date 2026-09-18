@@ -11,10 +11,7 @@ import {
   Navbar,
   AuthGuard,
   TotalCaloriesCard,
-  BreakfastCard,
-  LunchCard,
-  SnacksCard,
-  DinnerCard,
+  MealCalorieCard,
   MealSectionCard,
   WaterTrackerSection
 } from '@/components';
@@ -24,11 +21,6 @@ import {
   ChevronRight, 
   RotateCcw,
   Loader2,
-  Flame,
-  Sun,
-  SunMedium,
-  Cookie,
-  Moon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -213,10 +205,10 @@ function TrackerPage() {
                 waterTotalMl={waterTotalMl}
               />
             </div>
-            <BreakfastCard calories={breakfastCalories} itemCount={morningLogs.length} />
-            <LunchCard calories={lunchCalories} itemCount={afternoonLogs.length} />
-            <SnacksCard calories={snackCalories} itemCount={eveningLogs.length} />
-            <DinnerCard calories={dinnerCalories} itemCount={dinnerLogs.length} />
+            <MealCalorieCard mealType="BREAKFAST" calories={breakfastCalories} itemCount={morningLogs.length} dailyCalorieTarget={targets.calories} />
+            <MealCalorieCard mealType="LUNCH" calories={lunchCalories} itemCount={afternoonLogs.length} dailyCalorieTarget={targets.calories} />
+            <MealCalorieCard mealType="SNACK" calories={snackCalories} itemCount={eveningLogs.length} dailyCalorieTarget={targets.calories} />
+            <MealCalorieCard mealType="DINNER" calories={dinnerCalories} itemCount={dinnerLogs.length} dailyCalorieTarget={targets.calories} />
           </div>
 
           {/* Full-Width Stacked Meal Section Cards */}
