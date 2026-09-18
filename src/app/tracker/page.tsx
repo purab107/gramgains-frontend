@@ -107,10 +107,25 @@ function TrackerPage() {
   const eveningLogs = logs.filter((l) => l.mealType === 'SNACK');
   const dinnerLogs = logs.filter((l) => l.mealType === 'DINNER');
 
+  const getMealMacros = (mealLogs: typeof logs) =>
+    mealLogs.reduce(
+      (acc, l) => ({
+        protein: acc.protein + (l.protein || 0),
+        carbs: acc.carbs + (l.carbohydrates || 0),
+        fat: acc.fat + (l.fat || 0),
+      }),
+      { protein: 0, carbs: 0, fat: 0 }
+    );
+
   const breakfastCalories = morningLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
   const lunchCalories = afternoonLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
   const snackCalories = eveningLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
   const dinnerCalories = dinnerLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
+
+  const breakfastMacros = getMealMacros(morningLogs);
+  const lunchMacros = getMealMacros(afternoonLogs);
+  const snackMacros = getMealMacros(eveningLogs);
+  const dinnerMacros = getMealMacros(dinnerLogs);
 
   const waterTotalMl = trackerData?.water?.totalMl || 0;
   const waterLogs = trackerData?.water?.logs || [];
@@ -205,10 +220,10 @@ function TrackerPage() {
                 waterTotalMl={waterTotalMl}
               />
             </div>
-            <MealCalorieCard mealType="BREAKFAST" calories={breakfastCalories} itemCount={morningLogs.length} dailyCalorieTarget={targets.calories} />
-            <MealCalorieCard mealType="LUNCH" calories={lunchCalories} itemCount={afternoonLogs.length} dailyCalorieTarget={targets.calories} />
-            <MealCalorieCard mealType="SNACK" calories={snackCalories} itemCount={eveningLogs.length} dailyCalorieTarget={targets.calories} />
-            <MealCalorieCard mealType="DINNER" calories={dinnerCalories} itemCount={dinnerLogs.length} dailyCalorieTarget={targets.calories} />
+            <MealCalorieCard mealType="BREAKFAST" calories={breakfastCalories} itemCount={morningLogs.length} dailyCalorieTarget={targets.calories} macros={breakfastMacros} />
+            <MealCalorieCard mealType="LUNCH" calories={lunchCalories} itemCount={afternoonLogs.length} dailyCalorieTarget={targets.calories} macros={lunchMacros} />
+            <MealCalorieCard mealType="SNACK" calories={snackCalories} itemCount={eveningLogs.length} dailyCalorieTarget={targets.calories} macros={snackMacros} />
+            <MealCalorieCard mealType="DINNER" calories={dinnerCalories} itemCount={dinnerLogs.length} dailyCalorieTarget={targets.calories} macros={dinnerMacros} />
           </div>
 
           {/* Full-Width Stacked Meal Section Cards */}

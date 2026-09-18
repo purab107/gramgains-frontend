@@ -1,11 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Sun, SunMedium, Cookie, Moon } from 'lucide-react';
+import { ChartContainer, ChartConfig } from '@/components/ui/chart';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 export type MealType = 'BREAKFAST' | 'LUNCH' | 'SNACK' | 'DINNER';
+
+export interface MealMacros {
+  protein: number;
+  carbs: number;
+  fat: number;
+}
 
 interface MealCalorieCardProps {
   mealType: MealType;
@@ -13,6 +21,8 @@ interface MealCalorieCardProps {
   itemCount: number;
   /** Daily calorie target — used to compute % of daily goal */
   dailyCalorieTarget: number;
+  /** Macronutrients breakdown for this meal */
+  macros?: MealMacros;
 }
 
 const MEAL_CONFIG: Record<
@@ -45,64 +55,212 @@ const MEAL_CONFIG: Record<
   },
 };
 
+const MACRO_COLORS = {
+  protein: '#8b5cf6', // Purple
+  carbs: '#f15359',   // Red
+  fat: '#feb111',     // Yellow
+};
+
+const chartConfig = {
+  protein: {
+    label: 'Protein',
+    color: MACRO_COLORS.protein,
+  },
+  carbs: {
+    label: 'Carbs',
+    color: MACRO_COLORS.carbs,
+  },
+  fat: {
+    label: 'Fat',
+    color: MACRO_COLORS.fat,
+  },
+} satisfies ChartConfig;
+
 export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
   mealType,
   calories,
   itemCount,
   dailyCalorieTarget,
+  macros = { protein: 0, carbs: 0, fat: 0 },
 }) => {
+  const [hovered, setHovered] = useState(false);
   const { label, sublabel, color, icon } = MEAL_CONFIG[mealType];
+
   const percentage = dailyCalorieTarget > 0
     ? Math.min(Math.round((calories / dailyCalorieTarget) * 100), 100)
     : 0;
 
-  return (
-    <Card className="border border-slate-200/80 shadow-sm rounded-2xl bg-card h-full">
-      <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full min-h-[160px]">
+  const proteinG = Math.round(macros.protein || 0);
+  const carbsG = Math.round(macros.carbs || 0);
+  const fatG = Math.round(macros.fat || 0);
+  const totalMacroG = proteinG + carbsG + fatG;
 
-        {/* Top: Icon + Labels + Value */}
-        <div>
-          {/* Icon */}
-          <div
-            className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3.5 shadow-xs"
-            style={{ backgroundColor: `${color}18`, color }}
-          >
-            {icon}
+  const pieData = [
+    { name: 'Protein', value: proteinG, color: MACRO_COLORS.protein },
+    { name: 'Carbs', value: carbsG, color: MACRO_COLORS.carbs },
+    { name: 'Fat', value: fatG, color: MACRO_COLORS.fat },
+  ].filter((d) => d.value > 0);
+
+  const hasMacros = pieData.length > 0;
+
+  return (
+    <Card
+      className="border border-slate-200/80 shadow-sm rounded-2xl bg-card h-full cursor-default"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <CardContent className="relative p-4 sm:p-5 h-full min-h-[175px] overflow-hidden rounded-2xl">
+        
+        {/* ── DEFAULT VIEW ── Fades out on hover */}
+        <div
+          className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 ease-in-out"
+          style={{
+            opacity: hovered ? 0 : 1,
+            transform: hovered ? 'scale(0.95)' : 'scale(1)',
+            pointerEvents: hovered ? 'none' : 'auto',
+          }}
+        >
+          {/* Top: Icon + Labels + Value */}
+          <div>
+            <div
+              className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3.5 shadow-xs"
+              style={{ backgroundColor: `${color}18`, color }}
+            >
+              {icon}
+            </div>
+
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              {sublabel}
+            </span>
+
+            <h4 className="font-semibold text-slate-700 text-sm sm:text-base mt-0.5 capitalize">
+              {label}
+            </h4>
+
+            <div className="flex flex-col mt-1">
+              <span className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
+                {Math.round(calories)}{' '}
+                <span className="text-sm font-normal text-slate-400">kcal</span>
+              </span>
+              <span className="text-[12px] text-slate-400 font-medium mt-0.5">
+                {itemCount} {itemCount === 1 ? 'item' : 'items'} logged
+              </span>
+            </div>
           </div>
 
-          {/* Sublabel */}
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            {sublabel}
-          </span>
-
-          {/* Meal name */}
-          <h4 className="font-semibold text-slate-700 text-sm sm:text-base mt-0.5 capitalize">
-            {label}
-          </h4>
-
-          {/* Calorie value */}
-          <div className="flex flex-col mt-1">
-            <span className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
-              {Math.round(calories)}{' '}
-              <span className="text-sm font-normal text-slate-400">kcal</span>
-            </span>
-            <span className="text-[12px] text-slate-400 font-medium mt-0.5">
-              {itemCount} {itemCount === 1 ? 'item' : 'items'} logged
-            </span>
+          {/* Bottom: Progress bar */}
+          <div className="pt-3">
+            <div className="flex items-center justify-between text-[11px] font-medium text-slate-400 mb-1.5">
+              <span>of daily goal</span>
+              <span style={{ color }}>{percentage}%</span>
+            </div>
+            <Progress
+              value={percentage}
+              className="h-2.5 rounded-full bg-slate-100 [&>div]:rounded-full"
+              indicatorStyle={{ backgroundColor: color }}
+            />
           </div>
         </div>
 
-        {/* Bottom: Progress bar */}
-        <div className="pt-3">
-          <div className="flex items-center justify-between text-[11px] font-medium text-slate-400 mb-1.5">
-            <span>of daily goal</span>
-            <span style={{ color }}>{percentage}%</span>
+        {/* ── HOVER VIEW: MACRO PIE CHART ── Fades in on hover */}
+        <div
+          className="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-between bg-white rounded-2xl transition-all duration-300 ease-in-out"
+          style={{
+            opacity: hovered ? 1 : 0,
+            transform: hovered ? 'scale(1)' : 'scale(0.94)',
+            pointerEvents: hovered ? 'auto' : 'none',
+          }}
+        >
+          {/* Header */}
+          <div className="w-full flex items-center justify-between pb-1 border-b border-slate-100">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+              <span className="text-xs font-bold text-slate-800 capitalize">
+                {label} Macros
+              </span>
+            </div>
+            <span className="text-[11px] font-semibold text-slate-400">
+              {Math.round(calories)} kcal
+            </span>
           </div>
-          <Progress
-            value={percentage}
-            className="h-2.5 rounded-full bg-slate-100 [&>div]:rounded-full"
-            indicatorStyle={{ backgroundColor: color }}
-          />
+
+          {/* Center: Pie Chart */}
+          <div className="w-full flex-1 flex items-center justify-center relative min-h-[90px]">
+            {hasMacros ? (
+              <ChartContainer config={chartConfig} className="w-full h-full max-h-[105px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (!active || !payload || !payload.length) return null;
+                        const item = payload[0];
+                        return (
+                          <div className="bg-slate-900 text-white px-2.5 py-1.5 rounded-lg shadow-md text-[11px] font-semibold flex items-center gap-1.5">
+                            <span
+                              className="w-2 h-2 rounded-full"
+                              style={{ backgroundColor: item.payload.color }}
+                            />
+                            <span>{item.name}:</span>
+                            <span className="text-slate-200">{item.value}g</span>
+                          </div>
+                        );
+                      }}
+                    />
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={25}
+                      outerRadius={40}
+                      paddingAngle={3}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center p-2">
+                <div className="w-12 h-12 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-[10px] font-semibold mb-1">
+                  0g
+                </div>
+                <span className="text-[11px] text-slate-400 font-medium">No macros logged</span>
+              </div>
+            )}
+
+            {/* Center label inside Donut */}
+            {hasMacros && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-xs font-bold text-slate-800 leading-none">
+                  {totalMacroG}g
+                </span>
+                <span className="text-[9px] font-semibold text-slate-400 leading-tight">
+                  total
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom: Macro Pills */}
+          <div className="w-full grid grid-cols-3 gap-1 pt-1 border-t border-slate-100 text-center">
+            <div className="flex flex-col items-center p-1 rounded-lg bg-slate-50">
+              <span className="text-[9px] font-bold text-[#8b5cf6] uppercase">Protein</span>
+              <span className="text-xs font-extrabold text-slate-800">{proteinG}g</span>
+            </div>
+            <div className="flex flex-col items-center p-1 rounded-lg bg-slate-50">
+              <span className="text-[9px] font-bold text-[#f15359] uppercase">Carbs</span>
+              <span className="text-xs font-extrabold text-slate-800">{carbsG}g</span>
+            </div>
+            <div className="flex flex-col items-center p-1 rounded-lg bg-slate-50">
+              <span className="text-[9px] font-bold text-[#feb111] uppercase">Fat</span>
+              <span className="text-xs font-extrabold text-slate-800">{fatG}g</span>
+            </div>
+          </div>
+
         </div>
 
       </CardContent>
