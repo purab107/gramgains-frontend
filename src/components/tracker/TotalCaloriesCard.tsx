@@ -89,26 +89,26 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
 
           {/* Default text — fades out on hover */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out"
+            className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out pointer-events-none"
             style={{ opacity: gaugeHovered ? 0 : 1, transform: gaugeHovered ? 'scale(0.88)' : 'scale(1)' }}
           >
-            <span className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-none tabular-nums">
+            <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-none tabular-nums">
               {Math.round(summary.calories).toLocaleString()}
             </span>
-            <span className="text-[10px] font-semibold text-slate-500 mt-0.5">kcal</span>
-            <span className="text-[10px] font-medium text-slate-400">consumed</span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 mt-0.5">kcal</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-slate-400">consumed</span>
           </div>
 
           {/* Hover text — fades in on hover */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out"
+            className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out pointer-events-none"
             style={{ opacity: gaugeHovered ? 1 : 0, transform: gaugeHovered ? 'scale(1)' : 'scale(0.88)' }}
           >
-            <span className="text-2xl sm:text-3xl font-extrabold text-[#169b55] tracking-tight leading-none tabular-nums">
+            <span className="text-xl sm:text-2xl font-bold text-[#169b55] tracking-tight leading-none tabular-nums">
               {Math.round(remaining).toLocaleString()}
             </span>
-            <span className="text-[11px] font-semibold text-slate-500 mt-0.5">kcal</span>
-            <span className="text-[10px] font-medium text-slate-400">remaining</span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 mt-0.5">kcal</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-slate-400">remaining</span>
           </div>
         </div>
 
