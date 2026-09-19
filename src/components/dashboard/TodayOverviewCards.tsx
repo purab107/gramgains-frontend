@@ -157,11 +157,15 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
 interface TodayOverviewCardsProps {
   summary: DashboardSummaryResponse | null;
   userProfile: UserProfile | null;
+  waterTotalMl?: number;
+  targetWaterMl?: number;
 }
 
 export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
   summary,
   userProfile,
+  waterTotalMl,
+  targetWaterMl,
 }) => {
   const targetCals = summary?.calories.target ?? userProfile?.targetCalories ?? 2000;
   const consumedCals = summary?.calories.consumed ?? 0;
@@ -185,6 +189,11 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
   const fatConsumed = Math.round(summary?.macros.fat.consumed ?? 0);
   const fatTarget = Math.round(summary?.macros.fat.target ?? userProfile?.targetFat ?? 70);
   const fatPct = fatTarget > 0 ? Math.min(100, Math.round((fatConsumed / fatTarget) * 100)) : 0;
+
+  // Water stats
+  const consumedWater = Math.round(summary?.water?.consumed ?? waterTotalMl ?? 0);
+  const targetWater = Math.round(summary?.water?.target ?? targetWaterMl ?? 2500);
+  const waterPct = targetWater > 0 ? Math.min(100, Math.round((consumedWater / targetWater) * 100)) : 0;
 
   // SVG Gauge calculations (Circle: r=54, viewBox 140x140, strokeWidth 13)
   const radius = 54;
@@ -365,9 +374,9 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
           color={MACRO_COLORS.water}
           icon={<Droplet className="w-5 h-5" style={{ fill: MACRO_COLORS.water }} />}
           label="Water"
-          value="0 ml"
-          target="/ 2000 ml"
-          pct={0}
+          value={`${consumedWater} ml`}
+          target={`/ ${targetWater} ml`}
+          pct={waterPct}
         />
 
       </div>

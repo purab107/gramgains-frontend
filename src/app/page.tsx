@@ -34,6 +34,7 @@ function DashboardHomePage() {
   );
   const [summary, setSummary] = useState<DashboardSummaryResponse | null>(null);
   const [logs, setLogs] = useState<MealLogItem[]>([]);
+  const [waterTotalMl, setWaterTotalMl] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
 
@@ -80,6 +81,7 @@ function DashboardHomePage() {
         ]);
         setSummary(sumData);
         setLogs(dailyData.logs);
+        setWaterTotalMl(dailyData.water?.totalMl || sumData?.water?.consumed || 0);
       } catch (err) {
         console.error('Failed loading daily summary/logs:', err);
       }
@@ -123,8 +125,12 @@ function DashboardHomePage() {
         />
 
         <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
-          {/* New Modern 4-Card Overview (Calories circular gauge + Protein, Carbs, Fats) */}
-          <TodayOverviewCards summary={summary} userProfile={userProfile} />
+          {/* New Modern 4-Card Overview (Calories circular gauge + Protein, Carbs, Fats, Water) */}
+          <TodayOverviewCards
+            summary={summary}
+            userProfile={userProfile}
+            waterTotalMl={waterTotalMl}
+          />
 
           {/* 2-Column Grid Layout: Left = 7-Day Bar Chart (7/12 cols), Right = Today's Meal Timeline (5/12 cols) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

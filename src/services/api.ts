@@ -101,6 +101,12 @@ export interface DashboardSummaryResponse {
     fat: { consumed: number; target: number; unit: string };
     fiber: { consumed: number; target: number; unit: string };
   };
+  water?: {
+    consumed: number;
+    target: number;
+    unit: string;
+    percentageDone: number;
+  };
   totalMealsLogged: number;
 }
 
