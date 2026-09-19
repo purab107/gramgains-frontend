@@ -206,6 +206,14 @@ export class ApiService {
     return json.data;
   }
 
+  static async getRecentFoods(limit: number = 30): Promise<FoodItem[]> {
+    const res = await apiFetch(`${API_BASE_URL}/tracker/recent-foods?limit=${limit}`);
+    if (!res.ok) throw new Error('Failed to fetch recent foods');
+    const json = await res.json();
+    return json.data;
+  }
+
+
   static async logMeal(payload: {
     date: string;
     mealType: string;

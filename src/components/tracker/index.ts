@@ -9,3 +9,5 @@ export * from './MealCalorieCard';
 export * from './FoodSearchBlock';
 export * from './MealSectionCard';
 export * from './WaterTrackerSection';
+export * from './AddFoodSheet';
+

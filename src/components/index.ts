@@ -30,3 +30,6 @@ export * from './ui/card';
 export * from './ui/progress';
 export * from './ui/separator';
 export * from './ui/tooltip';
+export * from './ui/sheet';
+export * from './ui/input';
+

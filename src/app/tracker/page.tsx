@@ -13,7 +13,9 @@ import {
   TotalCaloriesCard,
   MealCalorieCard,
   MealSectionCard,
-  WaterTrackerSection
+  WaterTrackerSection,
+  AddFoodSheet,
+  type MealTypeKey
 } from '@/components';
 import { 
   Calendar, 
@@ -53,6 +55,14 @@ function TrackerPage() {
   const [trackerData, setTrackerData] = useState<DailyTrackerResponse | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAddFoodOpen, setIsAddFoodOpen] = useState(false);
+  const [activeMealType, setActiveMealType] = useState<MealTypeKey>('BREAKFAST');
+
+  const handleOpenAddFood = (type: MealTypeKey) => {
+    setActiveMealType(type);
+    setIsAddFoodOpen(true);
+  };
+
 
   const loadData = async () => {
     try {
@@ -231,28 +241,28 @@ function TrackerPage() {
             <MealSectionCard
               mealType="BREAKFAST"
               logs={morningLogs}
-              onAddMealClick={() => {}}
+              onAddMealClick={handleOpenAddFood}
               onLogDeleted={loadData}
             />
 
             <MealSectionCard
               mealType="LUNCH"
               logs={afternoonLogs}
-              onAddMealClick={() => {}}
+              onAddMealClick={handleOpenAddFood}
               onLogDeleted={loadData}
             />
 
             <MealSectionCard
               mealType="SNACK"
               logs={eveningLogs}
-              onAddMealClick={() => {}}
+              onAddMealClick={handleOpenAddFood}
               onLogDeleted={loadData}
             />
 
             <MealSectionCard
               mealType="DINNER"
               logs={dinnerLogs}
-              onAddMealClick={() => {}}
+              onAddMealClick={handleOpenAddFood}
               onLogDeleted={loadData}
             />
           </div>
@@ -265,6 +275,19 @@ function TrackerPage() {
             targetMl={targets.water}
             onWaterUpdated={loadData}
           />
+
+          {/* Right-Side Search & Add Food Panel */}
+          <AddFoodSheet
+            open={isAddFoodOpen}
+            onOpenChange={setIsAddFoodOpen}
+            selectedDate={selectedDate}
+            mealType={activeMealType}
+            onMealTypeChange={setActiveMealType}
+            onAddFoodClick={(item, type) => {
+              console.log('Add food clicked (item, type):', item, type);
+            }}
+          />
+
 
         </main>
       </div>
