@@ -45,20 +45,20 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
   const waterLiters = (waterTotalMl / 1000).toFixed(1);
   const targetWaterLiters = (targetWater / 1000).toFixed(1);
 
-  // SVG Gauge — exact same values as TodayOverviewCards on home page
-  const radius = 54;
+  // SVG Gauge — circular progress sizing
+  const radius = 59;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (calPercent / 100) * circumference;
 
   const [gaugeHovered, setGaugeHovered] = useState(false);
 
   return (
-    <Card className="border border-slate-100/90 shadow-sm bg-white rounded-3xl p-5 flex flex-row items-center gap-5 h-full">
+    <Card className="border border-slate-100/90 shadow-sm bg-white rounded-3xl p-4.5 sm:p-5 flex flex-row items-center gap-4 sm:gap-5 h-full">
 
-      {/* Left: Circular Calorie Progress — same sizing as home dashboard card */}
+      {/* Left: Circular Calorie Progress */}
       <div className="flex flex-col items-center justify-center shrink-0">
         <div
-          className="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 flex items-center justify-center cursor-pointer"
+          className="relative w-[116px] h-[116px] sm:w-[134px] sm:h-[134px] shrink-0 flex items-center justify-center cursor-pointer"
           onMouseEnter={() => setGaugeHovered(true)}
           onMouseLeave={() => setGaugeHovered(false)}
         >
