@@ -31,7 +31,9 @@ export interface FoodItem {
   name: string;
   aliases: string[];
   category: string;
+  brand?: string;
   servingUnit: string;
+
   servingWeight: number;
   calories: number;
   protein: number;

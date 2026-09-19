@@ -283,9 +283,7 @@ function TrackerPage() {
             selectedDate={selectedDate}
             mealType={activeMealType}
             onMealTypeChange={setActiveMealType}
-            onAddFoodClick={(item, type) => {
-              console.log('Add food clicked (item, type):', item, type);
-            }}
+            onFoodLogged={loadData}
           />
 
 
