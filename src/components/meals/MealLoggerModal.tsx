@@ -121,7 +121,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Active Multiplier & Dynamic Macros
+  // Active Weight & Multiplier — Scientific standard: food.calories stored per 100g
   const servingBaseWeight = selectedFood?.servingWeight || 100;
   const activeWeight = selectedFood
     ? useCustomWeight
@@ -129,11 +129,8 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
       : Math.round(servingBaseWeight * servings)
     : 100;
 
-  const multiplier = selectedFood
-    ? useCustomWeight
-      ? customWeightGrams / servingBaseWeight
-      : servings
-    : 1;
+  // multiplier = totalWeightGrams / 100 (canonical per-100g base)
+  const multiplier = activeWeight / 100;
 
   const activeCalories = selectedFood ? Math.round(selectedFood.calories * multiplier) : 0;
   const activeProtein = selectedFood ? Math.round(selectedFood.protein * multiplier * 10) / 10 : 0;

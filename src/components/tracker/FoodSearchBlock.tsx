@@ -125,7 +125,8 @@ export function FoodSearchBlock({
   const calculateMacros = (food: FoodItem) => {
     const baseWeight = food.servingWeight || 100;
     const currentWeight = customWeightGrams ? parseFloat(customWeightGrams) || baseWeight : baseWeight * (servings || 1);
-    const multiplier = currentWeight / baseWeight;
+    // Scientific standard: food.calories & nutrients are stored per 100g
+    const multiplier = currentWeight / 100;
 
     return {
       weight: Math.round(currentWeight),

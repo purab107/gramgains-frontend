@@ -170,7 +170,9 @@ export function MealSectionCard({
 
                     <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-slate-500 font-mono">
                       <span className="font-semibold text-slate-700">
-                        {Math.round(item.weightGrams)}g
+                        {item.unitLabel
+                          ? `${item.unitLabel} (${Math.round(item.weightGrams)}g)`
+                          : `${Math.round(item.weightGrams)}g`}
                       </span>
                       <span>•</span>
                       <span className="font-bold text-slate-800">{Math.round(item.calories)} kcal</span>

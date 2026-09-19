@@ -104,17 +104,14 @@ export function getCleanCategoryLabel(food: FoodItem): string {
 }
 
 /**
- * Calculates standardized 100g nutrition values for a food item.
+ * Standardized 100g nutrition values for a food item (since database canonical base is per 100g).
  */
 export function calculatePer100g(food: FoodItem) {
-  const servingWeight = food.servingWeight > 0 ? food.servingWeight : 100;
-  const ratio = 100 / servingWeight;
-
   return {
-    calories: Math.round(food.calories * ratio),
-    protein: Math.round(food.protein * ratio * 10) / 10,
-    carbs: Math.round(food.carbohydrates * ratio * 10) / 10,
-    fat: Math.round(food.fat * ratio * 10) / 10,
-    fiber: Math.round((food.fiber || 0) * ratio * 10) / 10,
+    calories: Math.round(food.calories),
+    protein: Math.round(food.protein * 10) / 10,
+    carbs: Math.round(food.carbohydrates * 10) / 10,
+    fat: Math.round(food.fat * 10) / 10,
+    fiber: Math.round((food.fiber || 0) * 10) / 10,
   };
 }

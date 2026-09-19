@@ -26,6 +26,14 @@ export interface UserProfile {
   updatedAt?: string;
 }
 
+export interface FoodServing {
+  id: string;
+  foodId?: string;
+  unitLabel: string;
+  weightGrams: number;
+  isDefault: boolean;
+}
+
 export interface FoodItem {
   id: string;
   name: string;
@@ -33,8 +41,8 @@ export interface FoodItem {
   category: string;
   brand?: string;
   servingUnit: string;
-
   servingWeight: number;
+  servings?: FoodServing[];
   calories: number;
   protein: number;
   carbohydrates: number;
@@ -52,6 +60,7 @@ export interface MealLogItem {
   food: FoodItem;
   servings: number;
   weightGrams: number;
+  unitLabel?: string | null;
   calories: number;
   protein: number;
   carbohydrates: number;
@@ -222,6 +231,7 @@ export class ApiService {
     foodId: string;
     servings?: number;
     customWeightGrams?: number;
+    unitLabel?: string;
   }): Promise<MealLogItem> {
     const res = await apiFetch(`${API_BASE_URL}/tracker/log`, {
       method: 'POST',
@@ -235,7 +245,7 @@ export class ApiService {
 
   static async updateLog(
     id: string,
-    payload: { servings?: number; customWeightGrams?: number; mealType?: string }
+    payload: { servings?: number; customWeightGrams?: number; mealType?: string; unitLabel?: string }
   ): Promise<MealLogItem> {
     const res = await apiFetch(`${API_BASE_URL}/tracker/log/${id}`, {
       method: 'PUT',

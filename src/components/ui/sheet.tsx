@@ -45,10 +45,11 @@ const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
         {...props}
       >
         {children}
-        <Dialog.Close className="absolute right-4 top-4 rounded-xl p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:pointer-events-none">
+        <Dialog.Close className="absolute right-4 top-4 z-50 h-8 w-8 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:pointer-events-none">
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </Dialog.Close>
+
       </Dialog.Popup>
     </SheetPortal>
   )

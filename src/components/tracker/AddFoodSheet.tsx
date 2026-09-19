@@ -30,6 +30,7 @@ import {
   Moon, 
   ChevronDown, 
   ChevronLeft,
+  ArrowLeft,
   Check,
   History,
   Bookmark,
@@ -204,14 +205,16 @@ export function AddFoodSheet({
   const handleFoodPlusClick = (food: FoodItem) => {
     setSelectedFood(food);
 
-    // Industry standard default:
-    // If food has a serving weight (e.g. 40g), selecting 1.0g with servings = 40
-    // directly delivers the exact structure requested:
-    // Number of servings: 40
-    // Serving size: 1.0g
-    const defaultGrams = food.servingWeight || 100;
-    setSelectedServingOptionId('1g');
-    setServingsInput(String(Math.round(defaultGrams)));
+    // Natural, industry-standard default:
+    // If food has a defined serving (e.g. 40g, 200g bowl), select that serving with count = 1.
+    // Otherwise, default to standard 100g with count = 1.
+    const hasCustomServing = food.servingWeight && food.servingWeight !== 100 && food.servingWeight !== 1;
+    if (hasCustomServing) {
+      setSelectedServingOptionId('package_serving');
+    } else {
+      setSelectedServingOptionId('100g');
+    }
+    setServingsInput('1');
     setMealPickerOpen(false);
     setServingDropdownOpen(false);
     setSheetView('add_food');
@@ -249,11 +252,9 @@ export function AddFoodSheet({
   // Available serving options for the selected food
   const servingOptions: ServingOption[] = useMemo(() => {
     if (!selectedFood) return [];
-    const opts: ServingOption[] = [
-      { id: '1g', label: '1.0g', weightGrams: 1.0 },
-      { id: '100g', label: '100g', weightGrams: 100.0 },
-    ];
+    const opts: ServingOption[] = [];
 
+    // Package or default portion
     if (selectedFood.servingWeight && selectedFood.servingWeight !== 100 && selectedFood.servingWeight !== 1) {
       opts.push({
         id: 'package_serving',
@@ -262,6 +263,26 @@ export function AddFoodSheet({
       });
     }
 
+    // Additional servings defined on food if any
+    if (selectedFood.servings && selectedFood.servings.length > 0) {
+      selectedFood.servings.forEach((s) => {
+        if (s.weightGrams !== 100 && s.weightGrams !== 1 && s.weightGrams !== selectedFood.servingWeight) {
+          opts.push({
+            id: `serving_${s.id}`,
+            label: `1 ${s.unitLabel || 'serving'} (${s.weightGrams}g)`,
+            weightGrams: s.weightGrams,
+          });
+        }
+      });
+    }
+
+    // Standard 100g option
+    opts.push({ id: '100g', label: '100g', weightGrams: 100.0 });
+
+    // Precision 1.0g scale weight
+    opts.push({ id: '1g', label: '1.0g', weightGrams: 1.0 });
+
+    // Custom size option
     opts.push({
       id: 'custom',
       label: 'Custom size',
@@ -274,7 +295,7 @@ export function AddFoodSheet({
   const activeServingOption = useMemo(() => {
     return (
       servingOptions.find((o) => o.id === selectedServingOptionId) ||
-      servingOptions[0] || { id: '1g', label: '1.0g', weightGrams: 1.0 }
+      servingOptions[0] || { id: '100g', label: '100g', weightGrams: 100.0 }
     );
   }, [servingOptions, selectedServingOptionId]);
 
@@ -286,18 +307,21 @@ export function AddFoodSheet({
     setSelectedServingOptionId(option.id);
     setServingDropdownOpen(false);
 
-    // Intuitively update number of servings
-    if (option.id === '1g') {
-      setServingsInput(String(Math.round(currentWeight)));
-    } else if (option.id === '100g') {
-      setServingsInput(String(Math.round((currentWeight / 100) * 10) / 10));
-    } else {
-      const newCount = Math.round((currentWeight / option.weightGrams) * 10) / 10;
-      setServingsInput(String(newCount > 0 ? newCount : 1));
+    // Intuitively update number of servings to preserve current consumed weight
+    const targetUnitWeight = option.id === 'custom' ? (parseFloat(customUnitWeight) || 100) : option.weightGrams;
+    if (targetUnitWeight > 0) {
+      if (option.id === '1g') {
+        setServingsInput(String(Math.round(currentWeight)));
+      } else if (option.id === '100g') {
+        setServingsInput(String(Math.round((currentWeight / 100) * 10) / 10));
+      } else {
+        const newCount = Math.round((currentWeight / targetUnitWeight) * 10) / 10;
+        setServingsInput(String(newCount > 0 ? newCount : 1));
+      }
     }
   };
 
-  // Real-time macro calculations
+  // Real-time scientific macro calculations
   const calculated = useMemo(() => {
     if (!selectedFood) {
       return {
@@ -314,8 +338,9 @@ export function AddFoodSheet({
 
     const servings = Math.max(0, parseFloat(servingsInput) || 0);
     const totalWeight = servings * activeServingOption.weightGrams;
-    const baseWeight = selectedFood.servingWeight || 100;
-    const multiplier = baseWeight > 0 ? totalWeight / baseWeight : 1;
+
+    // Scientific standard: Food table stores nutrition per 100g
+    const multiplier = totalWeight / 100;
 
     const calories = Math.round(selectedFood.calories * multiplier);
     const carbs = Math.round((selectedFood.carbohydrates || 0) * multiplier * 10) / 10;
@@ -369,6 +394,7 @@ export function AddFoodSheet({
         foodId: selectedFood.id,
         servings: servings,
         customWeightGrams: calculated.totalWeight > 0 ? calculated.totalWeight : undefined,
+        unitLabel: activeServingOption.label,
       });
 
       setSuccessToast(`Added ${selectedFood.name} to ${MEAL_DETAILS[currentMeal].label}!`);
@@ -412,13 +438,13 @@ export function AddFoodSheet({
              ============================================================ */
           <>
             {/* Top Header: Meal Name with clickable option to change it */}
-            <SheetHeader className="p-4 sm:p-5 pb-3 border-b border-slate-100 bg-gradient-to-b from-slate-50/90 via-slate-50/40 to-white shrink-0 relative">
-              <div className="flex items-center justify-between pr-8">
+            <SheetHeader className="h-16 px-5 border-b border-slate-100 bg-gradient-to-b from-slate-50/90 via-slate-50/40 to-white shrink-0 flex flex-row items-center justify-between space-y-0 relative">
+              <div className="flex items-center justify-between w-full pr-10">
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setMealPickerOpen((prev) => !prev)}
-                    className="group flex items-center gap-2 px-2.5 py-1.5 -ml-2 rounded-xl hover:bg-slate-100/90 transition-all border border-transparent hover:border-slate-200/80 active:scale-98 text-left"
+                    className="group flex items-center gap-2 px-2 py-1 -ml-1 rounded-xl hover:bg-slate-100/90 transition-all border border-transparent hover:border-slate-200/80 active:scale-98 text-left"
                     title="Click to switch meal"
                   >
                     <div className={`p-1.5 rounded-lg bg-white border border-slate-200/70 shadow-2xs ${activeMealInfo.color}`}>
@@ -429,9 +455,9 @@ export function AddFoodSheet({
                         <SheetTitle className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight leading-none group-hover:text-emerald-700 transition-colors">
                           {activeMealInfo.label}
                         </SheetTitle>
-                        <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-transform duration-200 ${mealPickerOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform duration-200 ${mealPickerOpen ? 'rotate-180' : ''}`} />
                       </div>
-                      <SheetDescription className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      <SheetDescription className="text-[11px] text-slate-500 font-medium mt-0.5 leading-none">
                         Click to change meal
                       </SheetDescription>
                     </div>
@@ -472,10 +498,6 @@ export function AddFoodSheet({
                     </div>
                   )}
                 </div>
-
-                <Badge variant="outline" className={`text-[10px] font-bold px-2 py-0.5 hidden sm:inline-flex ${activeMealInfo.badgeClass}`}>
-                  Add Food
-                </Badge>
               </div>
             </SheetHeader>
 
@@ -683,28 +705,23 @@ export function AddFoodSheet({
              ============================================================ */
           selectedFood && (
             <div className="h-full flex flex-col min-h-0">
-              {/* Header with Back Button and "Add Food" Title */}
-              <SheetHeader className="p-4 sm:p-5 pb-3 border-b border-slate-100 bg-gradient-to-b from-slate-50/90 via-slate-50/40 to-white shrink-0">
-                <div className="flex items-center justify-between pr-8">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSheetView('search')}
-                      className="h-8 px-2 -ml-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100/90 rounded-xl flex items-center gap-1 text-xs font-semibold"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      <span>Back</span>
-                    </Button>
-                    <SheetTitle className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
-                      Add Food
-                    </SheetTitle>
-                  </div>
-
-                  <Badge variant="outline" className={`text-[10px] font-bold px-2 py-0.5 ${activeMealInfo.badgeClass}`}>
-                    {activeMealInfo.label}
-                  </Badge>
+              {/* Header with Back Arrow Button and "Add Food" Title */}
+              <SheetHeader className="h-16 px-5 border-b border-slate-100 bg-gradient-to-b from-slate-50/90 via-slate-50/40 to-white shrink-0 flex flex-row items-center justify-between space-y-0 relative">
+                <div className="flex items-center gap-2.5">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSheetView('search')}
+                    className="h-8 w-8 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors -ml-1"
+                    title="Back to search"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span className="sr-only">Back</span>
+                  </Button>
+                  <SheetTitle className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight leading-none">
+                    Add Food
+                  </SheetTitle>
                 </div>
               </SheetHeader>
 
