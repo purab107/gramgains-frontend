@@ -161,7 +161,7 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
           </div>
         </div>
 
-        {/* ── HOVER VIEW: MACRO PIE CHART & LEGEND ── Fades in on hover */}
+        {/* ── HOVER VIEW: MACRO PIE CHART & DIRECT SLICE LABELS ── Fades in on hover */}
         <div
           className="absolute inset-0 p-3.5 sm:p-4 flex flex-col justify-between bg-white rounded-2xl transition-all duration-300 ease-in-out shadow-xs"
           style={{
@@ -171,7 +171,7 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
           }}
         >
           {/* Header */}
-          <div className="w-full flex items-center justify-between pb-1.5 border-b border-slate-100 shrink-0">
+          <div className="w-full flex items-center justify-between pb-1 border-b border-slate-100 shrink-0">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
               <span className="text-xs font-bold text-slate-800 capitalize">
@@ -183,23 +183,45 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
             </span>
           </div>
 
-          {/* Content: Donut + Macro Stats */}
+          {/* Content: Centered Donut with Direct Slice Labels */}
           {hasMacros ? (
-            <div className="flex-1 flex items-center justify-between gap-1 py-1">
-              {/* Left: Donut Chart with Center Text */}
-              <div className="relative w-[95px] h-[95px] flex items-center justify-center shrink-0">
-                <ChartContainer config={chartConfig} className="w-full h-full">
+            <div className="flex-1 flex flex-col items-center justify-between w-full py-1">
+              {/* Donut Chart with Direct Slice Gram Labels */}
+              <div className="relative w-full flex-1 flex items-center justify-center min-h-[90px]">
+                <ChartContainer config={chartConfig} className="w-full h-full max-h-[110px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={pieData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={26}
-                        outerRadius={42}
+                        innerRadius={28}
+                        outerRadius={52}
                         paddingAngle={3}
                         dataKey="value"
                         stroke="none"
+                        labelLine={false}
+                        label={({ cx, cy, midAngle, innerRadius, outerRadius, value, percent }: any) => {
+                          if (!value || (percent ?? 0) < 0.05) return null;
+                          const RADIAN = Math.PI / 180;
+                          const radius = innerRadius + (outerRadius - innerRadius) * 0.52;
+                          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                          return (
+                            <text
+                              x={x}
+                              y={y}
+                              fill="#ffffff"
+                              textAnchor="middle"
+                              dominantBaseline="central"
+                              fontSize={10}
+                              fontWeight={700}
+                              className="pointer-events-none select-none drop-shadow-xs"
+                            >
+                              {value}g
+                            </text>
+                          );
+                        }}
                       >
                         {pieData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
@@ -220,39 +242,19 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                 </div>
               </div>
 
-              {/* Right: Macro Legend Stats */}
-              <div className="flex-1 flex flex-col justify-center space-y-1.5 pl-1.5 min-w-0">
-                {/* Protein */}
-                <div className="flex items-center justify-between text-[11px] leading-tight">
-                  <div className="flex items-center gap-1.5 truncate">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.protein }} />
-                    <span className="font-semibold truncate" style={{ color: MACRO_COLORS.protein }}>Protein</span>
-                  </div>
-                  <span className="font-bold shrink-0 ml-1" style={{ color: MACRO_COLORS.protein }}>
-                    {proteinG}g <span className="font-normal opacity-70 text-[10px]">({proteinPct}%)</span>
-                  </span>
+              {/* Bottom Macro Legend Dots & Color Identifiers */}
+              <div className="w-full flex items-center justify-center gap-3 pt-1 border-t border-slate-100 shrink-0">
+                <div className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: MACRO_COLORS.protein }}>
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.protein }} />
+                  <span>Protein</span>
                 </div>
-
-                {/* Carbs */}
-                <div className="flex items-center justify-between text-[11px] leading-tight">
-                  <div className="flex items-center gap-1.5 truncate">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.carbs }} />
-                    <span className="font-semibold truncate" style={{ color: MACRO_COLORS.carbs }}>Carbs</span>
-                  </div>
-                  <span className="font-bold shrink-0 ml-1" style={{ color: MACRO_COLORS.carbs }}>
-                    {carbsG}g <span className="font-normal opacity-70 text-[10px]">({carbsPct}%)</span>
-                  </span>
+                <div className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: MACRO_COLORS.carbs }}>
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.carbs }} />
+                  <span>Carbs</span>
                 </div>
-
-                {/* Fat */}
-                <div className="flex items-center justify-between text-[11px] leading-tight">
-                  <div className="flex items-center gap-1.5 truncate">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.fat }} />
-                    <span className="font-semibold truncate" style={{ color: MACRO_COLORS.fat }}>Fat</span>
-                  </div>
-                  <span className="font-bold shrink-0 ml-1" style={{ color: MACRO_COLORS.fat }}>
-                    {fatG}g <span className="font-normal opacity-70 text-[10px]">({fatPct}%)</span>
-                  </span>
+                <div className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: MACRO_COLORS.fat }}>
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.fat }} />
+                  <span>Fat</span>
                 </div>
               </div>
             </div>
