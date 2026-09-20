@@ -183,12 +183,12 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
             </span>
           </div>
 
-          {/* Content: Centered Donut with Direct Slice Labels */}
+          {/* Content: Centered Donut with Thick Slices & Instant Direct Labels */}
           {hasMacros ? (
-            <div className="flex-1 flex flex-col items-center justify-between w-full py-1">
+            <div className="flex-1 flex flex-col items-center justify-center w-full py-1">
               {/* Donut Chart with Direct Slice Gram Labels */}
-              <div className="relative w-full flex-1 flex items-center justify-center min-h-[90px]">
-                <ChartContainer config={chartConfig} className="w-full h-full max-h-[110px]">
+              <div className="relative w-full flex-1 flex items-center justify-center min-h-[105px]">
+                <ChartContainer config={chartConfig} className="w-full h-full max-h-[125px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -196,10 +196,11 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                         cx="50%"
                         cy="50%"
                         innerRadius={28}
-                        outerRadius={52}
+                        outerRadius={56}
                         paddingAngle={3}
                         dataKey="value"
                         stroke="none"
+                        isAnimationActive={false}
                         labelLine={false}
                         label={({ cx, cy, midAngle, innerRadius, outerRadius, value, percent }: any) => {
                           if (!value || (percent ?? 0) < 0.05) return null;
@@ -214,7 +215,7 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                               fill="#ffffff"
                               textAnchor="middle"
                               dominantBaseline="central"
-                              fontSize={10}
+                              fontSize={11}
                               fontWeight={700}
                               className="pointer-events-none select-none drop-shadow-xs"
                             >
@@ -233,28 +234,12 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
 
                 {/* Center label inside Donut */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-xs font-bold text-slate-800 leading-none">
+                  <span className="text-sm font-bold text-slate-800 leading-none">
                     {totalMacroG}g
                   </span>
-                  <span className="text-[9px] font-medium text-slate-400 leading-tight">
+                  <span className="text-[9px] font-medium text-slate-400 leading-tight mt-0.5">
                     total
                   </span>
-                </div>
-              </div>
-
-              {/* Bottom Macro Legend Dots & Color Identifiers */}
-              <div className="w-full flex items-center justify-center gap-3 pt-1 border-t border-slate-100 shrink-0">
-                <div className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: MACRO_COLORS.protein }}>
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.protein }} />
-                  <span>Protein</span>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: MACRO_COLORS.carbs }}>
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.carbs }} />
-                  <span>Carbs</span>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: MACRO_COLORS.fat }}>
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.fat }} />
-                  <span>Fat</span>
                 </div>
               </div>
             </div>
