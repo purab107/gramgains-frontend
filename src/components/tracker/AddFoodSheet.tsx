@@ -238,7 +238,6 @@ export function AddFoodSheet({
       setSuccessToast(`Added ${meal.name} to ${MEAL_DETAILS[currentMeal].label}!`);
       setTimeout(() => {
         setSuccessToast(null);
-        onOpenChange(false);
       }, 1200);
       onFoodLogged?.();
     } catch (err) {
@@ -404,7 +403,6 @@ export function AddFoodSheet({
         setSuccessToast(null);
         setSheetView('search');
         setSelectedFood(null);
-        onOpenChange(false);
       }, 1000);
     } catch (err) {
       console.error('Failed to log meal:', err);
