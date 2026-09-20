@@ -38,7 +38,7 @@ interface SheetContentProps
 const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
   ({ side = 'right', className, children, ...props }, ref) => (
     <SheetPortal>
-      <Dialog.Backdrop className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs transition-all data-[state=closed]:animate-out data-[closed]:animate-out data-[ending-style]:animate-out data-[state=closed]:fade-out-0 data-[closed]:fade-out-0 data-[ending-style]:fade-out-0 data-[state=open]:animate-in data-[open]:animate-in data-[starting-style]:animate-in data-[state=open]:fade-in-0 data-[open]:fade-in-0 data-[starting-style]:fade-in-0" />
+      <Dialog.Backdrop className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs transition-opacity duration-300 ease-in-out opacity-0 data-[open]:opacity-100 data-[state=open]:opacity-100 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[closed]:opacity-0 data-[state=closed]:opacity-0" />
       <Dialog.Popup
         ref={ref}
         className={cn(sheetVariants({ side }), 'flex flex-col p-0', className)}
