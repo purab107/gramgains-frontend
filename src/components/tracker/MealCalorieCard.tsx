@@ -90,6 +90,10 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
   const fatG = Math.round(macros.fat || 0);
   const totalMacroG = proteinG + carbsG + fatG;
 
+  const proteinPct = totalMacroG > 0 ? Math.round((proteinG / totalMacroG) * 100) : 0;
+  const carbsPct = totalMacroG > 0 ? Math.round((carbsG / totalMacroG) * 100) : 0;
+  const fatPct = totalMacroG > 0 ? Math.round((fatG / totalMacroG) * 100) : 0;
+
   const pieData = [
     { name: 'Protein', value: proteinG, color: MACRO_COLORS.protein },
     { name: 'Carbs', value: carbsG, color: MACRO_COLORS.carbs },
@@ -157,17 +161,17 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
           </div>
         </div>
 
-        {/* ── HOVER VIEW: MACRO PIE CHART ── Fades in on hover */}
+        {/* ── HOVER VIEW: MACRO PIE CHART & LEGEND ── Fades in on hover */}
         <div
-          className="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-between bg-white rounded-2xl transition-all duration-300 ease-in-out"
+          className="absolute inset-0 p-3.5 sm:p-4 flex flex-col justify-between bg-white rounded-2xl transition-all duration-300 ease-in-out shadow-xs"
           style={{
             opacity: hovered ? 1 : 0,
-            transform: hovered ? 'scale(1)' : 'scale(0.94)',
+            transform: hovered ? 'scale(1)' : 'scale(0.95)',
             pointerEvents: hovered ? 'auto' : 'none',
           }}
         >
           {/* Header */}
-          <div className="w-full flex items-center justify-between pb-1 border-b border-slate-100">
+          <div className="w-full flex items-center justify-between pb-1.5 border-b border-slate-100 shrink-0">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
               <span className="text-xs font-bold text-slate-800 capitalize">
@@ -179,67 +183,87 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
             </span>
           </div>
 
-          {/* Center: Pie Chart */}
-          <div className="w-full flex-1 flex items-center justify-center relative min-h-[90px]">
-            {hasMacros ? (
-              <ChartContainer config={chartConfig} className="w-full h-full max-h-[120px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Tooltip
-                      content={({ active, payload }) => {
-                        if (!active || !payload || !payload.length) return null;
-                        const item = payload[0];
-                        return (
-                          <div className="bg-slate-900 text-white px-2.5 py-1.5 rounded-lg shadow-md text-[11px] font-semibold flex items-center gap-1.5">
-                            <span
-                              className="w-2 h-2 rounded-full"
-                              style={{ backgroundColor: item.payload.color }}
-                            />
-                            <span>{item.name}:</span>
-                            <span className="text-slate-200">{item.value}g</span>
-                          </div>
-                        );
-                      }}
-                    />
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={30}
-                      outerRadius={48}
-                      paddingAngle={3}
-                      dataKey="value"
-                      stroke="none"
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            ) : (
-              <div className="flex flex-col items-center justify-center text-center p-2">
-                <div className="w-12 h-12 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-[10px] font-semibold mb-1">
-                  0g
+          {/* Content: Donut + Macro Stats */}
+          {hasMacros ? (
+            <div className="flex-1 flex items-center justify-between gap-1 py-1">
+              {/* Left: Donut Chart with Center Text */}
+              <div className="relative w-[95px] h-[95px] flex items-center justify-center shrink-0">
+                <ChartContainer config={chartConfig} className="w-full h-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={26}
+                        outerRadius={42}
+                        paddingAngle={3}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+
+                {/* Center label inside Donut */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-xs font-bold text-slate-800 leading-none">
+                    {totalMacroG}g
+                  </span>
+                  <span className="text-[9px] font-medium text-slate-400 leading-tight">
+                    total
+                  </span>
                 </div>
-                <span className="text-[11px] text-slate-400 font-medium">No macros logged</span>
               </div>
-            )}
 
-            {/* Center label inside Donut */}
-            {hasMacros && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-xs font-bold text-slate-800 leading-none">
-                  {totalMacroG}g
-                </span>
-                <span className="text-[9px] font-semibold text-slate-400 leading-tight">
-                  total
-                </span>
+              {/* Right: Macro Legend Stats */}
+              <div className="flex-1 flex flex-col justify-center space-y-1.5 pl-1.5 min-w-0">
+                {/* Protein */}
+                <div className="flex items-center justify-between text-[11px] leading-tight">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.protein }} />
+                    <span className="font-medium text-slate-600 truncate">Protein</span>
+                  </div>
+                  <span className="font-bold text-slate-800 shrink-0 ml-1">
+                    {proteinG}g <span className="font-normal text-slate-400 text-[10px]">({proteinPct}%)</span>
+                  </span>
+                </div>
+
+                {/* Carbs */}
+                <div className="flex items-center justify-between text-[11px] leading-tight">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.carbs }} />
+                    <span className="font-medium text-slate-600 truncate">Carbs</span>
+                  </div>
+                  <span className="font-bold text-slate-800 shrink-0 ml-1">
+                    {carbsG}g <span className="font-normal text-slate-400 text-[10px]">({carbsPct}%)</span>
+                  </span>
+                </div>
+
+                {/* Fat */}
+                <div className="flex items-center justify-between text-[11px] leading-tight">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.fat }} />
+                    <span className="font-medium text-slate-600 truncate">Fat</span>
+                  </div>
+                  <span className="font-bold text-slate-800 shrink-0 ml-1">
+                    {fatG}g <span className="font-normal text-slate-400 text-[10px]">({fatPct}%)</span>
+                  </span>
+                </div>
               </div>
-            )}
-          </div>
-
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-2">
+              <div className="w-10 h-10 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-[10px] font-semibold mb-1">
+                0g
+              </div>
+              <span className="text-[11px] text-slate-400 font-medium">No macros logged</span>
+            </div>
+          )}
         </div>
 
       </CardContent>
