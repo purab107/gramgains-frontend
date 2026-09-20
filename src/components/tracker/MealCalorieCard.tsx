@@ -226,10 +226,10 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                 <div className="flex items-center justify-between text-[11px] leading-tight">
                   <div className="flex items-center gap-1.5 truncate">
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.protein }} />
-                    <span className="font-medium text-slate-600 truncate">Protein</span>
+                    <span className="font-semibold truncate" style={{ color: MACRO_COLORS.protein }}>Protein</span>
                   </div>
-                  <span className="font-bold text-slate-800 shrink-0 ml-1">
-                    {proteinG}g <span className="font-normal text-slate-400 text-[10px]">({proteinPct}%)</span>
+                  <span className="font-bold shrink-0 ml-1" style={{ color: MACRO_COLORS.protein }}>
+                    {proteinG}g <span className="font-normal opacity-70 text-[10px]">({proteinPct}%)</span>
                   </span>
                 </div>
 
@@ -237,10 +237,10 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                 <div className="flex items-center justify-between text-[11px] leading-tight">
                   <div className="flex items-center gap-1.5 truncate">
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.carbs }} />
-                    <span className="font-medium text-slate-600 truncate">Carbs</span>
+                    <span className="font-semibold truncate" style={{ color: MACRO_COLORS.carbs }}>Carbs</span>
                   </div>
-                  <span className="font-bold text-slate-800 shrink-0 ml-1">
-                    {carbsG}g <span className="font-normal text-slate-400 text-[10px]">({carbsPct}%)</span>
+                  <span className="font-bold shrink-0 ml-1" style={{ color: MACRO_COLORS.carbs }}>
+                    {carbsG}g <span className="font-normal opacity-70 text-[10px]">({carbsPct}%)</span>
                   </span>
                 </div>
 
@@ -248,10 +248,10 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
                 <div className="flex items-center justify-between text-[11px] leading-tight">
                   <div className="flex items-center gap-1.5 truncate">
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: MACRO_COLORS.fat }} />
-                    <span className="font-medium text-slate-600 truncate">Fat</span>
+                    <span className="font-semibold truncate" style={{ color: MACRO_COLORS.fat }}>Fat</span>
                   </div>
-                  <span className="font-bold text-slate-800 shrink-0 ml-1">
-                    {fatG}g <span className="font-normal text-slate-400 text-[10px]">({fatPct}%)</span>
+                  <span className="font-bold shrink-0 ml-1" style={{ color: MACRO_COLORS.fat }}>
+                    {fatG}g <span className="font-normal opacity-70 text-[10px]">({fatPct}%)</span>
                   </span>
                 </div>
               </div>
