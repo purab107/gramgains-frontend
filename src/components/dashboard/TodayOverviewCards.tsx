@@ -28,7 +28,7 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
   const [hovered, setHovered] = useState(false);
 
   // SVG circle gauge values
-  const r = 41;
+  const r = 39;
   const circ = 2 * Math.PI * r;
   const offset = circ - (pct / 100) * circ;
 
@@ -107,15 +107,15 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
               <circle
                 cx="50" cy="50" r={r}
                 fill="none"
-                className="stroke-slate-100 dark:stroke-slate-800"
-                strokeWidth="7.5"
+                className="stroke-slate-100 dark:stroke-[#1e293b]"
+                strokeWidth="12"
               />
               {/* Progress arc */}
               <circle
                 cx="50" cy="50" r={r}
                 fill="none"
                 stroke={color}
-                strokeWidth="7.5"
+                strokeWidth="12"
                 strokeLinecap="round"
                 strokeDasharray={circ}
                 strokeDashoffset={hovered ? offset : circ}

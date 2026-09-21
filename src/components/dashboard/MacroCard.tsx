@@ -30,7 +30,7 @@ export const MacroCard: React.FC<MacroCardProps> = ({ label, value, unit, target
   const displayIcon = icon || defaultIcon;
 
   // SVG circle gauge values
-  const r = 41;
+  const r = 39;
   const circ = 2 * Math.PI * r;
   const offset = circ - (percentage / 100) * circ;
 
@@ -111,14 +111,14 @@ export const MacroCard: React.FC<MacroCardProps> = ({ label, value, unit, target
               <circle
                 cx="50" cy="50" r={r}
                 fill="none"
-                className="stroke-slate-100 dark:stroke-slate-800"
-                strokeWidth="7.5"
+                className="stroke-slate-100 dark:stroke-[#1e293b]"
+                strokeWidth="12"
               />
               <circle
                 cx="50" cy="50" r={r}
                 fill="none"
                 stroke={macroColor}
-                strokeWidth="7.5"
+                strokeWidth="12"
                 strokeLinecap="round"
                 strokeDasharray={circ}
                 strokeDashoffset={hovered ? offset : circ}
