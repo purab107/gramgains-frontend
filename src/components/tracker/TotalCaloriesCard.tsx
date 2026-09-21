@@ -68,7 +68,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
               cx="70"
               cy="70"
               r={radius}
-              className="stroke-muted/50"
+              stroke="#1e293b"
               strokeWidth="13"
               fill="transparent"
             />

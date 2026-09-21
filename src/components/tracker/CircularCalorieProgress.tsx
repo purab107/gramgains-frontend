@@ -39,7 +39,7 @@ export function CircularCalorieProgress({
             cy={center}
             r={radius}
             fill="transparent"
-            stroke="#eef2f6"
+            stroke="#1e293b"
             strokeWidth={strokeWidth}
           />
 
