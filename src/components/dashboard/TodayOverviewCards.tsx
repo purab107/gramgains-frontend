@@ -34,7 +34,7 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
 
   return (
     <Card
-      className="lg:col-span-1 border border-[var(--border)] shadow-xs rounded-2xl bg-[var(--surface-2)] cursor-default transition-all duration-200 hover:border-[var(--accent-border)]"
+      className="lg:col-span-1 border border-slate-200/80 dark:border-slate-800 shadow-sm rounded-2xl bg-card cursor-default"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -62,16 +62,16 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
             </div>
 
             {/* Label */}
-            <h4 className="font-semibold text-[var(--text-secondary)] text-sm sm:text-base mb-1">
+            <h4 className="font-semibold text-slate-600 dark:text-slate-300 text-sm sm:text-base mb-1">
               {label}
             </h4>
 
             {/* Value & Target Stacked */}
             <div className="flex flex-col">
-              <span className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+              <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
                 {value}
               </span>
-              <span className="text-sm sm:text-[15px] text-[var(--text-muted)] font-medium mt-1">
+              <span className="text-sm sm:text-[15px] text-slate-400 dark:text-slate-500 font-medium mt-1">
                 {target}
               </span>
             </div>
@@ -81,7 +81,7 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
           <div className="pt-2">
             <Progress
               value={pct}
-              className="h-3 rounded-full bg-[var(--surface-3)] w-full [&>div]:rounded-full"
+              className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 w-full [&>div]:rounded-full"
               indicatorStyle={{ backgroundColor: color }}
             />
           </div>
@@ -107,7 +107,7 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
               <circle
                 cx="50" cy="50" r={r}
                 fill="none"
-                className="stroke-[var(--surface-3)]"
+                className="stroke-slate-100 dark:stroke-slate-800"
                 strokeWidth="7.5"
               />
               {/* Progress arc */}
@@ -139,10 +139,10 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
           </div>
 
           {/* Label below the ring */}
-          <span className="text-xs font-semibold text-[var(--text-secondary)] mt-1">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">
             {label}
           </span>
-          <span className="text-[11px] text-[var(--text-muted)] font-mono mt-0.5">
+          <span className="text-[11px] text-slate-400 font-mono mt-0.5">
             {value} {target}
           </span>
         </div>
@@ -208,12 +208,12 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5 w-full">
 
         {/* Card 1: Today's Calories (Spans 2 columns on desktop) */}
-        <Card className="lg:col-span-2 border border-[var(--border)] shadow-xs rounded-3xl bg-[var(--surface-2)]">
+        <Card className="lg:col-span-2 border border-slate-200/80 dark:border-slate-800 shadow-sm rounded-3xl bg-card">
           <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full">
             {/* Header */}
             <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
-              <Flame className="w-6 h-6 text-[var(--accent)] stroke-[2.3]" />
-              <h3 className="font-bold text-[var(--text-primary)] text-lg tracking-tight">
+              <Flame className="w-6 h-6 text-[#169b55] stroke-[2.3]" />
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg tracking-tight">
                 Today's Calories
               </h3>
             </div>
@@ -234,7 +234,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           cx="70"
                           cy="70"
                           r={radius}
-                          className="stroke-[var(--surface-3)]"
+                          className="stroke-[#e8edf5] dark:stroke-slate-800"
                           strokeWidth="13"
                           fill="transparent"
                         />
@@ -243,7 +243,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           cx="70"
                           cy="70"
                           r={radius}
-                          className="stroke-[var(--accent)] transition-all duration-700 ease-out"
+                          className="stroke-[#169b55] transition-all duration-700 ease-out"
                           strokeWidth="13"
                           strokeDasharray={circumference}
                           strokeDashoffset={strokeDashoffset}
@@ -261,13 +261,13 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           pointerEvents: 'none',
                         }}
                       >
-                        <span className="text-2xl sm:text-3xl font-semibold text-[var(--text-primary)] tracking-tight leading-none">
+                        <span className="text-2xl sm:text-3xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-none">
                           {roundedConsumed.toLocaleString()}
                         </span>
-                        <span className="text-xs sm:text-sm font-medium text-[var(--text-secondary)] mt-1">
+                        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
                           kcal
                         </span>
-                        <span className="text-[11px] sm:text-xs font-normal text-[var(--text-muted)]">
+                        <span className="text-[11px] sm:text-xs font-normal text-slate-400 dark:text-slate-500">
                           consumed
                         </span>
                       </div>
@@ -281,16 +281,16 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           pointerEvents: 'none',
                         }}
                       >
-                        <span className="text-3xl sm:text-4xl font-bold text-[var(--accent)] tracking-tight leading-none">
+                        <span className="text-3xl sm:text-4xl font-bold text-[#169b55] tracking-tight leading-none">
                           {calPercent}%
                         </span>
-                        <span className="text-xs font-medium text-[var(--text-secondary)] mt-1.5">
+                        <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-1.5">
                           complete
                         </span>
                       </div>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="bg-[var(--surface-3)] text-[var(--text-primary)] border border-[var(--border)] font-medium text-xs px-3 py-1.5 rounded-lg shadow-lg">
+                  <TooltipContent side="top" className="bg-slate-900 text-white font-medium text-xs px-3 py-1.5 rounded-lg">
                     Consumed: {roundedConsumed.toLocaleString()} kcal ({calPercent}% of {roundedTarget.toLocaleString()} kcal goal)
                   </TooltipContent>
                 </Tooltip>
@@ -300,16 +300,16 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
               <div className="flex-1 min-w-0 flex flex-col justify-center gap-5 sm:gap-6 pl-1 sm:pl-2">
                 {/* Row 1: Remaining */}
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[var(--accent-muted)] border border-[var(--accent-border)] flex items-center justify-center text-[var(--accent)] shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-[#e8f8f0] dark:bg-emerald-950/50 flex items-center justify-center text-[#169b55] shrink-0">
                     <Salad className="w-5 h-5 stroke-[2]" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-xs font-normal text-[var(--text-secondary)] block leading-tight">
+                    <span className="text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
                       Remaining
                     </span>
-                    <div className="text-lg sm:text-xl font-semibold text-[var(--text-primary)] tracking-tight leading-tight">
+                    <div className="text-lg sm:text-xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-tight">
                       {roundedRemaining.toLocaleString()}{' '}
-                      <span className="text-xs sm:text-sm font-normal text-[var(--text-muted)] font-sans">
+                      <span className="text-xs sm:text-sm font-normal text-slate-400 dark:text-slate-500 font-sans">
                         kcal
                       </span>
                     </div>
@@ -318,16 +318,16 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
                 {/* Row 2: Daily goal */}
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[var(--surface-3)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-[#f1f4f9] dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
                     <Target className="w-4.5 h-4.5 stroke-[2]" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-xs font-normal text-[var(--text-secondary)] block leading-tight">
+                    <span className="text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
                       Daily goal
                     </span>
-                    <div className="text-lg sm:text-xl font-semibold text-[var(--text-primary)] tracking-tight leading-tight">
+                    <div className="text-lg sm:text-xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-tight">
                       {roundedTarget.toLocaleString()}{' '}
-                      <span className="text-xs sm:text-sm font-normal text-[var(--text-muted)] font-sans">
+                      <span className="text-xs sm:text-sm font-normal text-slate-400 dark:text-slate-500 font-sans">
                         kcal
                       </span>
                     </div>
