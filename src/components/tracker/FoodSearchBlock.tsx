@@ -172,22 +172,22 @@ export function FoodSearchBlock({
   };
 
   return (
-    <Card className="border border-slate-200/80 shadow-sm bg-white rounded-2xl h-[550px] flex flex-col overflow-hidden">
+    <Card className="border border-border shadow-sm bg-card text-card-foreground rounded-2xl h-[550px] flex flex-col overflow-hidden">
       {/* Fixed Card Header */}
-      <CardHeader className="pb-3 border-b border-slate-100 bg-gradient-to-b from-slate-50/70 to-white px-5 pt-4 shrink-0">
+      <CardHeader className="pb-3 border-b border-border bg-muted/30 px-5 pt-4 shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700">
+            <div className="p-1.5 rounded-lg bg-primary/15 text-primary">
               <Search className="w-4 h-4" />
             </div>
             <div>
-              <CardTitle className="text-base font-bold text-slate-900 leading-tight">
-                Search & Log Food
+              <CardTitle className="text-base font-bold text-foreground leading-tight">
+                Search &amp; Log Food
               </CardTitle>
-              <p className="text-[11px] text-slate-500">Adding to <strong className="text-slate-800 font-semibold">{getMealLabel(selectedMealType)}</strong></p>
+              <p className="text-[11px] text-muted-foreground">Adding to <strong className="text-foreground font-semibold">{getMealLabel(selectedMealType)}</strong></p>
             </div>
           </div>
-          <Badge variant="outline" className="text-[10px] font-semibold text-emerald-700 border-emerald-200 bg-emerald-50">
+          <Badge variant="outline" className="text-[10px] font-semibold text-primary border-primary/30 bg-primary/10">
             A-Z List
           </Badge>
         </div>
@@ -197,13 +197,13 @@ export function FoodSearchBlock({
       <CardContent className="p-4 sm:p-5 flex-1 flex flex-col overflow-hidden min-h-0 space-y-3">
         
         {/* Quick Meal Type Selector Pill Bar */}
-        <div className="flex items-center gap-1.5 bg-slate-100/80 p-1 rounded-xl shrink-0">
+        <div className="flex items-center gap-1.5 bg-muted/60 p-1 rounded-xl shrink-0 border border-border">
           <button
             onClick={() => handleMealTypeSelect('BREAKFAST')}
             className={`flex-1 py-1 px-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 transition-all ${
               selectedMealType === 'BREAKFAST'
-                ? 'bg-white text-amber-700 shadow-2xs border border-amber-200/60'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-foreground shadow-2xs border border-border'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <Sunrise className="w-3.5 h-3.5 text-amber-500" />
@@ -214,8 +214,8 @@ export function FoodSearchBlock({
             onClick={() => handleMealTypeSelect('LUNCH')}
             className={`flex-1 py-1 px-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 transition-all ${
               selectedMealType === 'LUNCH'
-                ? 'bg-white text-orange-700 shadow-2xs border border-orange-200/60'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-foreground shadow-2xs border border-border'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <Sun className="w-3.5 h-3.5 text-orange-500" />
@@ -226,8 +226,8 @@ export function FoodSearchBlock({
             onClick={() => handleMealTypeSelect('SNACK')}
             className={`flex-1 py-1 px-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 transition-all ${
               selectedMealType === 'SNACK'
-                ? 'bg-white text-purple-700 shadow-2xs border border-purple-200/60'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-foreground shadow-2xs border border-border'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <Sunset className="w-3.5 h-3.5 text-purple-500" />
@@ -238,8 +238,8 @@ export function FoodSearchBlock({
             onClick={() => handleMealTypeSelect('DINNER')}
             className={`flex-1 py-1 px-1.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 transition-all ${
               selectedMealType === 'DINNER'
-                ? 'bg-white text-indigo-700 shadow-2xs border border-indigo-200/60'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-foreground shadow-2xs border border-border'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <Moon className="w-3.5 h-3.5 text-indigo-500" />
@@ -249,18 +249,18 @@ export function FoodSearchBlock({
 
         {/* Search Bar Input (Fixed) */}
         <div className="relative shrink-0">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search food by name, ingredient, dish..."
-            className="w-full pl-10 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-inner"
+            className="w-full pl-10 pr-10 py-2 bg-background/50 border border-input rounded-xl text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/60"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -273,8 +273,8 @@ export function FoodSearchBlock({
             onClick={() => setActiveTab('all')}
             className={`px-3 py-1 rounded-lg font-medium transition-all shrink-0 ${
               activeTab === 'all'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
             }`}
           >
             All Items
@@ -283,8 +283,8 @@ export function FoodSearchBlock({
             onClick={() => setActiveTab('raw')}
             className={`px-3 py-1 rounded-lg font-medium transition-all shrink-0 ${
               activeTab === 'raw'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
             }`}
           >
             Raw Foods
@@ -293,8 +293,8 @@ export function FoodSearchBlock({
             onClick={() => setActiveTab('recipes')}
             className={`px-3 py-1 rounded-lg font-medium transition-all shrink-0 ${
               activeTab === 'recipes'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
             }`}
           >
             Cooked Dishes
@@ -343,8 +343,8 @@ export function FoodSearchBlock({
                   key={food.id}
                   className={`rounded-xl border transition-all ${
                     isSelected
-                      ? 'border-emerald-500 bg-emerald-50/30 ring-1 ring-emerald-500/20 shadow-sm'
-                      : 'border-slate-100 bg-slate-50/60 hover:bg-slate-50 hover:border-slate-200'
+                      ? 'border-primary bg-primary/10 ring-1 ring-primary/20 shadow-sm'
+                      : 'border-border bg-card hover:bg-muted/50 hover:border-primary/30'
                   }`}
                 >
                   <div
@@ -353,24 +353,24 @@ export function FoodSearchBlock({
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-slate-900 truncate">
+                        <span className="font-bold text-xs text-foreground truncate">
                           {food.name}
                         </span>
                         {food.layer === 2 ? (
-                          <Badge variant="outline" className="text-[9px] px-1 py-0 border-amber-200 bg-amber-50 text-amber-700">
+                          <Badge variant="outline" className="text-[9px] px-1 py-0 border-amber-500/40 bg-amber-500/10 text-amber-500">
                             Recipe
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="text-[9px] px-1 py-0 border-emerald-200 bg-emerald-50 text-emerald-700">
+                          <Badge variant="outline" className="text-[9px] px-1 py-0 border-primary/40 bg-primary/10 text-primary">
                             Raw
                           </Badge>
                         )}
                       </div>
                       
-                      <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-500 font-mono">
+                      <div className="flex items-center gap-2 mt-1 text-[10px] text-muted-foreground font-mono">
                         <span>{food.servingWeight || 100}{food.servingUnit || 'g'}</span>
                         <span>•</span>
-                        <span className="font-bold text-slate-700">{food.calories} kcal</span>
+                        <span className="font-bold text-foreground">{food.calories} kcal</span>
                         <span>•</span>
                         <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>P: {food.protein}g</span>
                         <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>C: {food.carbohydrates}g</span>
@@ -382,11 +382,7 @@ export function FoodSearchBlock({
                       <Button
                         size="sm"
                         variant={isSelected ? 'default' : 'outline'}
-                        className={`h-7 px-2.5 text-xs rounded-lg ${
-                          isSelected
-                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                            : 'border-slate-200 text-slate-700 hover:bg-slate-100'
-                        }`}
+                        className="h-7 px-2.5 text-xs rounded-lg"
                       >
                         {isSelected ? <ChevronUp className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                         <span className="ml-1">{isSelected ? 'Close' : 'Add'}</span>
@@ -396,17 +392,17 @@ export function FoodSearchBlock({
 
                   {/* Expanded Portion & Meal Log Selector */}
                   {isSelected && calculated && (
-                    <div className="p-3 pt-0 border-t border-emerald-100 mt-1 space-y-3">
+                    <div className="p-3 pt-0 border-t border-border mt-1 space-y-3">
                       <div className="grid grid-cols-2 gap-2 text-xs pt-2">
                         {/* Target Meal Type */}
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                          <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">
                             Target Meal
                           </label>
                           <select
                             value={selectedMealType}
                             onChange={(e) => handleMealTypeSelect(e.target.value as MealTypeKey)}
-                            className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                            className="w-full px-2.5 py-1.5 bg-background border border-input rounded-lg text-xs font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                           >
                             <option value="BREAKFAST">Morning (Breakfast)</option>
                             <option value="LUNCH">Afternoon (Lunch)</option>
@@ -417,7 +413,7 @@ export function FoodSearchBlock({
 
                         {/* Custom Weight (Grams) */}
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                          <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">
                             Weight (grams)
                           </label>
                           <div className="relative">
@@ -426,18 +422,18 @@ export function FoodSearchBlock({
                               min="1"
                               value={customWeightGrams}
                               onChange={(e) => setCustomWeightGrams(e.target.value)}
-                              className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                              className="w-full px-2.5 py-1.5 bg-background border border-input rounded-lg text-xs font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                             />
-                            <Scale className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <Scale className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
                           </div>
                         </div>
                       </div>
 
                       {/* Calculated Macros Tally */}
-                      <div className="bg-white p-2 rounded-lg border border-slate-200 flex items-center justify-between text-[11px]">
-                        <span className="font-semibold text-slate-600">Portion:</span>
+                      <div className="bg-muted/50 p-2 rounded-lg border border-border flex items-center justify-between text-[11px]">
+                        <span className="font-semibold text-muted-foreground">Portion:</span>
                         <div className="flex items-center gap-2 font-mono font-bold">
-                          <span className="text-[#169b55]">{calculated.calories} kcal</span>
+                          <span className="text-primary">{calculated.calories} kcal</span>
                           <span style={{ color: MACRO_COLORS.protein }}>P:{calculated.protein}g</span>
                           <span style={{ color: MACRO_COLORS.carbs }}>C:{calculated.carbs}g</span>
                           <span style={{ color: MACRO_COLORS.fat }}>F:{calculated.fat}g</span>
@@ -447,7 +443,7 @@ export function FoodSearchBlock({
                       <Button
                         onClick={handleLogFood}
                         disabled={logging}
-                        className="w-full h-8 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-sm flex items-center justify-center gap-1.5"
+                        className="w-full h-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs rounded-lg shadow-sm flex items-center justify-center gap-1.5"
                       >
                         {logging ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
