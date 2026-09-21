@@ -104,11 +104,11 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
 
   return (
     <Card
-      className="border border-slate-200/80 shadow-sm rounded-2xl bg-card h-full cursor-default"
+      className="border border-border shadow-sm rounded-3xl bg-card text-card-foreground h-full cursor-default"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <CardContent className="relative p-4 sm:p-5 h-full min-h-[175px] overflow-hidden rounded-2xl">
+      <CardContent className="relative p-4 sm:p-5 h-full min-h-[175px] overflow-hidden rounded-3xl">
         
         {/* ── DEFAULT VIEW ── Fades out on hover */}
         <div
@@ -128,20 +128,20 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
               {icon}
             </div>
 
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {sublabel}
             </span>
 
-            <h4 className="font-semibold text-slate-700 text-sm sm:text-base mt-0.5 capitalize">
+            <h4 className="font-semibold text-foreground text-sm sm:text-base mt-0.5 capitalize">
               {label}
             </h4>
 
             <div className="flex flex-col mt-1">
-              <span className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
+              <span className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
                 {Math.round(calories)}{' '}
-                <span className="text-sm font-normal text-slate-400">kcal</span>
+                <span className="text-sm font-normal text-muted-foreground">kcal</span>
               </span>
-              <span className="text-[12px] text-slate-400 font-medium mt-0.5">
+              <span className="text-[12px] text-muted-foreground font-medium mt-0.5">
                 {itemCount} {itemCount === 1 ? 'item' : 'items'} logged
               </span>
             </div>
@@ -149,13 +149,13 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
 
           {/* Bottom: Progress bar */}
           <div className="pt-3">
-            <div className="flex items-center justify-between text-[11px] font-medium text-slate-400 mb-1.5">
+            <div className="flex items-center justify-between text-[11px] font-medium text-muted-foreground mb-1.5">
               <span>of daily goal</span>
               <span style={{ color }}>{percentage}%</span>
             </div>
             <Progress
               value={percentage}
-              className="h-2.5 rounded-full bg-slate-100 [&>div]:rounded-full"
+              className="h-2.5 rounded-full bg-muted [&>div]:rounded-full"
               indicatorStyle={{ backgroundColor: color }}
             />
           </div>
@@ -163,7 +163,7 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
 
         {/* ── HOVER VIEW: MACRO PIE CHART & DIRECT SLICE LABELS ── Fades in on hover */}
         <div
-          className="absolute inset-0 p-3.5 sm:p-4 flex flex-col justify-between bg-white rounded-2xl transition-all duration-300 ease-in-out shadow-xs"
+          className="absolute inset-0 p-3.5 sm:p-4 flex flex-col justify-between bg-card rounded-3xl transition-all duration-300 ease-in-out shadow-xs"
           style={{
             opacity: hovered ? 1 : 0,
             transform: hovered ? 'scale(1)' : 'scale(0.95)',
@@ -171,14 +171,14 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
           }}
         >
           {/* Header */}
-          <div className="w-full flex items-center justify-between pb-1 border-b border-slate-100 shrink-0">
+          <div className="w-full flex items-center justify-between pb-1 border-b border-border shrink-0">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-              <span className="text-xs font-bold text-slate-800 capitalize">
+              <span className="text-xs font-bold text-foreground capitalize">
                 {label} Macros
               </span>
             </div>
-            <span className="text-[11px] font-semibold text-slate-400">
+            <span className="text-[11px] font-semibold text-muted-foreground">
               {Math.round(calories)} kcal
             </span>
           </div>
@@ -234,10 +234,10 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
 
                 {/* Center label inside Donut */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-sm font-bold text-slate-800 leading-none">
+                  <span className="text-sm font-bold text-foreground leading-none">
                     {totalMacroG}g
                   </span>
-                  <span className="text-[9px] font-medium text-slate-400 leading-tight mt-0.5">
+                  <span className="text-[9px] font-medium text-muted-foreground leading-tight mt-0.5">
                     total
                   </span>
                 </div>
@@ -245,10 +245,10 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
             </div>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-center p-2">
-              <div className="w-10 h-10 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-300 text-[10px] font-semibold mb-1">
+              <div className="w-10 h-10 rounded-full border-2 border-dashed border-border flex items-center justify-center text-muted-foreground text-[10px] font-semibold mb-1">
                 0g
               </div>
-              <span className="text-[11px] text-slate-400 font-medium">No macros logged</span>
+              <span className="text-[11px] text-muted-foreground font-medium">No macros logged</span>
             </div>
           )}
         </div>
