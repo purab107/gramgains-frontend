@@ -428,7 +428,7 @@ export function AddFoodSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:w-[480px] sm:max-w-[480px] h-full flex flex-col p-0 bg-white border-l border-slate-200/90 shadow-2xl z-50 overflow-hidden"
+        className="w-full sm:w-[480px] sm:max-w-[480px] h-full flex flex-col p-0 bg-card text-card-foreground border-l border-border shadow-2xl z-50 overflow-hidden"
       >
         {sheetView === 'search' ? (
           /* ============================================================
@@ -436,26 +436,26 @@ export function AddFoodSheet({
              ============================================================ */
           <>
             {/* Top Header: Meal Name with clickable option to change it */}
-            <SheetHeader className="h-16 px-5 border-b border-slate-100 bg-gradient-to-b from-slate-50/90 via-slate-50/40 to-white shrink-0 flex flex-row items-center justify-between space-y-0 relative">
+            <SheetHeader className="h-16 px-5 border-b border-border bg-card/95 shrink-0 flex flex-row items-center justify-between space-y-0 relative">
               <div className="flex items-center justify-between w-full pr-10">
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setMealPickerOpen((prev) => !prev)}
-                    className="group flex items-center gap-2 px-2 py-1 -ml-1 rounded-xl hover:bg-slate-100/90 transition-all border border-transparent hover:border-slate-200/80 active:scale-98 text-left"
+                    className="group flex items-center gap-2 px-2 py-1 -ml-1 rounded-xl hover:bg-muted/80 transition-all border border-transparent hover:border-border active:scale-98 text-left"
                     title="Click to switch meal"
                   >
-                    <div className={`p-1.5 rounded-lg bg-white border border-slate-200/70 shadow-2xs ${activeMealInfo.color}`}>
+                    <div className={`p-1.5 rounded-lg bg-card border border-border shadow-2xs ${activeMealInfo.color}`}>
                       <ActiveIcon className="w-4 h-4" />
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <SheetTitle className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight leading-none group-hover:text-emerald-700 transition-colors">
+                        <SheetTitle className="text-base sm:text-lg font-extrabold text-foreground tracking-tight leading-none group-hover:text-primary transition-colors">
                           {activeMealInfo.label}
                         </SheetTitle>
-                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-transform duration-200 ${mealPickerOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-transform duration-200 ${mealPickerOpen ? 'rotate-180' : ''}`} />
                       </div>
-                      <SheetDescription className="text-[11px] text-slate-500 font-medium mt-0.5 leading-none">
+                      <SheetDescription className="text-[11px] text-muted-foreground font-medium mt-0.5 leading-none">
                         Click to change meal
                       </SheetDescription>
                     </div>
@@ -463,8 +463,8 @@ export function AddFoodSheet({
 
                   {/* Meal Selector Dropdown Menu */}
                   {mealPickerOpen && (
-                    <div className="absolute left-0 top-full mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-xl p-1.5 z-50 animate-in fade-in-0 zoom-in-95 duration-150">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
+                    <div className="absolute left-0 top-full mt-2 w-56 bg-popover text-popover-foreground rounded-2xl border border-border shadow-xl p-1.5 z-50 animate-in fade-in-0 zoom-in-95 duration-150">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2 py-1">
                         Select Meal
                       </div>
                       <div className="space-y-1">
@@ -480,15 +480,15 @@ export function AddFoodSheet({
                               onClick={() => handleSelectMealType(key)}
                               className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                                 isSelected
-                                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60'
-                                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                                  ? 'bg-primary/10 text-primary border border-primary/20'
+                                  : 'text-foreground hover:bg-muted hover:text-foreground'
                               }`}
                             >
                               <div className="flex items-center gap-2">
                                 <Icon className={`w-4 h-4 ${item.color}`} />
                                 <span>{item.label}</span>
                               </div>
-                              {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600" />}
+                              {isSelected && <Check className="w-3.5 h-3.5 text-primary" />}
                             </button>
                           );
                         })}
@@ -500,23 +500,23 @@ export function AddFoodSheet({
             </SheetHeader>
 
             {/* Search Bar & Filters Section */}
-            <div className="p-4 sm:p-5 pb-3 space-y-3 shrink-0 border-b border-slate-100 bg-white">
+            <div className="p-4 sm:p-5 pb-3 space-y-3 shrink-0 border-b border-border bg-card">
               {/* Simple Search Bar */}
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search food item by name..."
-                  className="w-full pl-10 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-inner"
+                  className="w-full pl-10 pr-10 py-2 bg-muted/40 border border-input rounded-xl text-xs sm:text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-inner"
                   autoFocus
                 />
                 {query && (
                   <button
                     type="button"
                     onClick={() => setQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     title="Clear search"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -533,8 +533,8 @@ export function AddFoodSheet({
                   onClick={() => setActiveTab('all')}
                   className={`rounded-xl text-xs font-semibold h-8 px-3 transition-all ${
                     activeTab === 'all'
-                      ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-xs'
-                      : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs'
+                      : 'bg-card hover:bg-muted text-muted-foreground hover:text-foreground border-border'
                   }`}
                 >
                   <Sparkles className="w-3 h-3 mr-1.5 text-amber-400" />
@@ -548,8 +548,8 @@ export function AddFoodSheet({
                   onClick={() => setActiveTab('history')}
                   className={`rounded-xl text-xs font-semibold h-8 px-3 transition-all ${
                     activeTab === 'history'
-                      ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-xs'
-                      : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs'
+                      : 'bg-card hover:bg-muted text-muted-foreground hover:text-foreground border-border'
                   }`}
                 >
                   <History className="w-3 h-3 mr-1.5 text-blue-400" />
@@ -563,8 +563,8 @@ export function AddFoodSheet({
                   onClick={() => setActiveTab('saved_meals')}
                   className={`rounded-xl text-xs font-semibold h-8 px-3 transition-all ${
                     activeTab === 'saved_meals'
-                      ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-xs'
-                      : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs'
+                      : 'bg-card hover:bg-muted text-muted-foreground hover:text-foreground border-border'
                   }`}
                 >
                   <Bookmark className="w-3 h-3 mr-1.5 text-emerald-400" />
@@ -574,18 +574,18 @@ export function AddFoodSheet({
             </div>
 
             {/* Food Items List Area */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-2 min-h-0 bg-slate-50/30">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-2 min-h-0 bg-background/50">
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-20 text-slate-400 gap-2">
-                  <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+                <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-2">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
                   <span className="text-xs font-medium">Searching food items...</span>
                 </div>
               ) : activeTab === 'saved_meals' ? (
                 savedMeals.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-2 text-center">
-                    <Bookmark className="w-8 h-8 text-slate-300 stroke-1" />
-                    <p className="text-xs font-semibold text-slate-700">No saved meals found</p>
-                    <p className="text-[11px] text-slate-400 max-w-xs">
+                  <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-2 text-center">
+                    <Bookmark className="w-8 h-8 text-muted-foreground/40 stroke-1" />
+                    <p className="text-xs font-semibold text-foreground">No saved meals found</p>
+                    <p className="text-[11px] text-muted-foreground max-w-xs">
                       {query ? `No saved meals match "${query}"` : 'You have not created any saved meals yet.'}
                     </p>
                   </div>
@@ -600,18 +600,18 @@ export function AddFoodSheet({
                     return (
                       <div
                         key={meal.id}
-                        className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all flex items-center justify-between gap-3 group"
+                        className="p-3 bg-card rounded-xl border border-border shadow-2xs hover:border-primary/40 hover:bg-muted/30 transition-all flex items-center justify-between gap-3 group"
                       >
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">
+                            <span className="font-bold text-xs sm:text-sm text-foreground truncate">
                               {meal.name}
                             </span>
-                            <Badge variant="outline" className="text-[9px] px-1.5 py-0 border-emerald-200 bg-emerald-50 text-emerald-700 font-bold shrink-0">
+                            <Badge variant="outline" className="text-[9px] px-1.5 py-0 border-primary/20 bg-primary/10 text-primary font-bold shrink-0">
                               Saved
                             </Badge>
                           </div>
-                          <div className="text-[11px] text-slate-500 font-medium mt-1">
+                          <div className="text-[11px] text-muted-foreground font-medium mt-1">
                             {cal} cal, {p} p, {c} c, {f} f{totalWeight > 0 ? `, ${Math.round(totalWeight)} g` : ''}
                           </div>
                         </div>
@@ -622,7 +622,7 @@ export function AddFoodSheet({
                           size="icon"
                           onClick={() => handleSavedMealPlusClick(meal)}
                           disabled={isLogging}
-                          className="h-8 w-8 rounded-lg border-slate-200 text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 shadow-2xs shrink-0 transition-all active:scale-95 group-hover:border-slate-300"
+                          className="h-8 w-8 rounded-lg border-border text-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/30 shadow-2xs shrink-0 transition-all active:scale-95"
                           title="Add saved meal"
                         >
                           {isLogging ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-4 h-4" />}
@@ -637,10 +637,10 @@ export function AddFoodSheet({
 
                   if (currentList.length === 0) {
                     return (
-                      <div className="flex flex-col items-center justify-center py-16 text-slate-400 gap-2 text-center">
-                        <Utensils className="w-8 h-8 text-slate-300 stroke-1" />
-                        <p className="text-xs font-semibold text-slate-700">No food items found</p>
-                        <p className="text-[11px] text-slate-400 max-w-xs">
+                      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-2 text-center">
+                        <Utensils className="w-8 h-8 text-muted-foreground/40 stroke-1" />
+                        <p className="text-xs font-semibold text-foreground">No food items found</p>
+                        <p className="text-[11px] text-muted-foreground max-w-xs">
                           {activeTab === 'history'
                             ? 'No previously logged foods in history yet.'
                             : query
@@ -661,21 +661,21 @@ export function AddFoodSheet({
                     return (
                       <div
                         key={food.id}
-                        className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all flex items-center justify-between gap-3 group"
+                        className="p-3 bg-card rounded-xl border border-border shadow-2xs hover:border-primary/40 hover:bg-muted/30 transition-all flex items-center justify-between gap-3 group"
                       >
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">
+                            <span className="font-bold text-xs sm:text-sm text-foreground truncate">
                               {food.name}
                             </span>
                             {food.layer === 2 ? (
-                              <span className="text-[9px] px-1 py-0.2 rounded bg-amber-50 text-amber-700 border border-amber-200/60 font-medium shrink-0">
+                              <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 font-medium shrink-0">
                                 Recipe
                               </span>
                             ) : null}
                           </div>
 
-                          <div className="text-[11px] text-slate-500 font-medium mt-1">
+                          <div className="text-[11px] text-muted-foreground font-medium mt-1">
                             {cal} cal, {p} p, {c} c, {f} f, {weight} g
                           </div>
                         </div>
@@ -685,7 +685,7 @@ export function AddFoodSheet({
                           variant="outline"
                           size="icon"
                           onClick={() => handleFoodPlusClick(food)}
-                          className="h-8 w-8 rounded-lg border-slate-200 text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 shadow-2xs shrink-0 transition-all active:scale-95 group-hover:border-slate-300"
+                          className="h-8 w-8 rounded-lg border-border text-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/30 shadow-2xs shrink-0 transition-all active:scale-95"
                           title="Add food item"
                         >
                           <Plus className="w-4 h-4" />
@@ -704,51 +704,51 @@ export function AddFoodSheet({
           selectedFood && (
             <div className="h-full flex flex-col min-h-0">
               {/* Header with Back Arrow Button and "Add Food" Title */}
-              <SheetHeader className="h-16 px-5 border-b border-slate-100 bg-gradient-to-b from-slate-50/90 via-slate-50/40 to-white shrink-0 flex flex-row items-center justify-between space-y-0 relative">
+              <SheetHeader className="h-16 px-5 border-b border-border bg-card/95 shrink-0 flex flex-row items-center justify-between space-y-0 relative">
                 <div className="flex items-center gap-2.5">
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     onClick={() => setSheetView('search')}
-                    className="h-8 w-8 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors -ml-1"
+                    className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors -ml-1"
                     title="Back to search"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span className="sr-only">Back</span>
                   </Button>
-                  <SheetTitle className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight leading-none">
+                  <SheetTitle className="text-base sm:text-lg font-extrabold text-foreground tracking-tight leading-none">
                     Add Food
                   </SheetTitle>
                 </div>
               </SheetHeader>
 
               {/* Scrollable Form Content */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 min-h-0 bg-slate-50/30">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 min-h-0 bg-background/50">
                 
                 {/* Food Item Name */}
-                <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+                <div className="bg-card p-4 rounded-2xl border border-border shadow-2xs">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+                      <h3 className="text-base sm:text-lg font-bold text-foreground leading-tight">
                         {selectedFood.name}
                       </h3>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
+                      <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                         {selectedFood.category && <span>{selectedFood.category}</span>}
                         {selectedFood.brand && (
                           <>
                             <span>•</span>
-                            <span className="font-medium text-slate-700">{selectedFood.brand}</span>
+                            <span className="font-medium text-foreground">{selectedFood.brand}</span>
                           </>
                         )}
                       </div>
                     </div>
                     {selectedFood.layer === 2 ? (
-                      <Badge variant="outline" className="text-[10px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-200">
+                      <Badge variant="outline" className="text-[10px] px-2 py-0.5 bg-amber-500/10 text-amber-500 border-amber-500/20">
                         Recipe
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="text-[10px] px-2 py-0.5 bg-emerald-50 text-emerald-700 border-emerald-200">
+                      <Badge variant="outline" className="text-[10px] px-2 py-0.5 bg-primary/10 text-primary border-primary/20">
                         Raw
                       </Badge>
                     )}
@@ -756,26 +756,26 @@ export function AddFoodSheet({
                 </div>
 
                 {/* Serving & Meal Control Group */}
-                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs divide-y divide-slate-100 overflow-visible">
+                <div className="bg-card rounded-2xl border border-border shadow-2xs divide-y divide-border overflow-visible">
                   
                   {/* Row 1: Meal Type */}
                   <div className="p-3.5 sm:p-4 flex items-center justify-between relative">
-                    <span className="text-xs font-semibold text-slate-600">Meal</span>
+                    <span className="text-xs font-semibold text-muted-foreground">Meal</span>
 
                     <div className="relative">
                       <button
                         type="button"
                         onClick={() => setMealPickerOpen((prev) => !prev)}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-slate-100 text-xs font-bold text-slate-800 transition-all active:scale-98"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-muted/50 hover:bg-muted text-xs font-bold text-foreground transition-all active:scale-98"
                       >
                         <ActiveIcon className={`w-3.5 h-3.5 ${activeMealInfo.color}`} />
                         <span>{activeMealInfo.label}</span>
-                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${mealPickerOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${mealPickerOpen ? 'rotate-180' : ''}`} />
                       </button>
 
                       {/* Dropdown for meal switch */}
                       {mealPickerOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95">
+                        <div className="absolute right-0 top-full mt-1.5 w-48 bg-popover text-popover-foreground rounded-2xl border border-border shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95">
                           {ALL_MEAL_KEYS.map((key) => {
                             const item = MEAL_DETAILS[key];
                             const Icon = item.icon;
@@ -788,15 +788,15 @@ export function AddFoodSheet({
                                 onClick={() => handleSelectMealType(key)}
                                 className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                                   isSelected
-                                    ? 'bg-emerald-50 text-emerald-800 font-bold'
-                                    : 'text-slate-700 hover:bg-slate-100'
+                                    ? 'bg-primary/10 text-primary font-bold'
+                                    : 'text-foreground hover:bg-muted'
                                 }`}
                               >
                                 <div className="flex items-center gap-2">
                                   <Icon className={`w-3.5 h-3.5 ${item.color}`} />
                                   <span>{item.label}</span>
                                 </div>
-                                {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600" />}
+                                {isSelected && <Check className="w-3.5 h-3.5 text-primary" />}
                               </button>
                             );
                           })}
@@ -808,18 +808,18 @@ export function AddFoodSheet({
                   {/* Row 2: Number of Servings */}
                   <div className="p-3.5 sm:p-4 space-y-2">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-xs font-semibold text-slate-600">
+                      <span className="text-xs font-semibold text-muted-foreground">
                         Number of servings
                       </span>
 
                       {/* Interactive Stepper & Direct Input */}
-                      <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                      <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl border border-border">
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
                           onClick={() => handleStepServings(-1)}
-                          className="h-7 w-7 rounded-lg hover:bg-white text-slate-700"
+                          className="h-7 w-7 rounded-lg hover:bg-card text-foreground"
                           title="Decrease servings"
                         >
                           <Minus className="w-3.5 h-3.5" />
@@ -831,7 +831,7 @@ export function AddFoodSheet({
                           min="0.1"
                           value={servingsInput}
                           onChange={(e) => setServingsInput(e.target.value)}
-                          className="w-16 h-7 text-center font-bold text-xs text-slate-900 bg-white border-slate-200 rounded-lg shadow-2xs p-0 focus-visible:ring-1"
+                          className="w-16 h-7 text-center font-bold text-xs text-foreground bg-card border-border rounded-lg shadow-2xs p-0 focus-visible:ring-1"
                         />
 
                         <Button
@@ -839,7 +839,7 @@ export function AddFoodSheet({
                           variant="ghost"
                           size="icon"
                           onClick={() => handleStepServings(1)}
-                          className="h-7 w-7 rounded-lg hover:bg-white text-slate-700"
+                          className="h-7 w-7 rounded-lg hover:bg-card text-foreground"
                           title="Increase servings"
                         >
                           <Plus className="w-3.5 h-3.5" />
@@ -849,7 +849,7 @@ export function AddFoodSheet({
 
                     {/* Quick Pick Servings Multipliers */}
                     <div className="flex items-center justify-end gap-1.5 pt-1">
-                      <span className="text-[10px] font-semibold text-slate-400 mr-1">Quick:</span>
+                      <span className="text-[10px] font-semibold text-muted-foreground mr-1">Quick:</span>
                       {[0.5, 1, 1.5, 2, 40].map((val) => (
                         <button
                           key={val}
@@ -857,8 +857,8 @@ export function AddFoodSheet({
                           onClick={() => setServingsInput(String(val))}
                           className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all ${
                             parseFloat(servingsInput) === val
-                              ? 'bg-slate-900 text-white shadow-2xs'
-                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                              ? 'bg-primary text-primary-foreground shadow-2xs'
+                              : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
                           }`}
                         >
                           {val}
@@ -869,7 +869,7 @@ export function AddFoodSheet({
 
                   {/* Row 3: Serving Size Selector */}
                   <div className="p-3.5 sm:p-4 flex items-center justify-between relative">
-                    <span className="text-xs font-semibold text-slate-600">
+                    <span className="text-xs font-semibold text-muted-foreground">
                       Serving Size
                     </span>
 
@@ -877,17 +877,17 @@ export function AddFoodSheet({
                       <button
                         type="button"
                         onClick={() => setServingDropdownOpen((prev) => !prev)}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50/80 hover:bg-slate-100 text-xs font-bold text-slate-800 transition-all active:scale-98"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-muted/50 hover:bg-muted text-xs font-bold text-foreground transition-all active:scale-98"
                       >
-                        <Scale className="w-3.5 h-3.5 text-emerald-600" />
+                        <Scale className="w-3.5 h-3.5 text-primary" />
                         <span>{activeServingOption.label}</span>
-                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${servingDropdownOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${servingDropdownOpen ? 'rotate-180' : ''}`} />
                       </button>
 
                       {/* Dropdown with Industry Standard Options */}
                       {servingDropdownOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 w-60 bg-white rounded-2xl border border-slate-200 shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 space-y-1">
-                          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
+                        <div className="absolute right-0 top-full mt-1.5 w-60 bg-popover text-popover-foreground rounded-2xl border border-border shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 space-y-1">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2 py-1">
                             Choose Serving Size
                           </div>
                           {servingOptions.map((opt) => {
@@ -899,20 +899,20 @@ export function AddFoodSheet({
                                 onClick={() => handleSelectServingOption(opt)}
                                 className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                                   isSelected
-                                    ? 'bg-emerald-50 text-emerald-800 font-bold'
-                                    : 'text-slate-700 hover:bg-slate-100'
+                                    ? 'bg-primary/10 text-primary font-bold'
+                                    : 'text-foreground hover:bg-muted'
                                 }`}
                               >
                                 <span>{opt.label}</span>
-                                {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600" />}
+                                {isSelected && <Check className="w-3.5 h-3.5 text-primary" />}
                               </button>
                             );
                           })}
 
                           {/* Custom size input if selected */}
                           {selectedServingOptionId === 'custom' && (
-                            <div className="p-2 pt-1 border-t border-slate-100">
-                              <label className="text-[10px] font-bold text-slate-500 block mb-1">
+                            <div className="p-2 pt-1 border-t border-border">
+                              <label className="text-[10px] font-bold text-muted-foreground block mb-1">
                                 Custom grams per serving:
                               </label>
                               <Input
@@ -920,7 +920,7 @@ export function AddFoodSheet({
                                 min="1"
                                 value={customUnitWeight}
                                 onChange={(e) => setCustomUnitWeight(e.target.value)}
-                                className="h-7 text-xs font-bold"
+                                className="h-7 text-xs font-bold border-border bg-background text-foreground"
                               />
                             </div>
                           )}
@@ -932,9 +932,9 @@ export function AddFoodSheet({
                 </div>
 
                 {/* Macros Breakdown Card */}
-                <Card className="border border-slate-200/90 shadow-sm rounded-2xl bg-white overflow-hidden">
+                <Card className="border border-border shadow-sm rounded-2xl bg-card overflow-hidden">
                   <CardContent className="p-4 sm:p-5">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-3">
                       Nutritional Breakdown
                     </div>
 
@@ -949,7 +949,7 @@ export function AddFoodSheet({
                               cx="50"
                               cy="50"
                               r={radius}
-                              stroke="#f1f5f9"
+                              stroke="hsl(var(--muted))"
                               strokeWidth="9"
                               fill="transparent"
                             />
@@ -1005,30 +1005,30 @@ export function AddFoodSheet({
 
                           {/* Center Text: Total Calories */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-none">
+                            <span className="text-xl sm:text-2xl font-black text-foreground tracking-tight leading-none">
                               {calculated.calories}
                             </span>
-                            <span className="text-[10px] font-semibold text-slate-400 mt-0.5">
+                            <span className="text-[10px] font-semibold text-muted-foreground mt-0.5">
                               cal
                             </span>
                           </div>
                         </div>
 
-                        <span className="text-[10px] font-semibold text-slate-500 mt-1">
+                        <span className="text-[10px] font-semibold text-muted-foreground mt-1">
                           {Math.round(calculated.totalWeight)}g total
                         </span>
                       </div>
 
                       {/* Right Side: Macro Breakdown Columns (71% | 15% | 14%) */}
-                      <div className="col-span-7 pl-2 border-l border-slate-100">
+                      <div className="col-span-7 pl-2 border-l border-border">
                         <div className="grid grid-cols-3 gap-1 text-center py-1">
                           
                           {/* Carbs Column */}
                           <div className="space-y-1">
-                            <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                            <div className="text-sm sm:text-base font-extrabold text-foreground leading-tight">
                               {calculated.carbsPercent}%
                             </div>
-                            <div className="text-xs font-bold text-slate-700 font-mono">
+                            <div className="text-xs font-bold text-muted-foreground font-mono">
                               {calculated.carbs}g
                             </div>
                             <div
@@ -1040,11 +1040,11 @@ export function AddFoodSheet({
                           </div>
 
                           {/* Fat Column */}
-                          <div className="space-y-1 border-x border-slate-100 px-1">
-                            <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                          <div className="space-y-1 border-x border-border px-1">
+                            <div className="text-sm sm:text-base font-extrabold text-foreground leading-tight">
                               {calculated.fatPercent}%
                             </div>
-                            <div className="text-xs font-bold text-slate-700 font-mono">
+                            <div className="text-xs font-bold text-muted-foreground font-mono">
                               {calculated.fat}g
                             </div>
                             <div
@@ -1057,10 +1057,10 @@ export function AddFoodSheet({
 
                           {/* Protein Column */}
                           <div className="space-y-1">
-                            <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                            <div className="text-sm sm:text-base font-extrabold text-foreground leading-tight">
                               {calculated.proteinPercent}%
                             </div>
-                            <div className="text-xs font-bold text-slate-700 font-mono">
+                            <div className="text-xs font-bold text-muted-foreground font-mono">
                               {calculated.protein}g
                             </div>
                             <div
@@ -1080,20 +1080,20 @@ export function AddFoodSheet({
 
                 {/* Success Feedback Toast */}
                 {successToast && (
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold animate-in fade-in slide-in-from-top-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-bold animate-in fade-in slide-in-from-top-2">
+                    <Check className="w-4 h-4 text-primary shrink-0" />
                     <span>{successToast}</span>
                   </div>
                 )}
               </div>
 
               {/* Fixed Footer: Add Button */}
-              <div className="p-4 sm:p-5 border-t border-slate-100 bg-white shrink-0">
+              <div className="p-4 sm:p-5 border-t border-border bg-card shrink-0">
                 <Button
                   type="button"
                   onClick={handleLogFood}
                   disabled={isLogging}
-                  className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition-all active:scale-98 flex items-center justify-center gap-2"
+                  className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm rounded-xl shadow-md transition-all active:scale-98 flex items-center justify-center gap-2"
                 >
                   {isLogging ? (
                     <>
