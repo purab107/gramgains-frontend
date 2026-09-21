@@ -47,11 +47,11 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
       case 3:
         return 'bg-[#0f8651] border-[#0f8651] text-white';
       case 2:
-        return 'bg-[#4cd593] border-[#4cd593] text-[#171C1B]';
+        return 'bg-[#4cd593] border-[#4cd593] text-black';
       case 1:
-        return 'bg-[#a8ecca] border-transparent text-[#171C1B]';
+        return 'bg-[#a8ecca] border-transparent text-black';
       default:
-        return 'bg-[#e4f7ee] border-[#e5e7eb] text-[#68716F]';
+        return 'bg-muted/40 border-border/60 text-muted-foreground';
     }
   };
 
@@ -86,21 +86,21 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
   };
 
   return (
-    <div className="bg-[#fefeff] border border-[#e5e7eb] p-5 rounded-xl shadow-sm relative overflow-hidden text-[#171C1B]">
+    <div className="bg-card border border-border p-5 rounded-xl shadow-sm relative overflow-hidden text-foreground">
       {/* Top Header */}
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-[#e4f7ee] border border-[#e5e7eb] text-[#0d7649]">
+          <div className="p-2 rounded-lg bg-accent border border-border text-accent-foreground">
             <Flame className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-bold text-[#171C1B] text-sm leading-none">
+            <h3 className="font-bold text-foreground text-sm leading-none">
               Meal Consistency Heatmap
             </h3>
-            <p className="text-xs text-[#68716F] mt-1">
-              Logged meals on <span className="text-[#0f8651] font-semibold">{loggedDaysCount}</span> of {realDaysCount} active day{realDaysCount === 1 ? '' : 's'}
+            <p className="text-xs text-muted-foreground mt-1">
+              Logged meals on <span className="text-primary font-semibold">{loggedDaysCount}</span> of {realDaysCount} active day{realDaysCount === 1 ? '' : 's'}
               {accountCreatedAt && (
-                <span className="text-[11px] text-[#68716F] ml-1">(Account created: {accountCreatedAt})</span>
+                <span className="text-[11px] text-muted-foreground ml-1">(Account created: {accountCreatedAt})</span>
               )}
             </p>
           </div>
@@ -109,7 +109,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
         {/* Timeframe Toggles & Legend Container */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Timeframe Toggle Buttons */}
-          <div className="flex items-center p-1 bg-[#fcfdfe] border border-[#e5e7eb] rounded-lg">
+          <div className="flex items-center p-1 bg-muted/50 border border-border rounded-lg">
             {TIMEFRAME_OPTIONS.map((opt) => {
               const isActive = daysCount === opt.days;
               return (
@@ -118,8 +118,8 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
                   onClick={() => setDaysCount(opt.days)}
                   className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
                     isActive
-                      ? 'bg-[#0d7649] text-white shadow-xs'
-                      : 'text-[#68716F] hover:text-[#171C1B] hover:bg-[#e4f7ee]'
+                      ? 'bg-primary text-primary-foreground shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                   }`}
                 >
                   {opt.label}
@@ -189,31 +189,31 @@ export const Heatmap: React.FC<HeatmapProps> = ({ initialDaysCount = 30 }) => {
           )}
 
           {/* Hover Tooltip / Status Footer */}
-          <div className="mt-3 min-h-[24px] flex items-center justify-between text-xs text-[#68716F] pt-2 border-t border-[#e5e7eb]">
+          <div className="mt-3 min-h-[24px] flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border">
             {hoveredItem ? (
-              <div className="flex items-center gap-2 text-[#171C1B] font-medium">
-                <Calendar className="w-3.5 h-3.5 text-[#0f8651]" />
+              <div className="flex items-center gap-2 text-foreground font-medium">
+                <Calendar className="w-3.5 h-3.5 text-primary" />
                 <span>{getFormattedDate(hoveredItem.date)}</span>
-                <span className="text-[#68716F]">•</span>
+                <span className="text-muted-foreground">•</span>
                 {hoveredItem.isFuture ? (
-                  <span className="text-[#68716F] italic">Future / Unreached Day</span>
+                  <span className="text-muted-foreground italic">Future / Unreached Day</span>
                 ) : (
                   <>
-                    <span className="text-[#0d7649] font-bold font-mono">{hoveredItem.totalCalories} kcal</span>
-                    <span className="text-[#68716F]">•</span>
+                    <span className="text-primary font-bold font-mono">{hoveredItem.totalCalories} kcal</span>
+                    <span className="text-muted-foreground">•</span>
                     <span>{hoveredItem.count} meal{hoveredItem.count === 1 ? '' : 's'} logged</span>
                   </>
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 text-[#68716F] text-[11px]">
-                <Info className="w-3.5 h-3.5 text-[#68716F]" />
+              <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
+                <Info className="w-3.5 h-3.5 text-muted-foreground" />
                 <span>Hover over any square to inspect recorded daily calories and meals</span>
               </div>
             )}
 
-            <div className="text-[11px] text-[#68716F] font-mono">
-              Target: <span className="text-[#171C1B] font-semibold">{targetCalories} kcal</span>
+            <div className="text-[11px] text-muted-foreground font-mono">
+              Target: <span className="text-foreground font-semibold">{targetCalories} kcal</span>
             </div>
           </div>
         </div>
