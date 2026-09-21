@@ -111,14 +111,14 @@ export const WeeklyCaloriesBarChart: React.FC<WeeklyCaloriesBarChartProps> = ({
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-[#e8f8f0] dark:bg-emerald-950/40 flex items-center justify-center text-[#169b55] shrink-0 border border-[#169b55]/20">
+            <div className="w-9 h-9 rounded-2xl bg-accent flex items-center justify-center text-primary shrink-0 border border-border">
               <BarChart3 className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base sm:text-lg tracking-tight leading-tight">
+              <h3 className="font-bold text-foreground text-base sm:text-lg tracking-tight leading-tight">
                 7-Day Calorie Intake
               </h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+              <span className="text-xs text-muted-foreground font-medium">
                 {dateRangeString}
               </span>
             </div>
@@ -126,13 +126,13 @@ export const WeeklyCaloriesBarChart: React.FC<WeeklyCaloriesBarChartProps> = ({
 
           {/* Quick Stat Badges */}
           <div className="flex items-center gap-2 text-xs">
-            <div className="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 font-medium flex items-center gap-1.5">
-              <span className="text-slate-400">Avg:</span>
-              <span className="font-bold text-slate-900 dark:text-white">
+            <div className="px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-medium flex items-center gap-1.5 border border-border/50">
+              <span className="text-muted-foreground/80">Avg:</span>
+              <span className="font-bold text-foreground">
                 {dailyAverage.toLocaleString()} kcal
               </span>
             </div>
-            <div className="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-[#169b55] dark:text-emerald-400 font-medium flex items-center gap-1">
+            <div className="px-2.5 py-1 rounded-full bg-accent text-accent-foreground font-medium flex items-center gap-1 border border-border/50">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>
                 {onTargetDays}/{data.length} Goal Hit
@@ -160,7 +160,7 @@ export const WeeklyCaloriesBarChart: React.FC<WeeklyCaloriesBarChartProps> = ({
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  className="stroke-slate-100 dark:stroke-slate-800"
+                  className="stroke-border"
                 />
 
                 <XAxis
@@ -168,7 +168,7 @@ export const WeeklyCaloriesBarChart: React.FC<WeeklyCaloriesBarChartProps> = ({
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  className="text-[11px] font-medium text-slate-400"
+                  className="text-[11px] font-medium text-muted-foreground"
                   tick={({ x, y, payload }) => {
                     const item = data.find((d) => d.dayName === payload.value);
                     const isToday = item?.isToday;
@@ -181,8 +181,8 @@ export const WeeklyCaloriesBarChart: React.FC<WeeklyCaloriesBarChartProps> = ({
                           textAnchor="middle"
                           className={`text-[11px] font-semibold ${
                             isToday
-                              ? 'fill-[#169b55] font-bold'
-                              : 'fill-slate-500 dark:fill-slate-400'
+                              ? 'fill-primary font-bold'
+                              : 'fill-muted-foreground'
                           }`}
                         >
                           {payload.value}
@@ -195,8 +195,8 @@ export const WeeklyCaloriesBarChart: React.FC<WeeklyCaloriesBarChartProps> = ({
                             textAnchor="middle"
                             className={`text-[10px] font-medium ${
                               isToday
-                                ? 'fill-[#169b55]'
-                                : 'fill-slate-400 dark:fill-slate-500'
+                                ? 'fill-primary'
+                                : 'fill-muted-foreground/70'
                             }`}
                           >
                             {item.date.split('-')[2]}
