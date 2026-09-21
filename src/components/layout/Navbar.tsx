@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Main Header Title & Subtitle for Desktop */}
         <div className="hidden md:block">
-          <h1 className="text-2xl font-bold tracking-tight text-[#173b28] dark:text-emerald-400">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             {headerTitle}
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -123,9 +123,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Header Right Actions: Date | Divider | Bell | Dark Mode Toggle | Profile PFP */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
         {/* Static Date Display */}
-        <div className="flex items-center gap-2.5 text-[#5e716d]">
-          <Calendar className="w-5 h-5 text-[#5e716d] shrink-0" />
-          <span className="text-sm font-normal text-[#5e716d]">
+        <div className="flex items-center gap-2.5 text-muted-foreground">
+          <Calendar className="w-5 h-5 text-muted-foreground shrink-0" />
+          <span className="text-sm font-normal text-muted-foreground">
             {formatHeaderDate(selectedDate)}
           </span>
         </div>
@@ -133,10 +133,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Vertical Divider */}
         <div className="h-7 w-[1px] bg-border mx-0.5 hidden sm:block" />
 
-        {/* Notification Bell with Green Indicator Badge */}
+        {/* Notification Bell with Indicator Badge */}
         <div className="relative p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-full hover:bg-muted/50">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#4cd593] rounded-full ring-2 ring-card" />
+          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-card" />
         </div>
 
         {/* Theme Toggle */}
