@@ -34,25 +34,25 @@ const MEAL_CONFIG: Record<
     label: 'Breakfast',
     sublabel: 'Morning',
     color: '#f59e0b',
-    icon: <Sun className="w-5 h-5" />,
+    icon: <Sun className="w-4.5 h-4.5" />,
   },
   LUNCH: {
     label: 'Lunch',
     sublabel: 'Afternoon',
     color: '#169b55',
-    icon: <SunMedium className="w-5 h-5" />,
+    icon: <SunMedium className="w-4.5 h-4.5" />,
   },
   SNACK: {
     label: 'Snacks',
     sublabel: 'Evening',
     color: '#f97316',
-    icon: <Cookie className="w-5 h-5" />,
+    icon: <Cookie className="w-4.5 h-4.5" />,
   },
   DINNER: {
     label: 'Dinner',
     sublabel: 'Night',
     color: '#6366f1',
-    icon: <Moon className="w-5 h-5" />,
+    icon: <Moon className="w-4.5 h-4.5" />,
   },
 };
 
@@ -108,11 +108,11 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <CardContent className="relative p-4 sm:p-5 h-full min-h-[175px] overflow-hidden rounded-3xl">
+      <CardContent className="relative p-0 h-full overflow-hidden rounded-3xl">
         
         {/* ── DEFAULT VIEW ── Fades out on hover */}
         <div
-          className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 ease-in-out"
+          className="absolute inset-0 p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-300 ease-in-out"
           style={{
             opacity: hovered ? 0 : 1,
             transform: hovered ? 'scale(0.95)' : 'scale(1)',
@@ -122,40 +122,40 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
           {/* Top: Icon + Labels + Value */}
           <div>
             <div
-              className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3.5 shadow-xs"
+              className="w-9 h-9 rounded-xl flex items-center justify-center mb-2 shadow-xs"
               style={{ backgroundColor: `${color}18`, color }}
             >
               {icon}
             </div>
 
-            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block leading-none">
               {sublabel}
             </span>
 
-            <h4 className="font-semibold text-foreground text-sm sm:text-base mt-0.5 capitalize">
+            <h4 className="font-semibold text-foreground text-sm sm:text-base mt-1 capitalize leading-tight">
               {label}
             </h4>
 
             <div className="flex flex-col mt-1">
-              <span className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
+              <span className="text-2xl font-bold text-foreground tracking-tight leading-tight">
                 {Math.round(calories)}{' '}
-                <span className="text-sm font-normal text-muted-foreground">kcal</span>
+                <span className="text-xs font-normal text-muted-foreground">kcal</span>
               </span>
-              <span className="text-[12px] text-muted-foreground font-medium mt-0.5">
+              <span className="text-[11px] text-muted-foreground font-medium mt-0.5 leading-none">
                 {itemCount} {itemCount === 1 ? 'item' : 'items'} logged
               </span>
             </div>
           </div>
 
           {/* Bottom: Progress bar */}
-          <div className="pt-3">
-            <div className="flex items-center justify-between text-[11px] font-medium text-muted-foreground mb-1.5">
+          <div className="pt-2">
+            <div className="flex items-center justify-between text-[11px] font-medium text-muted-foreground mb-1.5 leading-none">
               <span>of daily goal</span>
               <span style={{ color }}>{percentage}%</span>
             </div>
             <Progress
               value={percentage}
-              className="h-2.5 rounded-full bg-muted [&>div]:rounded-full"
+              className="h-1.5 rounded-full bg-muted [&>div]:rounded-full"
               indicatorStyle={{ backgroundColor: color }}
             />
           </div>
@@ -163,7 +163,7 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
 
         {/* ── HOVER VIEW: MACRO PIE CHART & DIRECT SLICE LABELS ── Fades in on hover */}
         <div
-          className="absolute inset-0 p-3.5 sm:p-4 flex flex-col justify-between bg-card rounded-3xl transition-all duration-300 ease-in-out shadow-xs"
+          className="absolute inset-0 p-4 sm:p-4.5 flex flex-col justify-between bg-card rounded-3xl transition-all duration-300 ease-in-out shadow-xs"
           style={{
             opacity: hovered ? 1 : 0,
             transform: hovered ? 'scale(1)' : 'scale(0.95)',
