@@ -143,38 +143,38 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content max-w-lg p-0 overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="modal-content max-w-lg p-0 overflow-hidden flex flex-col max-h-[90vh] bg-card text-card-foreground border-border">
         {/* MODAL HEADER */}
-        <div className="px-5 py-4 border-b border-[#E1E7E5] flex items-center justify-between bg-white sticky top-0 z-10">
+        <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-card sticky top-0 z-10">
           {view === 'detail' ? (
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={handleBackToSearch}
-                className="p-1.5 -ml-1.5 rounded-lg hover:bg-[#F7F9F8] text-[#68716F] hover:text-[#171C1B] transition-colors"
+                className="p-1.5 -ml-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                 title="Back to search results"
               >
                 <ArrowLeft size={18} />
               </button>
               <div>
-                <h2 className="text-sm font-bold text-[#171C1B]">Nutrition & Portion</h2>
-                <p className="text-[11px] text-[#68716F]">Adjust serving before logging</p>
+                <h2 className="text-sm font-bold text-foreground">Nutrition &amp; Portion</h2>
+                <p className="text-[11px] text-muted-foreground">Adjust serving before logging</p>
               </div>
             </div>
           ) : (
             <div>
-              <h2 className="text-base font-bold text-[#171C1B] flex items-center gap-2">
-                <Utensils className="w-4 h-4 text-[#0A7C6E]" />
+              <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                <Utensils className="w-4 h-4 text-primary" />
                 <span>Search Food</span>
               </h2>
-              <p className="text-[11px] text-[#68716F]">Select a dish or raw ingredient to log</p>
+              <p className="text-[11px] text-muted-foreground">Select a dish or raw ingredient to log</p>
             </div>
           )}
 
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[#F7F9F8] text-[#68716F] hover:text-[#171C1B] transition-colors"
+            className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
           >
             <X size={18} />
           </button>
@@ -187,20 +187,20 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
           <div className="p-5 flex-1 overflow-y-auto space-y-4">
             {/* Search Input */}
             <div className="relative">
-              <Search size={16} className="absolute left-3.5 top-3 text-[#68716F]" />
+              <Search size={16} className="absolute left-3.5 top-3 text-muted-foreground" />
               <input
                 type="text"
                 autoFocus
                 placeholder="Search food (e.g., biryani, paneer, roti, dal)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 bg-[#F7F9F8] focus:bg-white border border-[#E1E7E5] rounded-xl text-xs text-[#171C1B] placeholder-[#68716F] outline-none focus:border-[#0A7C6E] focus:ring-2 focus:ring-[#0A7C6E]/10 transition-all font-medium"
+                className="w-full pl-10 pr-9 py-2.5 bg-muted/40 focus:bg-background border border-border rounded-xl text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-2.5 text-[#68716F] hover:text-[#171C1B]"
+                  className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <X size={14} />
                 </button>
@@ -223,8 +223,8 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap border ${
                     selectedCategory === cat.id
-                      ? 'bg-[#0A7C6E] text-white border-[#0A7C6E] shadow-sm'
-                      : 'bg-white text-[#68716F] border-[#E1E7E5] hover:border-[#B8E2DC] hover:text-[#075E54] hover:bg-[#E6F3F1]/40'
+                      ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                      : 'bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-foreground hover:bg-muted'
                   }`}
                 >
                   {cat.label}
@@ -233,7 +233,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
             </div>
 
             {/* Results Counter / Heading */}
-            <div className="flex items-center justify-between text-[11px] text-[#68716F] font-medium px-0.5">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium px-0.5">
               <span>{searchQuery ? `Results for "${searchQuery}"` : 'Popular & Recent Foods'}</span>
               <span>{foods.length} items</span>
             </div>
@@ -259,20 +259,20 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                     <div
                       key={food.id}
                       onClick={() => handleSelectFood(food)}
-                      className="p-3 rounded-xl border border-[#E1E7E5] bg-white hover:border-[#0A7C6E] hover:bg-[#F7F9F8] transition-all cursor-pointer flex items-center justify-between group shadow-sm active:scale-[0.99]"
+                      className="p-3 rounded-xl border border-border bg-card hover:border-primary hover:bg-muted/50 transition-all cursor-pointer flex items-center justify-between group shadow-sm active:scale-[0.99]"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-[#F7F9F8] group-hover:bg-[#E6F3F1] border border-[#E1E7E5] group-hover:border-[#B8E2DC] flex items-center justify-center text-lg shrink-0 transition-colors">
+                        <div className="w-9 h-9 rounded-xl bg-muted group-hover:bg-accent border border-border flex items-center justify-center text-lg shrink-0 transition-colors">
                           {emoji}
                         </div>
                         <div className="min-w-0">
-                          <h4 className="font-semibold text-xs text-[#171C1B] group-hover:text-[#0A7C6E] truncate transition-colors">
+                          <h4 className="font-semibold text-xs text-foreground group-hover:text-primary truncate transition-colors">
                             {food.name}
                           </h4>
-                          <div className="text-[11px] text-[#68716F] font-mono mt-0.5">
-                            {food.servingWeight}{food.servingUnit} · <span className="font-semibold text-[#171C1B]">{food.calories} kcal</span>
+                          <div className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                            {food.servingWeight}{food.servingUnit} · <span className="font-semibold text-foreground">{food.calories} kcal</span>
                           </div>
-                          <div className="text-[10px] text-[#68716F] font-mono mt-0.5 flex items-center gap-1.5">
+                          <div className="text-[10px] text-muted-foreground font-mono mt-0.5 flex items-center gap-1.5">
                             <span>P <strong className="font-semibold" style={{ color: MACRO_COLORS.protein }}>{food.protein}g</strong></span>
                             <span>·</span>
                             <span>C <strong className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>{food.carbohydrates}g</strong></span>
@@ -283,7 +283,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                       </div>
 
                       <div className="text-right shrink-0 pl-2">
-                        <span className="text-[11px] font-semibold text-[#0A7C6E] bg-[#E6F3F1] px-2 py-1 rounded-lg border border-[#B8E2DC] group-hover:bg-[#0A7C6E] group-hover:text-white transition-all">
+                        <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2 py-1 rounded-lg border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
                           Select
                         </span>
                       </div>
@@ -301,34 +301,34 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
         {view === 'detail' && selectedFood && (
           <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-4">
             {/* Header: Title + Emoji + Clean Category Subtitle */}
-            <div className="bg-[#FFFFFF] border border-[#E1E7E5] rounded-2xl p-4 shadow-sm">
+            <div className="bg-card border border-border rounded-2xl p-4 shadow-sm">
               <div className="flex items-start gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-[#E6F3F1] border border-[#B8E2DC] flex items-center justify-center text-2xl shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-accent border border-border flex items-center justify-center text-2xl shrink-0">
                   {getFoodEmoji(selectedFood)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-bold text-[#171C1B] leading-tight">
+                  <h3 className="text-base font-bold text-foreground leading-tight">
                     {selectedFood.name}
                   </h3>
-                  <div className="text-xs text-[#68716F] mt-0.5 font-medium">
+                  <div className="text-xs text-muted-foreground mt-0.5 font-medium">
                     {getCleanCategoryLabel(selectedFood)}
                   </div>
                 </div>
               </div>
 
               {/* Dynamic Calorie Hero Badge */}
-              <div className="mt-4 pt-3.5 border-t border-[#E1E7E5] flex items-baseline justify-between">
+              <div className="mt-4 pt-3.5 border-t border-border flex items-baseline justify-between">
                 <div>
-                  <div className="text-3xl font-black text-[#171C1B] font-mono tracking-tight flex items-baseline gap-1">
-                    {activeCalories} <span className="text-sm font-semibold text-[#68716F]">kcal</span>
+                  <div className="text-3xl font-black text-foreground font-mono tracking-tight flex items-baseline gap-1">
+                    {activeCalories} <span className="text-sm font-semibold text-muted-foreground">kcal</span>
                   </div>
-                  <div className="text-[11px] text-[#68716F] mt-0.5">
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
                     per {activeWeight}g serving
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E6F3F1] text-[#075E54] border border-[#B8E2DC] text-[11px] font-semibold">
-                  <Flame size={13} className="text-[#0A7C6E]" />
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent text-accent-foreground border border-border text-[11px] font-semibold">
+                  <Flame size={13} className="text-primary" />
                   <span>Calculated Macros</span>
                 </div>
               </div>
@@ -360,20 +360,20 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
             </div>
 
             {/* ──────────────────── SERVING SECTION ──────────────────── */}
-            <div className="bg-[#FFFFFF] border border-[#E1E7E5] rounded-2xl p-4 shadow-sm space-y-3.5">
+            <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3.5">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#68716F] uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                   SERVING PORTION
                 </span>
                 {/* Toggle Servings vs Grams */}
-                <div className="flex items-center bg-[#F7F9F8] p-0.5 rounded-lg border border-[#E1E7E5] text-[10px] font-semibold">
+                <div className="flex items-center bg-muted/60 p-0.5 rounded-lg border border-border text-[10px] font-semibold">
                   <button
                     type="button"
                     onClick={() => setUseCustomWeight(false)}
                     className={`px-2 py-1 rounded-md transition-all ${
                       !useCustomWeight
-                        ? 'bg-[#0A7C6E] text-white shadow-xs'
-                        : 'text-[#68716F] hover:text-[#171C1B]'
+                        ? 'bg-primary text-primary-foreground shadow-xs'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     Servings
@@ -383,8 +383,8 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                     onClick={() => setUseCustomWeight(true)}
                     className={`px-2 py-1 rounded-md transition-all ${
                       useCustomWeight
-                        ? 'bg-[#0A7C6E] text-white shadow-xs'
-                        : 'text-[#68716F] hover:text-[#171C1B]'
+                        ? 'bg-primary text-primary-foreground shadow-xs'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     Custom Grams
@@ -393,40 +393,40 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
               </div>
 
               {!useCustomWeight ? (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#F7F9F8] border border-[#E1E7E5]">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-muted/40 border border-border">
                   <div>
-                    <div className="text-xs font-bold text-[#171C1B]">
+                    <div className="text-xs font-bold text-foreground">
                       {servings} {servings === 1 ? 'serving' : 'servings'}
                     </div>
-                    <div className="text-[11px] text-[#68716F] font-mono mt-0.5">
+                    <div className="text-[11px] text-muted-foreground font-mono mt-0.5">
                       ≈ {activeWeight}g total portion
                     </div>
                   </div>
 
                   {/* Stepper Controls: [ - ] count [ + ] */}
-                  <div className="flex items-center gap-2 bg-white px-2 py-1.5 rounded-xl border border-[#E1E7E5] shadow-xs font-mono">
+                  <div className="flex items-center gap-2 bg-card px-2 py-1.5 rounded-xl border border-border shadow-xs font-mono">
                     <button
                       type="button"
                       onClick={() => handleAdjustServings(-0.5)}
-                      className="p-1 rounded-lg hover:bg-[#E6F3F1] text-[#171C1B] hover:text-[#075E54] active:scale-90 transition-all"
+                      className="p-1 rounded-lg hover:bg-muted text-foreground hover:text-primary active:scale-90 transition-all"
                     >
                       <Minus size={14} />
                     </button>
-                    <span className="px-2 font-bold text-sm text-[#171C1B] min-w-[2.5rem] text-center">
+                    <span className="px-2 font-bold text-sm text-foreground min-w-[2.5rem] text-center">
                       {servings}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleAdjustServings(0.5)}
-                      className="p-1 rounded-lg hover:bg-[#E6F3F1] text-[#171C1B] hover:text-[#075E54] active:scale-90 transition-all"
+                      className="p-1 rounded-lg hover:bg-muted text-foreground hover:text-primary active:scale-90 transition-all"
                     >
                       <Plus size={14} />
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-[#F7F9F8] border border-[#E1E7E5] space-y-1.5">
-                  <label className="text-[11px] text-[#68716F] font-medium block">
+                <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1.5">
+                  <label className="text-[11px] text-muted-foreground font-medium block">
                     Custom Portion Weight in Grams
                   </label>
                   <div className="relative">
@@ -435,9 +435,9 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                       min="1"
                       value={customWeightGrams}
                       onChange={(e) => setCustomWeightGrams(Math.max(1, Number(e.target.value)))}
-                      className="w-full px-3 py-2 bg-white border border-[#E1E7E5] rounded-lg text-xs text-[#171C1B] font-mono font-bold outline-none focus:border-[#0A7C6E]"
+                      className="w-full px-3 py-2 bg-background border border-border rounded-lg text-xs text-foreground font-mono font-bold outline-none focus:border-primary"
                     />
-                    <span className="absolute right-3 top-2 text-xs text-[#68716F] font-mono">
+                    <span className="absolute right-3 top-2 text-xs text-muted-foreground font-mono">
                       grams
                     </span>
                   </div>
@@ -446,7 +446,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
               {/* Meal Category Segmented Selector */}
               <div>
-                <label className="text-[11px] font-semibold text-[#68716F] block mb-1.5">
+                <label className="text-[11px] font-semibold text-muted-foreground block mb-1.5">
                   Log to Meal Time
                 </label>
                 <div className="grid grid-cols-4 gap-1.5 text-xs">
@@ -462,8 +462,8 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                       onClick={() => setMealType(m.id as any)}
                       className={`py-2 rounded-lg font-semibold text-center border text-[11px] transition-all ${
                         mealType === m.id
-                          ? 'bg-[#0A7C6E] text-white border-[#0A7C6E] shadow-xs'
-                          : 'bg-white text-[#171C1B] border-[#E1E7E5] hover:bg-[#E6F3F1]'
+                          ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                          : 'bg-card text-foreground border-border hover:bg-muted'
                       }`}
                     >
                       {m.label}
@@ -475,17 +475,17 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
             {/* ──────────────────── PER 100g SECTION ──────────────────── */}
             {per100g && (
-              <div className="bg-[#FFFFFF] border border-[#E1E7E5] rounded-2xl p-4 shadow-sm space-y-2 font-mono">
+              <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-2 font-mono">
                 <div className="flex items-center justify-between font-sans">
-                  <span className="text-[11px] font-bold text-[#68716F] uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                     PER 100g REFERENCE
                   </span>
-                  <span className="text-xs font-bold text-[#171C1B] font-mono">
+                  <span className="text-xs font-bold text-foreground font-mono">
                     {per100g.calories} kcal
                   </span>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 text-center text-xs pt-1 border-t border-[#E1E7E5]/70">
+                <div className="grid grid-cols-4 gap-2 text-center text-xs pt-1 border-t border-border/70">
                   <div>
                     <div className="text-[9px] font-sans uppercase font-bold" style={{ color: MACRO_COLORS.protein }}>Protein</div>
                     <div className="font-bold mt-0.5" style={{ color: MACRO_COLORS.protein }}>{per100g.protein}g</div>
@@ -507,17 +507,17 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
             )}
 
             {/* Source Footnote */}
-            <div className="flex items-center justify-between text-[11px] text-[#68716F] px-1 font-mono">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground px-1 font-mono">
               <span>Database Provenance:</span>
-              <span className="px-2 py-0.5 rounded bg-[#E6F3F1] text-[#075E54] border border-[#B8E2DC] font-semibold">
+              <span className="px-2 py-0.5 rounded bg-accent text-accent-foreground border border-border font-semibold">
                 {selectedFood.source || 'INDB 2024'}
               </span>
             </div>
 
             {/* Success Toast / CTA Button */}
             {successToast ? (
-              <div className="p-3.5 rounded-xl bg-[#E6F3F1] border border-[#B8E2DC] text-[#075E54] font-bold text-xs flex items-center justify-center gap-2">
-                <Check className="w-4 h-4 text-[#0A7C6E]" />
+              <div className="p-3.5 rounded-xl bg-primary/10 border border-primary/30 text-primary font-bold text-xs flex items-center justify-center gap-2">
+                <Check className="w-4 h-4 text-primary" />
                 <span>Added to {mealType.toLowerCase()} tracker!</span>
               </div>
             ) : (
@@ -525,7 +525,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl bg-[#0A7C6E] hover:bg-[#075E54] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98] border border-[#0A7C6E]"
+                  className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98] border border-primary"
                 >
                   <Plus size={16} />
                   <span>{loading ? 'Adding to Meal...' : 'Add to Meal'}</span>
