@@ -107,34 +107,34 @@ export function MealSectionCard({
   };
 
   return (
-    <Card className={`border border-slate-200/90 shadow-sm bg-white overflow-hidden rounded-2xl transition-all ${config.borderAccent}`}>
+    <Card className={`border border-border shadow-sm bg-card text-card-foreground overflow-hidden rounded-2xl transition-all ${config.borderAccent}`}>
       {/* Meal Header */}
-      <CardHeader className="pb-3 border-b border-slate-100 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/50 px-5 pt-4">
+      <CardHeader className="pb-3 border-b border-border bg-muted/30 px-5 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-xl bg-white border border-slate-200/70 shadow-sm ${config.accentColor}`}>
+            <div className={`p-2 rounded-xl bg-card border border-border shadow-sm ${config.accentColor}`}>
               <Icon className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-base font-bold text-slate-900 leading-none">
+                <CardTitle className="text-base font-bold text-foreground leading-none">
                   {config.title}
                 </CardTitle>
                 <Badge variant="outline" className={`text-[10px] font-bold px-2 py-0.5 ${config.badgeBg} ${config.badgeText}`}>
                   {logs.length} {logs.length === 1 ? 'item' : 'items'}
                 </Badge>
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">{config.subtitle}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{config.subtitle}</p>
             </div>
           </div>
 
           {/* Subtotal Macro Badges */}
-          <div className="flex items-center gap-2 text-xs font-mono bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs self-start sm:self-auto">
-            <div className="flex items-center gap-1 font-bold text-slate-900">
-              <span className="text-[#169b55]">{Math.round(totalCalories)}</span>
-              <span className="text-[10px] text-slate-400 font-sans font-normal">kcal</span>
+          <div className="flex items-center gap-2 text-xs font-mono bg-card px-3 py-1.5 rounded-xl border border-border shadow-2xs self-start sm:self-auto">
+            <div className="flex items-center gap-1 font-bold text-foreground">
+              <span className="text-primary">{Math.round(totalCalories)}</span>
+              <span className="text-[10px] text-muted-foreground font-sans font-normal">kcal</span>
             </div>
-            <span className="text-slate-300">|</span>
+            <span className="text-muted-foreground/60">|</span>
             <div className="flex items-center gap-1.5 text-[11px]">
               <span className="font-bold" style={{ color: MACRO_COLORS.protein }}>{Math.round(totalProtein)}g P</span>
               <span className="font-bold" style={{ color: MACRO_COLORS.carbs }}>{Math.round(totalCarbs)}g C</span>
@@ -147,35 +147,35 @@ export function MealSectionCard({
       <CardContent className="p-4 sm:p-5 space-y-4">
         {/* Logged Items List */}
         {logs.length > 0 ? (
-          <div className="divide-y divide-slate-100 rounded-xl border border-slate-100 bg-slate-50/40 overflow-hidden">
+          <div className="divide-y divide-border rounded-xl border border-border bg-muted/20 overflow-hidden">
             {logs.map((item) => {
               const isDeleting = deletingId === item.id;
 
               return (
                 <div
                   key={item.id}
-                  className="p-3 sm:px-4 flex items-center justify-between gap-3 hover:bg-white transition-colors group"
+                  className="p-3 sm:px-4 flex items-center justify-between gap-3 hover:bg-muted/40 transition-colors group"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-xs text-slate-900 truncate">
+                      <span className="font-bold text-xs text-foreground truncate">
                         {item.food?.name || 'Unknown Food Item'}
                       </span>
                       {item.food?.layer === 2 ? (
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-50 text-amber-700 border border-amber-200/60">
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/30">
                           Recipe
                         </span>
                       ) : null}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-slate-500 font-mono">
-                      <span className="font-semibold text-slate-700">
+                    <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-muted-foreground font-mono">
+                      <span className="font-semibold text-foreground">
                         {item.unitLabel
                           ? `${item.unitLabel} (${Math.round(item.weightGrams)}g)`
                           : `${Math.round(item.weightGrams)}g`}
                       </span>
                       <span>•</span>
-                      <span className="font-bold text-slate-800">{Math.round(item.calories)} kcal</span>
+                      <span className="font-bold text-foreground">{Math.round(item.calories)} kcal</span>
                       <span>•</span>
                       <span className="font-medium" style={{ color: MACRO_COLORS.protein }}>P: {item.protein}g</span>
                       <span className="font-medium" style={{ color: MACRO_COLORS.carbs }}>C: {item.carbohydrates}g</span>
@@ -189,10 +189,10 @@ export function MealSectionCard({
                       onClick={() => handleDelete(item.id)}
                       disabled={isDeleting}
                       title="Delete food entry"
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all opacity-80 group-hover:opacity-100 active:scale-95"
+                      className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all opacity-80 group-hover:opacity-100 active:scale-95"
                     >
                       {isDeleting ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
+                        <Loader2 className="w-4 h-4 animate-spin text-destructive" />
                       ) : (
                         <Trash2 className="w-4 h-4" />
                       )}
@@ -203,9 +203,9 @@ export function MealSectionCard({
             })}
           </div>
         ) : (
-          <div className="py-4 px-3 rounded-xl border border-dashed border-slate-200 text-center bg-slate-50/50">
-            <UtensilsCrossed className="w-6 h-6 mx-auto text-slate-300 stroke-1 mb-1" />
-            <p className="text-xs font-medium text-slate-500">No food logged for {config.title.toLowerCase()} yet</p>
+          <div className="py-4 px-3 rounded-xl border border-dashed border-border text-center bg-muted/20">
+            <UtensilsCrossed className="w-6 h-6 mx-auto text-muted-foreground/60 stroke-1 mb-1" />
+            <p className="text-xs font-medium text-muted-foreground">No food logged for {config.title.toLowerCase()} yet</p>
           </div>
         )}
 
@@ -214,10 +214,10 @@ export function MealSectionCard({
           <Button
             onClick={() => onAddMealClick(mealType)}
             variant="outline"
-            className="w-full sm:w-auto min-w-[220px] px-6 py-2 h-9 rounded-xl border-dashed border-slate-300 hover:border-emerald-500 bg-white hover:bg-emerald-50/60 text-slate-700 hover:text-emerald-700 font-bold text-xs flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-98 group"
+            className="w-full sm:w-auto min-w-[220px] px-6 py-2 h-9 rounded-xl border-dashed border-border hover:border-primary bg-card hover:bg-primary/10 text-foreground hover:text-primary font-bold text-xs flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-98 group"
           >
-            <div className="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
-              <Plus className="w-3.5 h-3.5 text-slate-600 group-hover:text-emerald-600" />
+            <div className="w-5 h-5 rounded-full bg-muted group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+              <Plus className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary" />
             </div>
             <span>+ Add {config.title} Meal</span>
           </Button>
