@@ -158,28 +158,28 @@ function TrackerPage() {
           {/* Top Control Bar: Date Navigation & Actions */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+              <h2 className="text-xl font-extrabold text-foreground tracking-tight">
                 {formatDisplayDate(selectedDate)}
               </h2>
-              <span className="text-xs font-normal text-slate-500 font-mono">
+              <span className="text-xs font-normal text-muted-foreground font-mono">
                 ({selectedDate})
               </span>
             </div>
 
             {/* Date Navigation Bar */}
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 p-1 rounded-xl">
+            <div className="flex items-center gap-1.5 bg-muted/50 border border-border p-1 rounded-xl">
               <Button
                 onClick={() => changeDateBy(-1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
+                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs"
                 title="Previous Day"
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
 
-              <div className="relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-bold text-slate-800 bg-white rounded-lg border border-slate-200 shadow-2xs">
-                <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-bold text-foreground bg-card rounded-lg border border-border shadow-2xs">
+                <Calendar className="w-3.5 h-3.5 text-primary" />
                 <span>{selectedDate}</span>
                 <input
                   type="date"
@@ -193,7 +193,7 @@ function TrackerPage() {
                 onClick={() => changeDateBy(1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 rounded-lg hover:bg-white text-slate-700 hover:text-slate-900 border border-transparent hover:border-slate-200 hover:shadow-2xs"
+                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs"
                 title="Next Day"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -204,7 +204,7 @@ function TrackerPage() {
                   onClick={handleJumpToday}
                   variant="outline"
                   size="sm"
-                  className="h-8 px-2.5 text-xs font-bold rounded-lg border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 ml-1"
+                  className="h-8 px-2.5 text-xs font-bold rounded-lg border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 ml-1"
                 >
                   <RotateCcw className="w-3 h-3 mr-1" />
                   Today

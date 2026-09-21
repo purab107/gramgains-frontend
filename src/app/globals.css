@@ -96,9 +96,9 @@ body {
 }
 
 .date-picker {
-  background: #fefeff;
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
   padding: 0.5rem 0.85rem;
   border-radius: 8px;
   font-family: inherit;
@@ -107,7 +107,7 @@ body {
 }
 
 .date-picker:focus {
-  border-color: #0f8651;
+  border-color: var(--primary);
 }
 
 /* Badge styles */
@@ -123,15 +123,15 @@ body {
 }
 
 .badge-layer1 {
-  background: #e4f7ee;
-  color: #0d7649;
-  border: 1px solid #e5e7eb;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
 }
 
 .badge-layer2 {
-  background: #fcfdfe;
-  color: #171C1B;
-  border: 1px solid #e5e7eb;
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
 }
 
 /* Buttons */
@@ -186,9 +186,9 @@ body {
 }
 
 .modal-content {
-  background: #fefeff;
-  border: 1px solid #e5e7eb;
-  color: #171C1B;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
   width: 100%;
   max-width: 550px;
   border-radius: 16px;
@@ -199,11 +199,11 @@ body {
 /* Form controls */
 .input-field, .select-field {
   width: 100%;
-  background: #fefeff;
-  border: 1px solid #e5e7eb;
+  background: var(--card);
+  border: 1px solid var(--border);
   padding: 0.65rem 0.85rem;
   border-radius: 8px;
-  color: #171C1B;
+  color: var(--foreground);
   font-family: inherit;
   margin-top: 0.4rem;
   margin-bottom: 1.2rem;
@@ -212,13 +212,13 @@ body {
 }
 
 .input-field:focus, .select-field:focus {
-  border-color: #0f8651;
-  box-shadow: 0 0 0 2px rgba(15, 134, 81, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(10, 155, 130, 0.15);
 }
 
 .select-field option {
-  background: #fefeff;
-  color: #171C1B;
+  background: var(--card);
+  color: var(--foreground);
 }
 
 @layer base {
@@ -258,6 +258,16 @@ body {
 
   /* ── Matte Dark Theme ──────────────────────────────────── */
   .dark {
+    --bg-main: #070B0A;
+    --bg-card: #0B100F;
+    --bg-card-hover: #151D1B;
+    --border-color: #1E2B29;
+    --text-main: #E8EDEC;
+    --text-muted: #6B8280;
+    --primary-teal: #0A9B82;
+    --dark-teal: #087f6b;
+    --light-teal: #151D1B;
+
     --background: #070B0A;
     --foreground: #E8EDEC;
     --card: #0B100F;
