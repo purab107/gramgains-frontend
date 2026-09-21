@@ -12,14 +12,14 @@ const SheetClose = Dialog.Close;
 const SheetPortal = Dialog.Portal;
 
 const sheetVariants = cva(
-  'fixed z-50 gap-4 bg-white p-6 shadow-2xl transition ease-in-out data-[state=open]:animate-in data-[open]:animate-in data-[starting-style]:animate-in data-[state=closed]:animate-out data-[closed]:animate-out data-[ending-style]:animate-out data-[state=closed]:duration-300 data-[closed]:duration-300 data-[ending-style]:duration-300 data-[state=open]:duration-400 data-[open]:duration-400 data-[starting-style]:duration-400 outline-none overflow-y-auto',
+  'fixed z-50 gap-4 bg-card text-card-foreground p-6 shadow-2xl transition ease-in-out data-[state=open]:animate-in data-[open]:animate-in data-[starting-style]:animate-in data-[state=closed]:animate-out data-[closed]:animate-out data-[ending-style]:animate-out data-[state=closed]:duration-300 data-[closed]:duration-300 data-[ending-style]:duration-300 data-[state=open]:duration-400 data-[open]:duration-400 data-[starting-style]:duration-400 outline-none overflow-y-auto',
   {
     variants: {
       side: {
-        top: 'inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[closed]:slide-out-to-top data-[ending-style]:slide-out-to-top data-[state=open]:slide-in-from-top data-[open]:slide-in-from-top data-[starting-style]:slide-in-from-top',
-        bottom: 'inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[closed]:slide-out-to-bottom data-[ending-style]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom data-[open]:slide-in-from-bottom data-[starting-style]:slide-in-from-bottom',
-        left: 'inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[closed]:slide-out-to-left data-[ending-style]:slide-out-to-left data-[state=open]:slide-in-from-left data-[open]:slide-in-from-left data-[starting-style]:slide-in-from-left sm:max-w-md',
-        right: 'inset-y-0 right-0 h-full w-full border-l border-slate-200/90 data-[state=closed]:slide-out-to-right data-[closed]:slide-out-to-right data-[ending-style]:slide-out-to-right data-[state=open]:slide-in-from-right data-[open]:slide-in-from-right data-[starting-style]:slide-in-from-right sm:w-[480px] sm:max-w-[480px]',
+        top: 'inset-x-0 top-0 border-b border-border data-[state=closed]:slide-out-to-top data-[closed]:slide-out-to-top data-[ending-style]:slide-out-to-top data-[state=open]:slide-in-from-top data-[open]:slide-in-from-top data-[starting-style]:slide-in-from-top',
+        bottom: 'inset-x-0 bottom-0 border-t border-border data-[state=closed]:slide-out-to-bottom data-[closed]:slide-out-to-bottom data-[ending-style]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom data-[open]:slide-in-from-bottom data-[starting-style]:slide-in-from-bottom',
+        left: 'inset-y-0 left-0 h-full w-3/4 border-r border-border data-[state=closed]:slide-out-to-left data-[closed]:slide-out-to-left data-[ending-style]:slide-out-to-left data-[state=open]:slide-in-from-left data-[open]:slide-in-from-left data-[starting-style]:slide-in-from-left sm:max-w-md',
+        right: 'inset-y-0 right-0 h-full w-full border-l border-border data-[state=closed]:slide-out-to-right data-[closed]:slide-out-to-right data-[ending-style]:slide-out-to-right data-[state=open]:slide-in-from-right data-[open]:slide-in-from-right data-[starting-style]:slide-in-from-right sm:w-[480px] sm:max-w-[480px]',
       },
     },
     defaultVariants: {
@@ -38,14 +38,14 @@ interface SheetContentProps
 const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
   ({ side = 'right', className, children, ...props }, ref) => (
     <SheetPortal>
-      <Dialog.Backdrop className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs transition-opacity duration-300 ease-in-out opacity-0 data-[open]:opacity-100 data-[state=open]:opacity-100 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[closed]:opacity-0 data-[state=closed]:opacity-0" />
+      <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs transition-opacity duration-300 ease-in-out opacity-0 data-[open]:opacity-100 data-[state=open]:opacity-100 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[closed]:opacity-0 data-[state=closed]:opacity-0" />
       <Dialog.Popup
         ref={ref}
         className={cn(sheetVariants({ side }), 'flex flex-col p-0', className)}
         {...props}
       >
         {children}
-        <Dialog.Close className="absolute right-4 top-4 z-50 h-8 w-8 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:pointer-events-none">
+        <Dialog.Close className="absolute right-4 top-4 z-50 h-8 w-8 flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:pointer-events-none">
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </Dialog.Close>
@@ -61,7 +61,7 @@ const SheetHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col space-y-2 text-left px-6 py-5 border-b border-slate-100 bg-slate-50/50', className)}
+    className={cn('flex flex-col space-y-2 text-left px-6 py-5 border-b border-border bg-muted/30', className)}
     {...props}
   />
 );
@@ -73,7 +73,7 @@ const SheetFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-4 border-t border-slate-100',
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-4 border-t border-border bg-muted/20',
       className
     )}
     {...props}
@@ -87,7 +87,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <Dialog.Title
     ref={ref}
-    className={cn('text-lg font-bold text-slate-900', className)}
+    className={cn('text-lg font-bold text-foreground', className)}
     {...props}
   />
 ));
@@ -99,7 +99,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <Dialog.Description
     ref={ref}
-    className={cn('text-xs text-slate-500', className)}
+    className={cn('text-xs text-muted-foreground', className)}
     {...props}
   />
 ));
