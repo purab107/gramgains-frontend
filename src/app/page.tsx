@@ -142,15 +142,15 @@ function DashboardHomePage() {
             {/* Right Column: Today's Logged Meals Timeline */}
             <div className="lg:col-span-5 space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary" />
+                <h2 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[var(--accent)]" />
                   <span>Today's Meal Timeline</span>
                 </h2>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsLogModalOpen(true)}
-                  className="gap-1 text-primary hover:text-primary"
+                  className="gap-1 text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--accent-muted)]"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Log Food</span>

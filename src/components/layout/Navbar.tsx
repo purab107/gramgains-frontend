@@ -111,10 +111,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Main Header Title & Subtitle for Desktop */}
         <div className="hidden md:block">
-          <h1 className="text-2xl font-bold tracking-tight text-[#173b28] dark:text-emerald-400">
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
             {headerTitle}
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             {headerSubtitle}
           </p>
         </div>
@@ -123,31 +123,31 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Header Right Actions: Date | Divider | Bell | Dark Mode Toggle | Profile PFP */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
         {/* Static Date Display */}
-        <div className="flex items-center gap-2.5 text-[#5e716d]">
-          <Calendar className="w-5 h-5 text-[#5e716d] shrink-0" />
-          <span className="text-sm font-normal text-[#5e716d]">
+        <div className="flex items-center gap-2.5 text-[var(--text-secondary)]">
+          <Calendar className="w-5 h-5 text-[var(--text-secondary)] shrink-0" />
+          <span className="text-sm font-normal text-[var(--text-secondary)]">
             {formatHeaderDate(selectedDate)}
           </span>
         </div>
 
         {/* Vertical Divider */}
-        <div className="h-7 w-[1px] bg-border mx-0.5 hidden sm:block" />
+        <div className="h-7 w-[1px] bg-[var(--border)] mx-0.5 hidden sm:block" />
 
         {/* Notification Bell with Green Indicator Badge */}
-        <div className="relative p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-full hover:bg-muted/50">
+        <div className="relative p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer rounded-full hover:bg-[var(--surface-3)]">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#4cd593] rounded-full ring-2 ring-card" />
+          <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[var(--accent)] rounded-full ring-2 ring-[var(--surface)]" />
         </div>
 
-        {/* Dark Theme Button (Placeholder) */}
+        {/* Dark Theme Button */}
         <button
           type="button"
           onClick={() => {}}
-          className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-muted/50 focus:outline-none"
-          title="Toggle Dark Theme (Coming Soon)"
-          aria-label="Toggle Dark Theme"
+          className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors rounded-full hover:bg-[var(--surface-3)] focus:outline-none"
+          title="Matte Dark Theme Active"
+          aria-label="Theme Mode"
         >
-          <Moon className="w-5 h-5" />
+          <Moon className="w-5 h-5 text-[var(--accent)]" />
         </button>
 
         {/* User Profile Dropdown (Circle PFP at last) */}
@@ -156,10 +156,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Slide-down Navigation */}
       {mobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-card border-b border-border p-4 space-y-2 md:hidden shadow-lg z-50">
-          <div className="flex items-center gap-2 bg-background border border-border px-3 py-2 rounded-lg mb-3">
-            <Calendar className="w-4 h-4 text-primary" />
-            <span className="text-xs text-muted-foreground font-medium">Select Date:</span>
+        <div className="absolute top-full left-0 w-full bg-[var(--surface-2)] border-b border-[var(--border)] p-4 space-y-2 md:hidden shadow-xl z-50">
+          <div className="flex items-center gap-2 bg-[var(--surface-3)] border border-[var(--border)] px-3 py-2 rounded-lg mb-3">
+            <Calendar className="w-4 h-4 text-[var(--accent)]" />
+            <span className="text-xs text-[var(--text-secondary)] font-medium">Select Date:</span>
             <input
               type="date"
               value={selectedDate}
@@ -167,11 +167,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onDateChange?.(e.target.value);
                 setMobileMenuOpen(false);
               }}
-              className="bg-transparent text-xs font-semibold text-foreground outline-none"
+              className="bg-transparent text-xs font-semibold text-[var(--text-primary)] outline-none"
             />
           </div>
 
-          <Separator className="my-2" />
+          <Separator className="my-2 bg-[var(--border)]" />
 
           {navItems.map((item) => {
             const isActive = pathname === item.href;
@@ -183,8 +183,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 p-2.5 rounded-lg transition-all text-sm ${
                   isActive
-                    ? 'bg-primary text-primary-foreground font-medium'
-                    : 'text-foreground hover:bg-muted'
+                    ? 'bg-[var(--accent-muted)] text-[var(--accent)] border border-[var(--accent-border)] font-medium'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)]'
                 }`}
               >
                 <Icon className="w-4 h-4" />

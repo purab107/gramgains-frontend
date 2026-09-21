@@ -38,24 +38,24 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
         const mealCalories = mealLogs.reduce((sum, item) => sum + item.calories, 0);
 
         return (
-          <Card key={key}>
+          <Card key={key} className="border border-[var(--border)] bg-[var(--surface-2)]">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-base">{icon}</span>
-                  <CardTitle className="text-sm">{label}</CardTitle>
+                  <CardTitle className="text-sm text-[var(--text-primary)]">{label}</CardTitle>
                 </div>
-                <Badge variant="muted" className="font-mono normal-case tracking-normal">
+                <Badge variant="outline" className="font-mono normal-case tracking-normal bg-[var(--surface-3)] border-[var(--border)] text-[var(--accent)] font-semibold">
                   {Math.round(mealCalories)} kcal
                 </Badge>
               </div>
             </CardHeader>
 
-            <Separator />
+            <Separator className="bg-[var(--border)]" />
 
             <CardContent className="pt-3">
               {mealLogs.length === 0 ? (
-                <p className="text-muted-foreground text-xs italic py-1">
+                <p className="text-[var(--text-muted)] text-xs italic py-1">
                   No food logged for {label.toLowerCase()} yet.
                 </p>
               ) : (
@@ -63,25 +63,25 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
                   {mealLogs.map((log) => (
                     <div
                       key={log.id}
-                      className="flex justify-between items-center bg-background border border-border p-3 rounded-lg hover:border-primary/30 transition-colors"
+                      className="flex justify-between items-center bg-[var(--surface-3)] border border-[var(--border)] p-3 rounded-lg hover:border-[var(--accent-border)] transition-colors"
                     >
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-xs text-foreground">
+                          <span className="font-semibold text-xs text-[var(--text-primary)]">
                             {log.food.name}
                           </span>
-                          <Badge variant="outline" className="normal-case tracking-normal font-mono">
+                          <Badge variant="outline" className="normal-case tracking-normal font-mono bg-[var(--surface-2)] text-[var(--text-muted)] border-[var(--border)]">
                             {log.food.source}
                           </Badge>
                         </div>
-                        <div className="text-[11px] font-mono text-muted-foreground mt-1">
+                        <div className="text-[11px] font-mono text-[var(--text-muted)] mt-1">
                           {log.weightGrams}g ({log.servings} serving{log.servings !== 1 ? 's' : ''})
                           {' '}• <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>P: {log.protein}g</span> | <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>C: {log.carbohydrates}g</span> | <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>F: {log.fat}g</span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3 shrink-0">
-                        <span className="font-bold font-mono text-xs text-foreground">
+                        <span className="font-bold font-mono text-xs text-[var(--text-primary)]">
                           {log.calories} kcal
                         </span>
                         <Button
@@ -89,7 +89,7 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
                           size="icon-sm"
                           onClick={() => handleDelete(log.id)}
                           title="Delete log"
-                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          className="text-[var(--text-muted)] hover:text-red-400 hover:bg-red-950/20"
                         >
                           <Trash2 size={14} />
                         </Button>
