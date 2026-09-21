@@ -59,18 +59,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
   ];
 
   return (
-    <aside className="w-64 bg-[#fcfdfe] border-r border-[#e5e7eb] flex flex-col justify-between h-screen sticky top-0 shrink-0 overflow-hidden hidden md:flex z-30 text-[#171C1B]">
+    <aside className="w-64 bg-card border-r border-border flex flex-col justify-between h-screen sticky top-0 shrink-0 overflow-hidden hidden md:flex z-30 text-foreground">
       <div className="flex flex-col flex-1 min-h-0">
         {/* Brand Header */}
         <div className="p-6 flex items-center gap-3 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-[#0f8651] flex items-center justify-center text-white shadow-sm">
-            <Flame className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-sm">
+            <Flame className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-bold text-lg tracking-tight text-[#171C1B]">
+            <h1 className="font-bold text-lg tracking-tight text-foreground">
               GramGains
             </h1>
-            <p className="text-[11px] text-[#68716F]">Macro & Calorie Tracker</p>
+            <p className="text-[11px] text-muted-foreground">Macro &amp; Calorie Tracker</p>
           </div>
         </div>
 
@@ -85,11 +85,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
                 href={item.href}
                 className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
                   isActive
-                    ? 'bg-[#e4f7ee] text-[#0d7649] font-semibold'
-                    : 'text-[#4b5563] hover:text-[#0d7649] hover:bg-[#e4f7ee]/50'
+                    ? 'bg-accent text-accent-foreground font-semibold'
+                    : 'text-muted-foreground hover:text-accent-foreground hover:bg-accent/50'
                 }`}
               >
-                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-[#0d7649]' : 'text-[#4b5563]'}`} />
+                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-accent-foreground' : 'text-muted-foreground'}`} />
                 <span>{item.label}</span>
               </Link>
             );
@@ -98,24 +98,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
       </div>
 
       {/* Bottom Navigation Items (Settings & Logout) */}
-      <div className="px-3.5 pb-6 pt-2 space-y-1.5 border-t border-[#e5e7eb]">
+      <div className="px-3.5 pb-6 pt-2 space-y-1.5 border-t border-border">
         <Link
           href="/calculator"
           className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
             pathname === '/settings'
-              ? 'bg-[#e4f7ee] text-[#0d7649] font-semibold'
-              : 'text-[#4b5563] hover:text-[#0d7649] hover:bg-[#e4f7ee]/50'
+              ? 'bg-accent text-accent-foreground font-semibold'
+              : 'text-muted-foreground hover:text-accent-foreground hover:bg-accent/50'
           }`}
         >
-          <Settings className="w-5 h-5 shrink-0 text-[#4b5563]" />
+          <Settings className="w-5 h-5 shrink-0 text-muted-foreground" />
           <span>Settings</span>
         </Link>
 
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium text-[#4b5563] hover:text-red-600 hover:bg-red-50"
+          className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium text-muted-foreground hover:text-red-600 hover:bg-red-500/10"
         >
-          <LogOut className="w-5 h-5 shrink-0 text-[#4b5563]" />
+          <LogOut className="w-5 h-5 shrink-0 text-muted-foreground" />
           <span>Logout</span>
         </button>
       </div>

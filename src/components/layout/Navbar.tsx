@@ -13,12 +13,12 @@ import {
   SquarePen,
   Bookmark,
   Calculator,
-  Bell,
-  Moon
+  Bell
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { UserNav } from '@/components/auth/UserNav';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 interface NavbarProps {
   selectedDate?: string;
@@ -139,16 +139,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#4cd593] rounded-full ring-2 ring-card" />
         </div>
 
-        {/* Dark Theme Button (Placeholder) */}
-        <button
-          type="button"
-          onClick={() => {}}
-          className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-muted/50 focus:outline-none"
-          title="Toggle Dark Theme (Coming Soon)"
-          aria-label="Toggle Dark Theme"
-        >
-          <Moon className="w-5 h-5" />
-        </button>
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* User Profile Dropdown (Circle PFP at last) */}
         <UserNav userProfileName={userProfile?.name} />

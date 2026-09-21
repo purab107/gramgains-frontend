@@ -32,6 +32,13 @@
   padding: 0;
 }
 
+/* Smooth theme transitions */
+*,
+*::before,
+*::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.1s ease;
+}
+
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
@@ -248,6 +255,38 @@ body {
     --sidebar-border: #e5e7eb;
     --sidebar-ring: #0f8651;
   }
+
+  /* ── Matte Dark Theme ──────────────────────────────────── */
+  .dark {
+    --background: #070B0A;
+    --foreground: #E8EDEC;
+    --card: #0B100F;
+    --card-foreground: #E8EDEC;
+    --popover: #101716;
+    --popover-foreground: #E8EDEC;
+    --primary: #0A9B82;
+    --primary-foreground: #070B0A;
+    --secondary: #151D1B;
+    --secondary-foreground: #E8EDEC;
+    --muted: #151D1B;
+    --muted-foreground: #6B8280;
+    --accent: #151D1B;
+    --accent-foreground: #0A9B82;
+    --destructive: #f15359;
+    --border: #1E2B29;
+    --input: #1E2B29;
+    --ring: #0A9B82;
+    --radius: 0.5rem;
+    --sidebar: #0B100F;
+    --sidebar-foreground: #E8EDEC;
+    --sidebar-primary: #0A9B82;
+    --sidebar-primary-foreground: #070B0A;
+    --sidebar-accent: #151D1B;
+    --sidebar-accent-foreground: #0A9B82;
+    --sidebar-border: #1E2B29;
+    --sidebar-ring: #0A9B82;
+  }
+
   * {
     @apply border-border;
   }
