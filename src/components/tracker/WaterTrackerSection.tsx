@@ -73,64 +73,64 @@ export function WaterTrackerSection({
   };
 
   return (
-    <Card className="border border-cyan-100 shadow-sm bg-gradient-to-b from-cyan-50/30 via-white to-white overflow-hidden rounded-2xl">
-      <CardHeader className="pb-3 border-b border-cyan-100/60 bg-gradient-to-r from-cyan-50/60 to-white px-5 pt-4">
+    <Card className="border border-border shadow-sm bg-card text-card-foreground overflow-hidden rounded-2xl">
+      <CardHeader className="pb-3 border-b border-border bg-muted/30 px-5 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-cyan-100 text-cyan-700 shadow-2xs">
-              <Droplets className="w-5 h-5 fill-cyan-600/30 text-cyan-600" />
+            <div className="p-2 rounded-xl bg-cyan-500/15 text-cyan-500 shadow-2xs border border-cyan-500/20">
+              <Droplets className="w-5 h-5 fill-cyan-500/30 text-cyan-500" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-base font-bold text-slate-900 leading-none">
-                  Water & Hydration
+                <CardTitle className="text-base font-bold text-foreground leading-none">
+                  Water &amp; Hydration
                 </CardTitle>
                 {isCompleted ? (
-                  <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1">
+                  <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 bg-primary/10 text-primary border-primary/30 flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" />
                     Goal Reached!
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 bg-cyan-50 text-cyan-700 border-cyan-200">
+                  <Badge variant="outline" className="text-[10px] font-bold px-2 py-0.5 bg-cyan-500/10 text-cyan-500 border-cyan-500/30">
                     {percentage}%
                   </Badge>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">Stay hydrated throughout the day</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Stay hydrated throughout the day</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-xs bg-white px-3 py-1.5 rounded-xl border border-cyan-200/80 shadow-2xs self-start sm:self-auto">
-            <span className="font-bold text-cyan-900">{waterTotalMl.toLocaleString()} ml</span>
-            <span className="text-slate-400">/</span>
-            <span className="text-slate-500">{targetMl.toLocaleString()} ml</span>
+          <div className="flex items-center gap-2 font-mono text-xs bg-card px-3 py-1.5 rounded-xl border border-border shadow-2xs self-start sm:self-auto">
+            <span className="font-bold text-foreground">{waterTotalMl.toLocaleString()} ml</span>
+            <span className="text-muted-foreground/60">/</span>
+            <span className="text-muted-foreground">{targetMl.toLocaleString()} ml</span>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="p-4 sm:p-5 space-y-4">
         {/* Visual Progress Bar */}
-        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-cyan-100 shadow-2xs">
+        <div className="space-y-1.5 bg-muted/30 p-3.5 rounded-xl border border-border shadow-2xs">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-              <GlassWater className="w-4 h-4 text-cyan-600" />
+            <span className="font-semibold text-foreground flex items-center gap-1.5">
+              <GlassWater className="w-4 h-4 text-cyan-500" />
               Daily Hydration Status
             </span>
-            <span className="text-xs font-mono font-bold text-cyan-700">
+            <span className="text-xs font-mono font-bold text-primary">
               {remaining > 0 ? `${remaining.toLocaleString()} ml remaining` : 'Optimal hydration met'}
             </span>
           </div>
           <Progress
             value={percentage}
             max={100}
-            className="h-3 bg-cyan-100/50"
+            className="h-3 bg-muted"
             indicatorClassName="bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-500 shadow-sm"
           />
         </div>
 
         {/* Quick Add Buttons */}
         <div className="space-y-2">
-          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+          <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
             Quick Add Water
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -138,9 +138,9 @@ export function WaterTrackerSection({
               onClick={() => handleAddWater(250)}
               disabled={logging}
               variant="outline"
-              className="h-9 px-2 bg-white hover:bg-cyan-50 hover:border-cyan-300 border-slate-200 text-slate-800 text-xs font-bold rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+              className="h-9 px-2 bg-card hover:bg-muted border-border text-foreground text-xs font-bold rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all"
             >
-              <Plus className="w-3.5 h-3.5 text-cyan-600" />
+              <Plus className="w-3.5 h-3.5 text-cyan-500" />
               <span>+250 ml (Cup)</span>
             </Button>
 
@@ -148,9 +148,9 @@ export function WaterTrackerSection({
               onClick={() => handleAddWater(500)}
               disabled={logging}
               variant="outline"
-              className="h-9 px-2 bg-white hover:bg-cyan-50 hover:border-cyan-300 border-slate-200 text-slate-800 text-xs font-bold rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+              className="h-9 px-2 bg-card hover:bg-muted border-border text-foreground text-xs font-bold rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all"
             >
-              <Plus className="w-3.5 h-3.5 text-cyan-600" />
+              <Plus className="w-3.5 h-3.5 text-cyan-500" />
               <span>+500 ml (Bottle)</span>
             </Button>
 
@@ -158,9 +158,9 @@ export function WaterTrackerSection({
               onClick={() => handleAddWater(750)}
               disabled={logging}
               variant="outline"
-              className="h-9 px-2 bg-white hover:bg-cyan-50 hover:border-cyan-300 border-slate-200 text-slate-800 text-xs font-bold rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+              className="h-9 px-2 bg-card hover:bg-muted border-border text-foreground text-xs font-bold rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all"
             >
-              <Plus className="w-3.5 h-3.5 text-cyan-600" />
+              <Plus className="w-3.5 h-3.5 text-cyan-500" />
               <span>+750 ml (Flask)</span>
             </Button>
 
@@ -169,8 +169,8 @@ export function WaterTrackerSection({
               variant="outline"
               className={`h-9 px-2 border text-xs font-bold rounded-xl shadow-2xs flex items-center justify-center gap-1.5 active:scale-95 transition-all ${
                 showCustomInput
-                  ? 'bg-cyan-600 text-white border-cyan-600 hover:bg-cyan-700'
-                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-card hover:bg-muted border-border text-foreground'
               }`}
             >
               <span>+ Custom ml</span>
@@ -180,19 +180,19 @@ export function WaterTrackerSection({
 
         {/* Custom Input Drawer */}
         {showCustomInput && (
-          <div className="p-3 bg-white border border-cyan-200 rounded-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
+          <div className="p-3 bg-card border border-border rounded-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
             <input
               type="number"
               placeholder="e.g. 350 ml"
               min="1"
               value={customMl}
               onChange={(e) => setCustomMl(e.target.value)}
-              className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              className="flex-1 px-3 py-1.5 bg-background border border-input rounded-lg text-xs font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             />
             <Button
               onClick={() => handleAddWater(parseInt(customMl, 10))}
               disabled={logging || !customMl}
-              className="h-8 px-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-lg shadow-sm"
+              className="h-8 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs rounded-lg shadow-sm"
             >
               {logging ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Add'}
             </Button>
@@ -201,8 +201,8 @@ export function WaterTrackerSection({
 
         {/* Water Log Entries List */}
         {waterLogs && waterLogs.length > 0 && (
-          <div className="space-y-1.5 pt-2 border-t border-slate-100">
-            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+          <div className="space-y-1.5 pt-2 border-t border-border">
+            <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               Today&apos;s Water Logs ({waterLogs.length})
             </div>
             <div className="flex flex-wrap gap-2">
@@ -211,9 +211,9 @@ export function WaterTrackerSection({
                 return (
                   <div
                     key={log.id}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-cyan-200/80 text-xs font-mono font-semibold text-slate-800 shadow-2xs group hover:border-rose-200 transition-all"
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-card border border-border text-xs font-mono font-semibold text-foreground shadow-2xs group hover:border-destructive/40 transition-all"
                   >
-                    <Droplets className="w-3 h-3 text-cyan-600" />
+                    <Droplets className="w-3 h-3 text-cyan-500" />
                     <span>+{log.amountMl}ml</span>
                     <button
                       onClick={() => handleDeleteWater(log.id)}
