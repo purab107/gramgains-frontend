@@ -53,7 +53,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
   const [gaugeHovered, setGaugeHovered] = useState(false);
 
   return (
-    <Card className="border border-slate-100/90 shadow-sm bg-white rounded-3xl p-4.5 sm:p-5 flex flex-row items-center gap-4 sm:gap-5 h-full">
+    <Card className="border border-border shadow-sm bg-card text-card-foreground rounded-3xl p-4.5 sm:p-5 flex flex-row items-center gap-4 sm:gap-5 h-full">
 
       {/* Left: Circular Calorie Progress */}
       <div className="flex flex-col items-center justify-center shrink-0">
@@ -68,7 +68,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
               cx="70"
               cy="70"
               r={radius}
-              stroke="#e8edf5"
+              className="stroke-muted/50"
               strokeWidth="13"
               fill="transparent"
             />
@@ -77,7 +77,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
               cx="70"
               cy="70"
               r={radius}
-              stroke="#169b55"
+              stroke="#0A9B82"
               strokeWidth="13"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
@@ -92,11 +92,11 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
             className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out pointer-events-none"
             style={{ opacity: gaugeHovered ? 0 : 1, transform: gaugeHovered ? 'scale(0.88)' : 'scale(1)' }}
           >
-            <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-none tabular-nums">
+            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight leading-none tabular-nums">
               {Math.round(summary.calories).toLocaleString()}
             </span>
-            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 mt-0.5">kcal</span>
-            <span className="text-[10px] sm:text-[11px] font-medium text-slate-400">consumed</span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground mt-0.5">kcal</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-muted-foreground/70">consumed</span>
           </div>
 
           {/* Hover text — fades in on hover */}
@@ -104,23 +104,23 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
             className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out pointer-events-none"
             style={{ opacity: gaugeHovered ? 1 : 0, transform: gaugeHovered ? 'scale(1)' : 'scale(0.88)' }}
           >
-            <span className="text-xl sm:text-2xl font-bold text-[#169b55] tracking-tight leading-none tabular-nums">
+            <span className="text-xl sm:text-2xl font-bold text-primary tracking-tight leading-none tabular-nums">
               {Math.round(remaining).toLocaleString()}
             </span>
-            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 mt-0.5">kcal</span>
-            <span className="text-[10px] sm:text-[11px] font-medium text-slate-400">remaining</span>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground mt-0.5">kcal</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-muted-foreground/70">remaining</span>
           </div>
         </div>
 
         {/* % of daily goal label */}
         <div className="mt-2 text-xs text-center">
-          <span className="font-extrabold text-[#169b55]">{calPercent}%</span>{' '}
-          <span className="font-medium text-slate-500">of daily goal</span>
+          <span className="font-extrabold text-primary">{calPercent}%</span>{' '}
+          <span className="font-medium text-muted-foreground">of daily goal</span>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="w-px self-stretch bg-slate-100 shrink-0" />
+      <div className="w-px self-stretch bg-border shrink-0" />
 
       {/* Right: Macro Progress Bars */}
       <div className="flex flex-col gap-3 flex-1 min-w-0 justify-center">
@@ -135,10 +135,10 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-slate-600">Protein</span>
-              <span className="text-slate-400 font-medium tabular-nums">{Math.round(summary.protein)}/{targetProtein}g</span>
+              <span className="text-foreground">Protein</span>
+              <span className="text-muted-foreground font-medium tabular-nums">{Math.round(summary.protein)}/{targetProtein}g</span>
             </div>
-            <div className="h-3 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${proteinPercent}%`, backgroundColor: '#8b5cf6' }}
@@ -157,10 +157,10 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-slate-600">Carbs</span>
-              <span className="text-slate-400 font-medium tabular-nums">{Math.round(summary.carbohydrates)}/{targetCarbs}g</span>
+              <span className="text-foreground">Carbs</span>
+              <span className="text-muted-foreground font-medium tabular-nums">{Math.round(summary.carbohydrates)}/{targetCarbs}g</span>
             </div>
-            <div className="h-3 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${carbsPercent}%`, backgroundColor: '#f15359' }}
@@ -179,10 +179,10 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-slate-600">Fat</span>
-              <span className="text-slate-400 font-medium tabular-nums">{Math.round(summary.fat)}/{targetFat}g</span>
+              <span className="text-foreground">Fat</span>
+              <span className="text-muted-foreground font-medium tabular-nums">{Math.round(summary.fat)}/{targetFat}g</span>
             </div>
-            <div className="h-3 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${fatPercent}%`, backgroundColor: '#feb111' }}
@@ -201,10 +201,10 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-              <span className="text-slate-600">Water</span>
-              <span className="text-slate-400 font-medium tabular-nums">{waterLiters}/{targetWaterLiters}L</span>
+              <span className="text-foreground">Water</span>
+              <span className="text-muted-foreground font-medium tabular-nums">{waterLiters}/{targetWaterLiters}L</span>
             </div>
-            <div className="h-3 w-full bg-[#eef2f6] rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${waterPercent}%`, backgroundColor: '#2196f3' }}
