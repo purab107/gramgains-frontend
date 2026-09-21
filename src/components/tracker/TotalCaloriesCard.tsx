@@ -138,7 +138,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
               <span className="text-foreground">Protein</span>
               <span className="text-muted-foreground font-medium tabular-nums">{Math.round(summary.protein)}/{targetProtein}g</span>
             </div>
-            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-[#1e293b] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${proteinPercent}%`, backgroundColor: '#8b5cf6' }}
@@ -160,7 +160,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
               <span className="text-foreground">Carbs</span>
               <span className="text-muted-foreground font-medium tabular-nums">{Math.round(summary.carbohydrates)}/{targetCarbs}g</span>
             </div>
-            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-[#1e293b] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${carbsPercent}%`, backgroundColor: '#f15359' }}
@@ -182,7 +182,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
               <span className="text-foreground">Fat</span>
               <span className="text-muted-foreground font-medium tabular-nums">{Math.round(summary.fat)}/{targetFat}g</span>
             </div>
-            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-[#1e293b] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${fatPercent}%`, backgroundColor: '#feb111' }}
@@ -204,7 +204,7 @@ export const TotalCaloriesCard: React.FC<TotalCaloriesCardProps> = ({
               <span className="text-foreground">Water</span>
               <span className="text-muted-foreground font-medium tabular-nums">{waterLiters}/{targetWaterLiters}L</span>
             </div>
-            <div className="h-3 w-full bg-muted rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-[#1e293b] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${waterPercent}%`, backgroundColor: '#2196f3' }}

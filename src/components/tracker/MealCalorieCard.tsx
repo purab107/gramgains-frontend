@@ -155,7 +155,7 @@ export const MealCalorieCard: React.FC<MealCalorieCardProps> = ({
             </div>
             <Progress
               value={percentage}
-              className="h-1.5 rounded-full bg-muted [&>div]:rounded-full"
+              className="h-1.5 rounded-full bg-[#1e293b] border-none [&>div]:rounded-full"
               indicatorStyle={{ backgroundColor: color }}
             />
           </div>

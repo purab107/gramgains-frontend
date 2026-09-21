@@ -123,7 +123,7 @@ export function WaterTrackerSection({
           <Progress
             value={percentage}
             max={100}
-            className="h-3 bg-muted"
+            className="h-3 bg-[#1e293b] border-none"
             indicatorClassName="bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-500 shadow-sm"
           />
         </div>
