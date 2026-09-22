@@ -614,7 +614,19 @@ export function AddFoodSheet({
                             </Badge>
                           </div>
                           <div className="text-[11px] text-muted-foreground font-medium mt-1">
-                            {cal} cal, {p} p, {c} c, {f} f{totalWeight > 0 ? `, ${Math.round(totalWeight)} g` : ''}
+                            <span>{cal} cal, </span>
+                            <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>
+                              {p} p
+                            </span>
+                            <span>, </span>
+                            <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>
+                              {c} c
+                            </span>
+                            <span>, </span>
+                            <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>
+                              {f} f
+                            </span>
+                            <span>{totalWeight > 0 ? `, ${Math.round(totalWeight)} g` : ''}</span>
                           </div>
                         </div>
 
@@ -666,10 +678,18 @@ export function AddFoodSheet({
                         className="p-3 bg-card rounded-xl border border-border shadow-2xs hover:border-primary/40 hover:bg-muted/30 transition-all flex items-center justify-between gap-3 group"
                       >
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="font-bold text-xs sm:text-sm text-foreground truncate">
                               {food.name}
                             </span>
+                            {food.brand ? (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] px-1.5 py-0 border-border/80 bg-muted/60 text-muted-foreground font-medium shrink-0 truncate max-w-[130px]"
+                              >
+                                {food.brand}
+                              </Badge>
+                            ) : null}
                             {food.layer === 2 ? (
                               <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 font-medium shrink-0">
                                 Recipe
@@ -678,7 +698,19 @@ export function AddFoodSheet({
                           </div>
 
                           <div className="text-[11px] text-muted-foreground font-medium mt-1">
-                            {cal} cal, {p} p, {c} c, {f} f, {weight} g
+                            <span>{cal} cal, </span>
+                            <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>
+                              {p} p
+                            </span>
+                            <span>, </span>
+                            <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>
+                              {c} c
+                            </span>
+                            <span>, </span>
+                            <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>
+                              {f} f
+                            </span>
+                            <span>, {weight} g</span>
                           </div>
                         </div>
 

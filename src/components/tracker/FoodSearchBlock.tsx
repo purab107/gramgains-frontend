@@ -355,10 +355,15 @@ export function FoodSearchBlock({
                     className="p-2.5 cursor-pointer flex items-center justify-between gap-3"
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-bold text-xs text-foreground truncate">
                           {food.name}
                         </span>
+                        {food.brand ? (
+                          <Badge variant="outline" className="text-[9px] px-1.5 py-0 border-border/80 bg-muted/60 text-muted-foreground font-medium shrink-0 truncate max-w-[120px]">
+                            {food.brand}
+                          </Badge>
+                        ) : null}
                         {food.layer === 2 ? (
                           <Badge variant="outline" className="text-[9px] px-1 py-0 border-amber-500/40 bg-amber-500/10 text-amber-500">
                             Recipe
