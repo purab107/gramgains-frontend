@@ -163,9 +163,11 @@ export function AddFoodSheet({
 
       if (tab === 'all') {
         const results = await ApiService.searchFoods(trimmed);
-        const sorted = (results || []).sort((a, b) =>
-          a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
-        );
+        const sorted = trimmed
+          ? (results || [])
+          : (results || []).sort((a, b) =>
+              a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+            );
         setFoods(sorted);
       } else if (tab === 'history') {
         const recent = await ApiService.getRecentFoods();

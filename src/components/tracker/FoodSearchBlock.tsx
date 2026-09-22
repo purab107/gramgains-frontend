@@ -88,8 +88,11 @@ export function FoodSearchBlock({
         filtered = filtered.filter((item) => (item.protein || 0) >= 12);
       }
 
-      // Sort alphabetically by name (A-Z)
-      filtered.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+      // Sort alphabetically by name (A-Z) only when browsing without a search query;
+      // preserve backend relevance ranking during search
+      if (!searchQuery.trim()) {
+        filtered.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+      }
 
       setResults(filtered.slice(0, 30));
     } catch (err) {
