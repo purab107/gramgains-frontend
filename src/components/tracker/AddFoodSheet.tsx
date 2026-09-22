@@ -114,6 +114,13 @@ export function AddFoodSheet({
   const [savedMeals, setSavedMeals] = useState<SavedMeal[]>([]);
   const [loading, setLoading] = useState(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Cache: cacheKey -> { data, fetchedAt }
+  const tabCacheRef = useRef<Record<string, { data: any[]; fetchedAt: number }>>({});
+  // AbortController for cancelling stale in-flight requests
+  const abortRef = useRef<AbortController | null>(null);
+  // Track which tabs have been loaded at least once in this sheet session
+  const loadedTabsRef = useRef<Set<string>>(new Set());
+  const CACHE_TTL_MS = 60_000; // cache tab data for 60 seconds
 
   // Add Food Detail State
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
@@ -155,39 +162,128 @@ export function AddFoodSheet({
     }
   };
 
-  // Fetch foods for Search View
-  const fetchData = async (searchQuery: string, tab: FilterTab) => {
-    try {
-      setLoading(true);
-      const trimmed = searchQuery.trim();
-
-      if (tab === 'all') {
-        const results = await ApiService.searchFoods(trimmed);
-        const sorted = trimmed
-          ? (results || [])
-          : (results || []).sort((a, b) =>
-              a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
-            );
-        setFoods(sorted);
-      } else if (tab === 'history') {
-        const recent = await ApiService.getRecentFoods();
-        const filtered = (recent || []).filter((item) =>
-          !trimmed || item.name.toLowerCase().includes(trimmed.toLowerCase())
-        );
-        setHistoryFoods(filtered);
-      } else if (tab === 'saved_meals') {
-        const meals = await ApiService.getSavedMeals();
-        const filtered = (meals || []).filter((item) =>
-          !trimmed || item.name.toLowerCase().includes(trimmed.toLowerCase())
-        );
-        setSavedMeals(filtered);
-      }
-    } catch (err) {
-      console.error('Error loading foods in AddFoodSheet:', err);
-    } finally {
-      setLoading(false);
+  // Apply fetched data to the correct state bucket
+  const applyData = (tab: FilterTab, trimmed: string, data: any[]) => {
+    if (tab === 'all') {
+      const sorted = trimmed
+        ? (data as FoodItem[])
+        : (data as FoodItem[]).sort((a, b) =>
+            a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+          );
+      setFoods(sorted);
+    } else if (tab === 'history') {
+      const filtered = (data as FoodItem[]).filter((item) =>
+        !trimmed || item.name.toLowerCase().includes(trimmed.toLowerCase())
+      );
+      setHistoryFoods(filtered);
+    } else if (tab === 'saved_meals') {
+      const filtered = (data as SavedMeal[]).filter((item) =>
+        !trimmed || item.name.toLowerCase().includes(trimmed.toLowerCase())
+      );
+      setSavedMeals(filtered);
     }
   };
+
+  // Fetch raw data for a given tab (no filtering yet)
+  const fetchRawTabData = async (tab: FilterTab, signal: AbortSignal): Promise<any[]> => {
+    if (tab === 'all') {
+      // 'all' tab is query-specific — no caching by tab alone, include query in cache key
+      return [];
+    } else if (tab === 'history') {
+      return await ApiService.getRecentFoods();
+    } else if (tab === 'saved_meals') {
+      return await ApiService.getSavedMeals();
+    }
+    return [];
+  };
+
+  // Fetch foods for Search View with caching + AbortController
+  const fetchData = async (searchQuery: string, tab: FilterTab) => {
+    // Cancel any previous in-flight request
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    const trimmed = searchQuery.trim();
+    const now = Date.now();
+
+    if (tab === 'all') {
+      // 'all' tab includes search query in cache key
+      const cacheKey = `all:${trimmed}`;
+      const cached = tabCacheRef.current[cacheKey];
+
+      // Serve from cache immediately if fresh
+      if (cached && now - cached.fetchedAt < CACHE_TTL_MS) {
+        applyData(tab, trimmed, cached.data);
+        return;
+      }
+
+      // Show stale cache while refreshing
+      if (cached) {
+        applyData(tab, trimmed, cached.data);
+      } else {
+        setLoading(true);
+      }
+
+      try {
+        const results = (await ApiService.searchFoods(trimmed)) || [];
+        if (controller.signal.aborted) return;
+        tabCacheRef.current[cacheKey] = { data: results, fetchedAt: Date.now() };
+        applyData(tab, trimmed, results);
+      } catch (err: any) {
+        if (err?.name !== 'AbortError') console.error('Error loading foods:', err);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    } else {
+      // history / saved_meals tabs — keyed by tab only, filtering by query done client-side
+      const cacheKey = tab;
+      const cached = tabCacheRef.current[cacheKey];
+
+      // Serve from cache immediately if fresh — tab switch is instant
+      if (cached && now - cached.fetchedAt < CACHE_TTL_MS) {
+        applyData(tab, trimmed, cached.data);
+        return;
+      }
+
+      // Show stale cache immediately while refreshing in background
+      if (cached) {
+        applyData(tab, trimmed, cached.data);
+        // Refresh silently in background
+        try {
+          const fresh = await fetchRawTabData(tab, controller.signal);
+          if (controller.signal.aborted) return;
+          tabCacheRef.current[cacheKey] = { data: fresh, fetchedAt: Date.now() };
+          applyData(tab, trimmed, fresh);
+        } catch (err: any) {
+          if (err?.name !== 'AbortError') console.error('Error refreshing tab:', err);
+        }
+        return;
+      }
+
+      // First visit to this tab — show loading spinner
+      setLoading(true);
+      try {
+        const fresh = await fetchRawTabData(tab, controller.signal);
+        if (controller.signal.aborted) return;
+        tabCacheRef.current[cacheKey] = { data: fresh, fetchedAt: Date.now() };
+        applyData(tab, trimmed, fresh);
+      } catch (err: any) {
+        if (err?.name !== 'AbortError') console.error('Error loading tab:', err);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
+  };
+
+  // Clear cache when the sheet closes so next open is always fresh
+  useEffect(() => {
+    if (!open) {
+      tabCacheRef.current = {};
+      loadedTabsRef.current = new Set();
+      abortRef.current?.abort();
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!open || sheetView !== 'search') return;
