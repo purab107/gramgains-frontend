@@ -10,9 +10,11 @@ import {
   Calculator, 
   Settings, 
   LogOut,
-  Flame
+  Flame,
+  UserX
 } from 'lucide-react';
 import { signOut } from '@/lib/auth-client';
+import { useIsGuest, endGuestSession } from '@/lib/guest-session';
 
 interface SidebarProps {
   userProfile?: {
@@ -25,6 +27,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const isGuest = useIsGuest();
 
   const handleSignOut = async () => {
     try {
@@ -33,6 +36,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
     } catch (err) {
       console.error('Sign out error:', err);
     }
+  };
+
+  const handleExitGuest = () => {
+    endGuestSession();
+    router.replace('/login');
   };
 
   const navItems = [
@@ -97,27 +105,39 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
         </nav>
       </div>
 
-      {/* Bottom Navigation Items (Settings & Logout) */}
+      {/* Bottom Navigation Items (Settings & Logout/Guest) */}
       <div className="px-3.5 pb-6 pt-2 space-y-1.5 border-t border-border">
-        <Link
-          href="/calculator"
-          className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
-            pathname === '/settings'
-              ? 'bg-accent text-accent-foreground font-semibold'
-              : 'text-muted-foreground hover:text-accent-foreground hover:bg-accent/50'
-          }`}
-        >
-          <Settings className="w-5 h-5 shrink-0 text-muted-foreground" />
-          <span>Settings</span>
-        </Link>
+        {!isGuest && (
+          <Link
+            href="/calculator"
+            className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
+              pathname === '/settings'
+                ? 'bg-accent text-accent-foreground font-semibold'
+                : 'text-muted-foreground hover:text-accent-foreground hover:bg-accent/50'
+            }`}
+          >
+            <Settings className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Settings</span>
+          </Link>
+        )}
 
-        <button
-          onClick={handleSignOut}
-          className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium text-muted-foreground hover:text-red-600 hover:bg-red-500/10"
-        >
-          <LogOut className="w-5 h-5 shrink-0 text-muted-foreground" />
-          <span>Logout</span>
-        </button>
+        {isGuest ? (
+          <button
+            onClick={handleExitGuest}
+            className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium text-amber-600 hover:bg-amber-500/10"
+          >
+            <UserX className="w-5 h-5 shrink-0" />
+            <span>Exit Guest Mode</span>
+          </button>
+        ) : (
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium text-muted-foreground hover:text-red-600 hover:bg-red-500/10"
+          >
+            <LogOut className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Logout</span>
+          </button>
+        )}
       </div>
     </aside>
   );
