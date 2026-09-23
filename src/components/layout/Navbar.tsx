@@ -13,12 +13,14 @@ import {
   SquarePen,
   Bookmark,
   Calculator,
-  Bell
+  Bell,
+  UserX
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { UserNav } from '@/components/auth/UserNav';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { useIsGuest } from '@/lib/guest-session';
 
 interface NavbarProps {
   selectedDate?: string;
@@ -42,6 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isGuest = useIsGuest();
 
   const navItems = [
     { label: 'Home', href: '/', icon: Home },
@@ -122,6 +125,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Header Right Actions: Date | Divider | Bell | Dark Mode Toggle | Profile PFP */}
       <div className="flex items-center gap-2.5 sm:gap-3.5">
+        {/* Guest Mode Pill */}
+        {isGuest && (
+          <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 px-2.5 py-1">
+            <UserX className="w-3.5 h-3.5 text-amber-500" />
+            <span className="text-[11px] font-semibold text-amber-600">Guest Session</span>
+          </div>
+        )}
+
         {/* Static Date Display */}
         <div className="flex items-center gap-2.5 text-muted-foreground">
           <Calendar className="w-5 h-5 text-muted-foreground shrink-0" />
@@ -129,6 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {formatHeaderDate(selectedDate)}
           </span>
         </div>
+
 
         {/* Vertical Divider */}
         <div className="h-7 w-[1px] bg-border mx-0.5 hidden sm:block" />
