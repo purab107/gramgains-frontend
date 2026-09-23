@@ -17,8 +17,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isPending, session, router]);
 
-  // Show loading spinner while checking session (not for guest — guest is instant)
-  if (isPending && !isGuestSession()) {
+  // Show loading spinner while checking session (including guest for consistent UX)
+  if (isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
