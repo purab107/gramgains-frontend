@@ -81,6 +81,8 @@ function TrackerPage() {
   };
 
   useEffect(() => {
+    // Remove loading class to prevent flash of unstyled content
+    document.body.classList.remove('loading');
     loadData();
   }, [selectedDate]);
 
