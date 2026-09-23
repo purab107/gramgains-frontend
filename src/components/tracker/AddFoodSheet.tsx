@@ -302,6 +302,11 @@ export function AddFoodSheet({
   // Transition to Add Food view when clicking the plus button
   const handleFoodPlusClick = (food: FoodItem) => {
     setSelectedFood(food);
+    // Cache this food in guest storage so logMeal can resolve macro data
+    try {
+      const { GuestStorageService } = require('@/lib/guest-session');
+      GuestStorageService.cacheFood(food);
+    } catch {}
 
     // Natural, industry-standard default:
     // If food has a defined serving (e.g. 40g, 200g bowl), select that serving with count = 1.
@@ -321,6 +326,7 @@ export function AddFoodSheet({
       onAddFoodClick(food, 'food');
     }
   };
+
 
   const handleSavedMealPlusClick = async (meal: SavedMeal) => {
     if (onAddFoodClick) {
