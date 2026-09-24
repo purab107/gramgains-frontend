@@ -11,7 +11,9 @@ import {
   Settings, 
   LogOut,
   Flame,
-  UserX
+  UserX,
+  BarChart3,
+  User
 } from 'lucide-react';
 import { signOut } from '@/lib/auth-client';
 import { useIsGuest, endGuestSession } from '@/lib/guest-session';
@@ -53,6 +55,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
       label: 'Tracker',
       href: '/tracker',
       icon: SquarePen,
+    },
+    {
+      label: 'Analytics',
+      href: '/analytics',
+      icon: BarChart3,
     },
     {
       label: 'Saved Meals',
@@ -105,19 +112,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
         </nav>
       </div>
 
-      {/* Bottom Navigation Items (Settings & Logout/Guest) */}
+      {/* Bottom Navigation Items (Profile & Logout/Guest) */}
       <div className="px-3.5 pb-6 pt-2 space-y-1.5 border-t border-border">
         {!isGuest && (
           <Link
-            href="/calculator"
+            href="/profile"
             className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
-              pathname === '/settings'
+              pathname === '/profile'
                 ? 'bg-accent text-accent-foreground font-semibold'
                 : 'text-muted-foreground hover:text-accent-foreground hover:bg-accent/50'
             }`}
           >
-            <Settings className="w-5 h-5 shrink-0 text-muted-foreground" />
-            <span>Settings</span>
+            <User className="w-5 h-5 shrink-0 text-muted-foreground" />
+            <span>Profile &amp; Settings</span>
           </Link>
         )}
 
