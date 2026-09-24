@@ -4,18 +4,20 @@ import { useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Flame } from 'lucide-react';
+import { isGuestSession } from '@/lib/guest-session';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isPending && !session) {
+    // Allow guest sessions through — no redirect needed
+    if (!isPending && !session && !isGuestSession()) {
       router.replace('/login');
     }
   }, [isPending, session, router]);
 
-  // Show loading spinner while checking session
+  // Show loading spinner while checking session (including guest for consistent UX)
   if (isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -29,10 +31,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Not authenticated — return null while redirect happens
-  if (!session) {
+  // Not authenticated and no guest session — return null while redirect happens
+  if (!session && !isGuestSession()) {
     return null;
   }
 
   return <>{children}</>;
 }
+

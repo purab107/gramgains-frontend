@@ -39,6 +39,9 @@ function DashboardHomePage() {
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
 
   useEffect(() => {
+    // Remove loading class to prevent flash of unstyled content
+    document.body.classList.remove('loading');
+    
     // Only show splash screen once per browser session
     const hasSeenSplash = sessionStorage.getItem('gramgains_splash_seen');
     if (!hasSeenSplash) {

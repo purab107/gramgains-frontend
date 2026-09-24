@@ -6,6 +6,16 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Prevent flash of unstyled content */
+body {
+  opacity: 1 !important;
+  transition: opacity 0.3s ease-in;
+}
+
+body.loading {
+  opacity: 0;
+}
+
 :root {
   --bg-main: #fcfdfe;
   --bg-card: #fefeff;

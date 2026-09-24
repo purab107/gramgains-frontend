@@ -1,13 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { signIn, signUp } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
-import { Flame, Mail, Lock, User, Loader2, AlertCircle, Sparkles } from 'lucide-react';
+import { Flame, Mail, Lock, User, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
+import { startGuestSession } from '@/lib/guest-session';
 
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<'login' | 'register'>('login');
+
+  useEffect(() => {
+    // Remove loading class to prevent flash of unstyled content
+    document.body.classList.remove('loading');
+  }, []);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -222,6 +228,36 @@ export default function LoginPage() {
             >
               {mode === 'login' ? 'Register here' : 'Sign in'}
             </button>
+          </p>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-background px-3 text-xs text-muted-foreground">or</span>
+            </div>
+          </div>
+
+          {/* Explore as Guest */}
+          <button
+            type="button"
+            id="explore-as-guest-btn"
+            onClick={() => {
+              startGuestSession();
+              router.replace('/');
+            }}
+            className="w-full flex items-center justify-center gap-2 rounded-xl border border-border bg-muted/40 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+          >
+            <UserX className="h-4 w-4" />
+            <span>Explore as Guest</span>
+            <span className="ml-1 rounded-full bg-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              1 session
+            </span>
+          </button>
+          <p className="text-center text-[11px] text-muted-foreground">
+            No account required · food search &amp; tracking only · no macro calculator
           </p>
         </div>
       </div>

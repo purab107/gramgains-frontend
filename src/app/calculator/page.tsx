@@ -8,15 +8,25 @@ import {
   Navbar,
   AuthGuard
 } from '@/components';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { useIsGuest } from '@/lib/guest-session';
 import { 
   Calculator, 
   CheckCircle2, 
   Sparkles, 
   User, 
-  Save
+  Save,
+  Lock,
+  LogIn,
+  Dna,
+  Target,
+  Zap
 } from 'lucide-react';
 
 function CalculatorPage() {
+  const isGuest = useIsGuest();
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -34,6 +44,8 @@ function CalculatorPage() {
   const [goal, setGoal] = useState<'WEIGHT_LOSS' | 'MAINTAIN' | 'BULK'>('MAINTAIN');
 
   useEffect(() => {
+    // Remove loading class to prevent flash of unstyled content
+    document.body.classList.remove('loading');
     loadProfile();
   }, []);
 
@@ -151,14 +163,16 @@ function CalculatorPage() {
               </p>
             </div>
 
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-primary/20"
-            >
-              <Save className="w-4 h-4" />
-              <span>{saving ? 'Saving...' : 'Save & Sync Targets'}</span>
-            </button>
+            {!isGuest && (
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 border border-primary/20"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? 'Saving...' : 'Save & Sync Targets'}</span>
+              </button>
+            )}
           </div>
 
           {saveSuccess && (
@@ -168,7 +182,79 @@ function CalculatorPage() {
             </div>
           )}
 
-          {/* Grid Layout: Inputs Left, Live Results Right */}
+          {/* Guest Locked State */}
+          {isGuest ? (
+            <div className="flex flex-col items-center justify-center py-12 px-4">
+              <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+                {/* Locked Header */}
+                <div className="relative bg-gradient-to-br from-primary/20 via-primary/5 to-background p-8 flex flex-col items-center gap-3 border-b border-border">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Lock className="w-7 h-7 text-primary" />
+                  </div>
+                  <div className="text-center">
+                    <h2 className="text-xl font-bold text-foreground">Macro Calculator</h2>
+                    <p className="text-sm text-muted-foreground mt-1">Sign in to unlock personalized calculations</p>
+                  </div>
+                  <div className="absolute top-3 right-3 rounded-full bg-amber-500/10 border border-amber-500/30 px-2.5 py-1">
+                    <span className="text-[10px] font-semibold text-amber-600 uppercase tracking-wider">Guest Mode</span>
+                  </div>
+                </div>
+
+                {/* Feature Highlights */}
+                <div className="p-6 space-y-3">
+                  <p className="text-xs text-muted-foreground text-center mb-4">
+                    The Metabolic Science Calculator uses your body metrics to calculate personalized BMR, TDEE, and macro targets — then syncs them directly to your daily tracker.
+                  </p>
+
+                  {[
+                    { icon: Dna, title: 'Personalized BMR & TDEE', desc: 'Mifflin-St Jeor formula calibrated to your age, height, weight & activity.' },
+                    { icon: Target, title: 'Goal-based Macro Splits', desc: 'Auto-calculated protein, carb & fat ratios for weight loss, maintenance, or bulk.' },
+                    { icon: Zap, title: 'Instant Tracker Sync', desc: 'Save your targets once and every dashboard chart updates automatically.' },
+                  ].map(({ icon: Icon, title, desc }) => (
+                    <div key={title} className="flex items-start gap-3 p-3 rounded-xl bg-muted/40 border border-border">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-foreground">{title}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="px-6 pb-6 flex flex-col gap-2">
+                  <button
+                    id="guest-calc-signin-btn"
+                    onClick={() => { setAuthMode('login'); setIsAuthOpen(true); }}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-all active:scale-95"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>Sign In to Calculate</span>
+                  </button>
+                  <button
+                    id="guest-calc-register-btn"
+                    onClick={() => { setAuthMode('register'); setIsAuthOpen(true); }}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-border bg-card hover:bg-muted py-3 text-sm font-medium text-foreground transition-all"
+                  >
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span>Create Free Account</span>
+                  </button>
+                </div>
+              </div>
+
+              <AuthModal
+                isOpen={isAuthOpen}
+                onClose={() => setIsAuthOpen(false)}
+                defaultMode={authMode}
+                onSuccess={() => {
+                  setIsAuthOpen(false);
+                  window.location.replace('/calculator');
+                }}
+              />
+            </div>
+          ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Input Form Column */}
             <div className="lg:col-span-7 bg-card border border-border p-6 rounded-xl shadow-sm space-y-5">
@@ -410,6 +496,7 @@ function CalculatorPage() {
               </div>
             </div>
           </div>
+          )}
         </main>
       </div>
     </div>

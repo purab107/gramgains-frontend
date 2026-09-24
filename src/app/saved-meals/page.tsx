@@ -55,6 +55,8 @@ function SavedMealsPage() {
   const [loggingSuccess, setLoggingSuccess] = useState(false);
 
   useEffect(() => {
+    // Remove loading class to prevent flash of unstyled content
+    document.body.classList.remove('loading');
     loadSavedMeals();
   }, []);
 

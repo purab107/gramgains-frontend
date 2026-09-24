@@ -1,3 +1,5 @@
+import { isGuestSession, GuestStorageService } from '@/lib/guest-session';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 async function apiFetch(input: string, init?: RequestInit): Promise<Response> {
@@ -165,6 +167,7 @@ export interface SavedMeal {
 export class ApiService {
   // --- PROFILE ---
   static async getProfile(): Promise<UserProfile> {
+    if (isGuestSession()) return GuestStorageService.getProfile();
     const res = await apiFetch(`${API_BASE_URL}/profile`);
     if (!res.ok) throw new Error('Failed to fetch user profile');
     const json = await res.json();
@@ -184,6 +187,7 @@ export class ApiService {
 
   // --- DASHBOARD ---
   static async getDashboardSummary(date: string): Promise<DashboardSummaryResponse> {
+    if (isGuestSession()) return GuestStorageService.getDashboardSummary(date);
     const res = await apiFetch(`${API_BASE_URL}/dashboard/summary?date=${date}`);
     if (!res.ok) throw new Error('Failed to fetch dashboard summary');
     const json = await res.json();
@@ -191,6 +195,7 @@ export class ApiService {
   }
 
   static async getHeatmap(days: number = 90): Promise<HeatmapResponse> {
+    if (isGuestSession()) return GuestStorageService.getHeatmap(days);
     const res = await apiFetch(`${API_BASE_URL}/dashboard/heatmap?days=${days}`);
     if (!res.ok) throw new Error('Failed to fetch heatmap');
     const json = await res.json();
@@ -211,6 +216,7 @@ export class ApiService {
 
   // --- DAILY TRACKER ---
   static async getDailyLogs(date: string): Promise<DailyTrackerResponse> {
+    if (isGuestSession()) return GuestStorageService.getDailyLogs(date);
     const res = await apiFetch(`${API_BASE_URL}/tracker/daily?date=${date}`);
     if (!res.ok) throw new Error('Failed to fetch daily logs');
     const json = await res.json();
@@ -218,6 +224,7 @@ export class ApiService {
   }
 
   static async getRecentFoods(limit: number = 30): Promise<FoodItem[]> {
+    if (isGuestSession()) return GuestStorageService.getRecentFoods(limit);
     const res = await apiFetch(`${API_BASE_URL}/tracker/recent-foods?limit=${limit}`);
     if (!res.ok) throw new Error('Failed to fetch recent foods');
     const json = await res.json();
@@ -233,6 +240,7 @@ export class ApiService {
     customWeightGrams?: number;
     unitLabel?: string;
   }): Promise<MealLogItem> {
+    if (isGuestSession()) return GuestStorageService.logMeal(payload);
     const res = await apiFetch(`${API_BASE_URL}/tracker/log`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -247,6 +255,7 @@ export class ApiService {
     id: string,
     payload: { servings?: number; customWeightGrams?: number; mealType?: string; unitLabel?: string }
   ): Promise<MealLogItem> {
+    if (isGuestSession()) return GuestStorageService.updateLog(id, payload);
     const res = await apiFetch(`${API_BASE_URL}/tracker/log/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -258,6 +267,7 @@ export class ApiService {
   }
 
   static async deleteLog(id: string): Promise<void> {
+    if (isGuestSession()) { GuestStorageService.deleteLog(id); return; }
     const res = await apiFetch(`${API_BASE_URL}/tracker/log/${id}`, {
       method: 'DELETE',
     });
@@ -266,6 +276,7 @@ export class ApiService {
 
   // --- WATER TRACKING ---
   static async getDailyWater(date: string): Promise<WaterSummary> {
+    if (isGuestSession()) return GuestStorageService.getDailyWater(date);
     const res = await apiFetch(`${API_BASE_URL}/tracker/water?date=${date}`);
     if (!res.ok) throw new Error('Failed to fetch water logs');
     const json = await res.json();
@@ -273,6 +284,7 @@ export class ApiService {
   }
 
   static async logWater(payload: { date: string; amountMl: number }): Promise<WaterLogItem> {
+    if (isGuestSession()) return GuestStorageService.logWater(payload);
     const res = await apiFetch(`${API_BASE_URL}/tracker/water`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -284,6 +296,7 @@ export class ApiService {
   }
 
   static async deleteWater(id: string): Promise<void> {
+    if (isGuestSession()) { GuestStorageService.deleteWater(id); return; }
     const res = await apiFetch(`${API_BASE_URL}/tracker/water/${id}`, {
       method: 'DELETE',
     });
@@ -292,6 +305,7 @@ export class ApiService {
 
   // --- SAVED MEALS ---
   static async getSavedMeals(): Promise<SavedMeal[]> {
+    if (isGuestSession()) return GuestStorageService.getSavedMeals();
     const res = await apiFetch(`${API_BASE_URL}/saved-meals`);
     if (!res.ok) throw new Error('Failed to fetch saved meals');
     const json = await res.json();

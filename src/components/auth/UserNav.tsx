@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { useSession, signOut } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { AuthModal } from './AuthModal';
-import { LogOut, LogIn } from 'lucide-react';
+import { LogOut, LogIn, UserX } from 'lucide-react';
+import { useIsGuest, endGuestSession } from '@/lib/guest-session';
 
 interface UserNavProps {
   userProfileName?: string;
@@ -12,6 +13,7 @@ interface UserNavProps {
 
 export function UserNav({ userProfileName }: UserNavProps) {
   const { data: session, isPending } = useSession();
+  const isGuest = useIsGuest();
   const router = useRouter();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -31,12 +33,90 @@ export function UserNav({ userProfileName }: UserNavProps) {
     router.replace('/login');
   };
 
-  if (isPending) {
+  const handleExitGuest = () => {
+    endGuestSession();
+    setIsDropdownOpen(false);
+    router.replace('/login');
+  };
+
+  if (isPending && !isGuest) {
     return (
       <div className="h-8 w-8 rounded-full bg-slate-200 animate-pulse shrink-0" />
     );
   }
 
+  // --- GUEST MODE UI ---
+  if (isGuest) {
+    return (
+      <>
+        <div className="relative">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center justify-center rounded-full p-0.5 hover:ring-2 hover:ring-primary/30 transition-all focus:outline-none"
+            aria-label="Guest User Menu"
+          >
+            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-muted border border-border flex items-center justify-center shrink-0">
+              <UserX className="w-4 h-4 text-muted-foreground" />
+            </div>
+          </button>
+
+          {isDropdownOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setIsDropdownOpen(false)}
+              />
+              <div className="absolute right-0 top-full mt-2 z-50 w-56 rounded-xl border border-border bg-popover text-popover-foreground p-2 shadow-xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-2 border-b border-border mb-1">
+                  <p className="text-xs font-semibold text-foreground">Guest Explorer</p>
+                  <p className="text-[11px] text-amber-500 font-medium mt-0.5">Session-only · data not saved</p>
+                </div>
+
+                <button
+                  onClick={() => { setIsDropdownOpen(false); handleOpenAuth('login'); }}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                >
+                  <LogIn className="h-4 w-4" />
+                  <span>Sign In</span>
+                </button>
+
+                <button
+                  onClick={() => { setIsDropdownOpen(false); handleOpenAuth('register'); }}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                >
+                  <span className="h-4 w-4 flex items-center justify-center text-xs font-bold">✦</span>
+                  <span>Create Free Account</span>
+                </button>
+
+                <div className="my-1 border-t border-border" />
+
+                <button
+                  onClick={handleExitGuest}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors"
+                >
+                  <UserX className="h-4 w-4" />
+                  <span>Exit Guest Mode</span>
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          defaultMode={authMode}
+          onSuccess={() => {
+            setIsAuthOpen(false);
+            endGuestSession();
+            window.location.replace('/');
+          }}
+        />
+      </>
+    );
+  }
+
+  // --- AUTHENTICATED / UNAUTHENTICATED UI ---
   const initials = displayName ? displayName.charAt(0).toUpperCase() : 'A';
 
   return (
