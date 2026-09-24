@@ -16,7 +16,8 @@ import {
   Bell,
   Scale,
   BarChart3,
-  User
+  User,
+  UserX
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
