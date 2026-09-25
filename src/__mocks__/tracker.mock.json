@@ -1,0 +1,142 @@
+﻿{
+  "date": "2026-09-24",
+  "summary": {
+    "calories": 1420,
+    "protein": 112,
+    "carbohydrates": 140,
+    "fat": 48,
+    "fiber": 18
+  },
+  "logs": [
+    {
+      "id": "dev-log-001",
+      "date": "2026-09-24",
+      "mealType": "BREAKFAST",
+      "foodId": "dev-food-001",
+      "food": {
+        "id": "dev-food-001",
+        "name": "Oats (Rolled)",
+        "aliases": ["rolled oats", "oatmeal"],
+        "category": "Cereals",
+        "servingUnit": "g",
+        "servingWeight": 100,
+        "calories": 389,
+        "protein": 16.9,
+        "carbohydrates": 66.3,
+        "fat": 6.9,
+        "fiber": 10.6,
+        "source": "IFCT",
+        "layer": 1
+      },
+      "servings": 1,
+      "weightGrams": 80,
+      "unitLabel": "g",
+      "calories": 311,
+      "protein": 13.5,
+      "carbohydrates": 53,
+      "fat": 5.5,
+      "fiber": 8.5,
+      "createdAt": "2026-09-24T07:30:00.000Z"
+    },
+    {
+      "id": "dev-log-002",
+      "date": "2026-09-24",
+      "mealType": "LUNCH",
+      "foodId": "dev-food-002",
+      "food": {
+        "id": "dev-food-002",
+        "name": "Chicken Breast (Grilled)",
+        "aliases": ["grilled chicken", "chicken"],
+        "category": "Poultry",
+        "servingUnit": "g",
+        "servingWeight": 100,
+        "calories": 165,
+        "protein": 31,
+        "carbohydrates": 0,
+        "fat": 3.6,
+        "fiber": 0,
+        "source": "INDB",
+        "layer": 1
+      },
+      "servings": 1,
+      "weightGrams": 200,
+      "unitLabel": "g",
+      "calories": 330,
+      "protein": 62,
+      "carbohydrates": 0,
+      "fat": 7.2,
+      "fiber": 0,
+      "createdAt": "2026-09-24T13:00:00.000Z"
+    },
+    {
+      "id": "dev-log-003",
+      "date": "2026-09-24",
+      "mealType": "DINNER",
+      "foodId": "dev-food-003",
+      "food": {
+        "id": "dev-food-003",
+        "name": "Brown Rice (Cooked)",
+        "aliases": ["brown rice"],
+        "category": "Cereals",
+        "servingUnit": "g",
+        "servingWeight": 100,
+        "calories": 216,
+        "protein": 4.5,
+        "carbohydrates": 44.8,
+        "fat": 1.8,
+        "fiber": 3.5,
+        "source": "IFCT",
+        "layer": 1
+      },
+      "servings": 1,
+      "weightGrams": 180,
+      "unitLabel": "g",
+      "calories": 389,
+      "protein": 8.1,
+      "carbohydrates": 80.6,
+      "fat": 3.2,
+      "fiber": 6.3,
+      "createdAt": "2026-09-24T19:30:00.000Z"
+    },
+    {
+      "id": "dev-log-004",
+      "date": "2026-09-24",
+      "mealType": "SNACK",
+      "foodId": "dev-food-004",
+      "food": {
+        "id": "dev-food-004",
+        "name": "Greek Yogurt (Low Fat)",
+        "aliases": ["greek yogurt", "yogurt"],
+        "category": "Dairy",
+        "servingUnit": "g",
+        "servingWeight": 100,
+        "calories": 59,
+        "protein": 10,
+        "carbohydrates": 3.6,
+        "fat": 0.4,
+        "fiber": 0,
+        "source": "INDB",
+        "layer": 2
+      },
+      "servings": 1,
+      "weightGrams": 150,
+      "unitLabel": "g",
+      "calories": 88,
+      "protein": 15,
+      "carbohydrates": 5.4,
+      "fat": 0.6,
+      "fiber": 0,
+      "createdAt": "2026-09-24T16:00:00.000Z"
+    }
+  ],
+  "water": {
+    "date": "2026-09-24",
+    "totalMl": 1800,
+    "logs": [
+      { "id": "dev-water-001", "userId": "dev-user-001", "amountMl": 500, "date": "2026-09-24", "createdAt": "2026-09-24T08:00:00.000Z" },
+      { "id": "dev-water-002", "userId": "dev-user-001", "amountMl": 500, "date": "2026-09-24", "createdAt": "2026-09-24T12:00:00.000Z" },
+      { "id": "dev-water-003", "userId": "dev-user-001", "amountMl": 300, "date": "2026-09-24", "createdAt": "2026-09-24T15:00:00.000Z" },
+      { "id": "dev-water-004", "userId": "dev-user-001", "amountMl": 500, "date": "2026-09-24", "createdAt": "2026-09-24T18:00:00.000Z" }
+    ]
+  }
+}
