@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Flame } from 'lucide-react';
 import { isGuestSession } from '@/lib/guest-session';
+import { isDevSkip } from '@/lib/dev-skip';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    // Allow guest sessions through — no redirect needed
-    if (!isPending && !session && !isGuestSession()) {
+    // Allow guest sessions and dev skip mode through — no redirect needed
+    if (!isPending && !session && !isGuestSession() && !isDevSkip()) {
       router.replace('/login');
     }
   }, [isPending, session, router]);
@@ -31,8 +32,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Not authenticated and no guest session — return null while redirect happens
-  if (!session && !isGuestSession()) {
+  // Not authenticated and no guest session and no dev skip — return null while redirect happens
+  if (!session && !isGuestSession() && !isDevSkip()) {
     return null;
   }
 
