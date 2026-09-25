@@ -1,0 +1,107 @@
+[
+  {
+    "id": "dev-saved-001",
+    "name": "High Protein Breakfast Bowl",
+    "description": "Balanced high-protein breakfast for muscle maintenance",
+    "totalCalories": 520,
+    "totalProtein": 32,
+    "totalCarbs": 58,
+    "totalFat": 14,
+    "totalFiber": 8,
+    "items": [
+      {
+        "foodId": "dev-food-001",
+        "weightGrams": 80,
+        "calories": 311,
+        "protein": 13.5,
+        "carbs": 53,
+        "fat": 5.5,
+        "fiber": 8.5
+      },
+      {
+        "foodId": "dev-food-004",
+        "weightGrams": 150,
+        "calories": 88,
+        "protein": 15,
+        "carbs": 5.4,
+        "fat": 0.6,
+        "fiber": 0
+      },
+      {
+        "foodId": "dev-food-005",
+        "weightGrams": 100,
+        "calories": 121,
+        "protein": 3.5,
+        "carbs": 0,
+        "fat": 7.9,
+        "fiber": 0
+      }
+    ],
+    "createdAt": "2026-09-20T08:00:00.000Z",
+    "updatedAt": "2026-09-24T10:00:00.000Z"
+  },
+  {
+    "id": "dev-saved-002",
+    "name": "Post-Workout Recovery Meal",
+    "description": "Optimal macro balance for muscle recovery",
+    "totalCalories": 680,
+    "totalProtein": 45,
+    "totalCarbs": 72,
+    "totalFat": 18,
+    "totalFiber": 6,
+    "items": [
+      {
+        "foodId": "dev-food-002",
+        "weightGrams": 200,
+        "calories": 330,
+        "protein": 62,
+        "carbs": 0,
+        "fat": 7.2,
+        "fiber": 0
+      },
+      {
+        "foodId": "dev-food-003",
+        "weightGrams": 180,
+        "calories": 389,
+        "protein": 8.1,
+        "carbs": 80.6,
+        "fat": 3.2,
+        "fiber": 6.3
+      }
+    ],
+    "createdAt": "2026-09-18T15:30:00.000Z",
+    "updatedAt": "2026-09-24T10:00:00.000Z"
+  },
+  {
+    "id": "dev-saved-003",
+    "name": "Light Evening Snack",
+    "description": "Low-calorie protein snack for evening cravings",
+    "totalCalories": 180,
+    "totalProtein": 22,
+    "totalCarbs": 12,
+    "totalFat": 6,
+    "totalFiber": 2,
+    "items": [
+      {
+        "foodId": "dev-food-004",
+        "weightGrams": 200,
+        "calories": 118,
+        "protein": 20,
+        "carbs": 7.2,
+        "fat": 0.8,
+        "fiber": 0
+      },
+      {
+        "foodId": "dev-food-006",
+        "weightGrams": 30,
+        "calories": 62,
+        "protein": 2,
+        "carbs": 4.8,
+        "fat": 5.2,
+        "fiber": 2
+      }
+    ],
+    "createdAt": "2026-09-22T20:00:00.000Z",
+    "updatedAt": "2026-09-24T10:00:00.000Z"
+  }
+]
