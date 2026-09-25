@@ -1,0 +1,89 @@
+﻿{
+  "overview": {
+    "windowDays": 30,
+    "adherence": {
+      "calorieScore": 78,
+      "proteinScore": 82,
+      "daysInTargetBand": 19,
+      "loggedDaysCount": 24,
+      "currentStreak": 5
+    },
+    "energyBalance": {
+      "totalConsumedKcal": 43200,
+      "totalExpendedKcal": 56400,
+      "netDeficitKcal": 13200,
+      "predictedLossKg": 1.89,
+      "actualTrendLossKg": 1.4
+    },
+    "milestoneProjection": {
+      "targetWeightKg": 74,
+      "currentTrendKg": 78.6,
+      "remainingKg": 4.6,
+      "estimatedWeeksRemaining": 9,
+      "projectedDate": "2026-11-26"
+    }
+  },
+  "trends": {
+    "windowDays": 30,
+    "seriesCount": 30,
+    "series": [
+      { "date": "2026-08-25", "rawWeightKg": 80.2, "trendWeightKg": 80.1, "caloriesConsumed": 1850, "targetCalories": 1900, "proteinGrams": 148, "carbsGrams": 188, "fatGrams": 62, "observedTdee": 2340, "effectiveTdee": 2340 },
+      { "date": "2026-08-26", "rawWeightKg": 80.0, "trendWeightKg": 80.05, "caloriesConsumed": 1920, "targetCalories": 1900, "proteinGrams": 155, "carbsGrams": 192, "fatGrams": 65, "observedTdee": 2350, "effectiveTdee": 2350 },
+      { "date": "2026-08-27", "rawWeightKg": null, "trendWeightKg": 80.0, "caloriesConsumed": null, "targetCalories": 1900, "proteinGrams": null, "carbsGrams": null, "fatGrams": null, "observedTdee": null, "effectiveTdee": 2345 },
+      { "date": "2026-08-28", "rawWeightKg": 79.8, "trendWeightKg": 79.95, "caloriesConsumed": 1780, "targetCalories": 1900, "proteinGrams": 152, "carbsGrams": 175, "fatGrams": 58, "observedTdee": 2330, "effectiveTdee": 2335 },
+      { "date": "2026-08-29", "rawWeightKg": 79.6, "trendWeightKg": 79.88, "caloriesConsumed": 1850, "targetCalories": 1900, "proteinGrams": 158, "carbsGrams": 180, "fatGrams": 61, "observedTdee": 2310, "effectiveTdee": 2320 },
+      { "date": "2026-08-30", "rawWeightKg": 79.5, "trendWeightKg": 79.82, "caloriesConsumed": 1900, "targetCalories": 1900, "proteinGrams": 160, "carbsGrams": 185, "fatGrams": 63, "observedTdee": 2300, "effectiveTdee": 2310 },
+      { "date": "2026-08-31", "rawWeightKg": 79.7, "trendWeightKg": 79.79, "caloriesConsumed": 2100, "targetCalories": 1900, "proteinGrams": 145, "carbsGrams": 210, "fatGrams": 72, "observedTdee": 2280, "effectiveTdee": 2290 },
+      { "date": "2026-09-01", "rawWeightKg": 79.4, "trendWeightKg": 79.74, "caloriesConsumed": 1820, "targetCalories": 1900, "proteinGrams": 156, "carbsGrams": 178, "fatGrams": 60, "observedTdee": 2280, "effectiveTdee": 2285 },
+      { "date": "2026-09-02", "rawWeightKg": 79.2, "trendWeightKg": 79.68, "caloriesConsumed": 1880, "targetCalories": 1900, "proteinGrams": 159, "carbsGrams": 183, "fatGrams": 62, "observedTdee": 2290, "effectiveTdee": 2285 },
+      { "date": "2026-09-03", "rawWeightKg": null, "trendWeightKg": 79.63, "caloriesConsumed": null, "targetCalories": 1900, "proteinGrams": null, "carbsGrams": null, "fatGrams": null, "observedTdee": null, "effectiveTdee": 2280 },
+      { "date": "2026-09-04", "rawWeightKg": 79.1, "trendWeightKg": 79.57, "caloriesConsumed": 1910, "targetCalories": 1900, "proteinGrams": 161, "carbsGrams": 188, "fatGrams": 64, "observedTdee": 2280, "effectiveTdee": 2280 },
+      { "date": "2026-09-05", "rawWeightKg": 79.0, "trendWeightKg": 79.51, "caloriesConsumed": 1850, "targetCalories": 1900, "proteinGrams": 154, "carbsGrams": 182, "fatGrams": 61, "observedTdee": 2280, "effectiveTdee": 2280 },
+      { "date": "2026-09-06", "rawWeightKg": 79.2, "trendWeightKg": 79.46, "caloriesConsumed": 1760, "targetCalories": 1900, "proteinGrams": 148, "carbsGrams": 172, "fatGrams": 58, "observedTdee": 2275, "effectiveTdee": 2278 },
+      { "date": "2026-09-07", "rawWeightKg": 79.0, "trendWeightKg": 79.40, "caloriesConsumed": 1900, "targetCalories": 1900, "proteinGrams": 160, "carbsGrams": 185, "fatGrams": 63, "observedTdee": 2275, "effectiveTdee": 2278 },
+      { "date": "2026-09-08", "rawWeightKg": 78.8, "trendWeightKg": 79.33, "caloriesConsumed": 1830, "targetCalories": 1900, "proteinGrams": 157, "carbsGrams": 178, "fatGrams": 61, "observedTdee": 2270, "effectiveTdee": 2275 },
+      { "date": "2026-09-09", "rawWeightKg": 78.7, "trendWeightKg": 79.27, "caloriesConsumed": 1940, "targetCalories": 1900, "proteinGrams": 162, "carbsGrams": 190, "fatGrams": 65, "observedTdee": 2270, "effectiveTdee": 2273 },
+      { "date": "2026-09-10", "rawWeightKg": 78.9, "trendWeightKg": 79.21, "caloriesConsumed": 1780, "targetCalories": 1900, "proteinGrams": 150, "carbsGrams": 175, "fatGrams": 59, "observedTdee": 2268, "effectiveTdee": 2270 },
+      { "date": "2026-09-11", "rawWeightKg": 78.6, "trendWeightKg": 79.14, "caloriesConsumed": 1870, "targetCalories": 1900, "proteinGrams": 158, "carbsGrams": 182, "fatGrams": 62, "observedTdee": 2265, "effectiveTdee": 2268 },
+      { "date": "2026-09-12", "rawWeightKg": 78.5, "trendWeightKg": 79.07, "caloriesConsumed": 1900, "targetCalories": 1900, "proteinGrams": 160, "carbsGrams": 185, "fatGrams": 63, "observedTdee": 2265, "effectiveTdee": 2266 },
+      { "date": "2026-09-13", "rawWeightKg": 78.4, "trendWeightKg": 79.00, "caloriesConsumed": 1920, "targetCalories": 1900, "proteinGrams": 163, "carbsGrams": 188, "fatGrams": 64, "observedTdee": 2280, "effectiveTdee": 2270 },
+      { "date": "2026-09-14", "rawWeightKg": null, "trendWeightKg": 78.94, "caloriesConsumed": null, "targetCalories": 1900, "proteinGrams": null, "carbsGrams": null, "fatGrams": null, "observedTdee": null, "effectiveTdee": 2268 },
+      { "date": "2026-09-15", "rawWeightKg": 78.6, "trendWeightKg": 78.88, "caloriesConsumed": 1800, "targetCalories": 1900, "proteinGrams": 152, "carbsGrams": 176, "fatGrams": 60, "observedTdee": 2268, "effectiveTdee": 2268 },
+      { "date": "2026-09-16", "rawWeightKg": 78.3, "trendWeightKg": 78.81, "caloriesConsumed": 1850, "targetCalories": 1900, "proteinGrams": 156, "carbsGrams": 181, "fatGrams": 62, "observedTdee": 2265, "effectiveTdee": 2266 },
+      { "date": "2026-09-17", "rawWeightKg": 78.4, "trendWeightKg": 78.75, "caloriesConsumed": 1880, "targetCalories": 1900, "proteinGrams": 159, "carbsGrams": 183, "fatGrams": 63, "observedTdee": 2265, "effectiveTdee": 2265 },
+      { "date": "2026-09-18", "rawWeightKg": 78.2, "trendWeightKg": 78.68, "caloriesConsumed": 1750, "targetCalories": 1900, "proteinGrams": 147, "carbsGrams": 171, "fatGrams": 58, "observedTdee": 2265, "effectiveTdee": 2265 },
+      { "date": "2026-09-19", "rawWeightKg": 78.1, "trendWeightKg": 78.61, "caloriesConsumed": 1920, "targetCalories": 1900, "proteinGrams": 162, "carbsGrams": 188, "fatGrams": 64, "observedTdee": 2263, "effectiveTdee": 2264 },
+      { "date": "2026-09-20", "rawWeightKg": null, "trendWeightKg": 78.55, "caloriesConsumed": null, "targetCalories": 1900, "proteinGrams": null, "carbsGrams": null, "fatGrams": null, "observedTdee": null, "effectiveTdee": 2262 },
+      { "date": "2026-09-21", "rawWeightKg": 78.3, "trendWeightKg": 78.49, "caloriesConsumed": 1100, "targetCalories": 1900, "proteinGrams": 95, "carbsGrams": 108, "fatGrams": 36, "observedTdee": 2260, "effectiveTdee": 2261 },
+      { "date": "2026-09-22", "rawWeightKg": 78.0, "trendWeightKg": 78.42, "caloriesConsumed": 1650, "targetCalories": 1900, "proteinGrams": 138, "carbsGrams": 162, "fatGrams": 55, "observedTdee": 2280, "effectiveTdee": 2265 },
+      { "date": "2026-09-23", "rawWeightKg": 78.2, "trendWeightKg": 78.36, "caloriesConsumed": 1880, "targetCalories": 1900, "proteinGrams": 158, "carbsGrams": 183, "fatGrams": 63, "observedTdee": 2280, "effectiveTdee": 2270 },
+      { "date": "2026-09-24", "rawWeightKg": 78.6, "trendWeightKg": 78.34, "caloriesConsumed": 1420, "targetCalories": 1900, "proteinGrams": 112, "carbsGrams": 140, "fatGrams": 48, "observedTdee": null, "effectiveTdee": 2280 }
+    ]
+  },
+  "patterns": {
+    "windowDays": 14,
+    "mealDistribution": {
+      "breakfastPercent": 22,
+      "lunchPercent": 35,
+      "dinnerPercent": 32,
+      "snackPercent": 11
+    },
+    "macroAverages": {
+      "proteinGrams": 152,
+      "carbsGrams": 178,
+      "fatGrams": 61,
+      "fiberGrams": 22
+    },
+    "chronoInsights": {
+      "lateNightCaloriesPercent": 3,
+      "avgWeekdayCalories": 1870,
+      "avgWeekendCalories": 1960,
+      "weekendDeltaKcal": 90
+    },
+    "activeInsights": [
+      { "type": "PROTEIN_GOAL", "level": "SUCCESS", "title": "Great protein consistency!", "message": "You hit your protein target on 11 of the last 14 days." },
+      { "type": "WEEKEND_DRIFT", "level": "WARNING", "title": "Weekend calorie drift", "message": "You consume ~90 kcal more on weekends. Small adjustments can help." },
+      { "type": "STREAK", "level": "INFO", "title": "5-day logging streak", "message": "Keep it up! Consistent logging drives accurate adaptive adjustments." }
+    ]
+  }
+}
