@@ -1,0 +1,67 @@
+{
+  "status": {
+    "isAdaptiveEnabled": true,
+    "confidence": {
+      "level": "MODERATE",
+      "score": 72,
+      "validFoodDays": 18,
+      "validWeightDays": 24,
+      "evaluationWindowDays": 30,
+      "message": "Sufficient data for moderate confidence adjustments"
+    },
+    "expenditure": {
+      "formulaBaselineTdee": 2350,
+      "observedTdee": 2280,
+      "effectiveTdee": 2280,
+      "dailyEnergySurplusKcal": -70,
+      "unit": "kcal/day"
+    },
+    "weightTrend": {
+      "latestRawKg": 78.6,
+      "latestTrendKg": 78.34,
+      "velocityKgPerDay": -0.058,
+      "velocityKgPerWeek": -0.406,
+      "targetVelocityKgPerWeek": -0.5
+    },
+    "targets": {
+      "currentCalories": 1900,
+      "recommendedCalories": 1850,
+      "adjustmentKcal": -50,
+      "isBelowSafetyFloor": false,
+      "safetyFloorKcal": 1500,
+      "isAggressiveRate": false,
+      "recommendedMacros": {
+        "proteinGrams": 160,
+        "carbsGrams": 185,
+        "fatGrams": 62,
+        "fiberGrams": 30,
+        "macroRatios": {
+          "protein": 35,
+          "carbs": 40,
+          "fat": 25
+        }
+      },
+      "isCheckInAvailable": true,
+      "pendingCheckInId": "dev-checkin-001"
+    }
+  },
+  "checkIn": {
+    "id": "dev-checkin-001",
+    "date": "2026-09-24",
+    "status": "PENDING",
+    "startWeightKg": 80.0,
+    "endWeightKg": 78.6,
+    "trendChangeKg": -1.4,
+    "avgIntakeKcal": 1860,
+    "adherenceScore": 85,
+    "currentCalories": 1900,
+    "suggestedCalories": 1850,
+    "suggestedProtein": 160,
+    "suggestedCarbs": 185,
+    "suggestedFat": 62,
+    "adjustmentKcal": -50,
+    "headline": "Good progress - small adjustment recommended",
+    "rationaleText": "Your weight loss is tracking slightly ahead of target. A small calorie adjustment will help maintain sustainable progress while preserving muscle mass.",
+    "confidenceLevel": "MODERATE"
+  }
+}
