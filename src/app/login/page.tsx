@@ -45,8 +45,6 @@ export default function LoginPage() {
           setIsLoading(false);
           return;
         }
-        // Wait for session to be established after sign-up (autoSignIn is enabled)
-        await new Promise(resolve => setTimeout(resolve, 500));
       } else {
         const { error: resError } = await signIn.email({ email, password });
         if (resError) {
@@ -55,8 +53,8 @@ export default function LoginPage() {
           return;
         }
       }
-      // On success — navigate to dashboard
-      router.replace('/');
+      // On success — force full page reload to ensure session cookies are set
+      window.location.href = '/';
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
       setIsLoading(false);
