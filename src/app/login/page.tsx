@@ -1,19 +1,27 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { signIn, signUp } from '@/lib/auth-client';
+import { signIn, signUp, useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { Flame, Mail, Lock, User, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
 import { startGuestSession } from '@/lib/guest-session';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: session, isPending } = useSession();
   const [mode, setMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
     // Remove loading class to prevent flash of unstyled content
     document.body.classList.remove('loading');
   }, []);
+
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (!isPending && session) {
+      router.replace('/');
+    }
+  }, [session, isPending, router]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,6 +45,8 @@ export default function LoginPage() {
           setIsLoading(false);
           return;
         }
+        // Wait for session to be established after sign-up (autoSignIn is enabled)
+        await new Promise(resolve => setTimeout(resolve, 500));
       } else {
         const { error: resError } = await signIn.email({ email, password });
         if (resError) {
