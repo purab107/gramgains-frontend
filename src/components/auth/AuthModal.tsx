@@ -38,6 +38,8 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
           setIsLoading(false);
           return;
         }
+        // Wait for session to be established after sign-up (autoSignIn is enabled)
+        await new Promise(resolve => setTimeout(resolve, 500));
       } else {
         const { error: resError } = await signIn.email({
           email,
