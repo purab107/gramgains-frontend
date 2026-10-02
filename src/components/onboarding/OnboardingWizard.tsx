@@ -11,7 +11,14 @@ import {
   HelpCircle,
   ChevronDown,
   ChevronUp,
-  Loader2
+  Loader2,
+  Flame,
+  Scale,
+  Dumbbell,
+  Beef,
+  Wheat,
+  Droplets,
+  Leaf
 } from 'lucide-react';
 import { ApiService, UserProfile } from '@/services/api';
 
@@ -155,7 +162,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           <div key="step-1" className="space-y-6 animate-fade-blur">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                Hey! Welcome to GramGains 👋
+                Hey! Welcome to GramGains
               </h2>
               <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
                 Let's personalize your calorie and nutrition targets. A few quick questions and we'll have your starting plan ready.
@@ -186,8 +193,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { id: 'MALE', label: 'Male', emoji: '👨' },
-                    { id: 'FEMALE', label: 'Female', emoji: '👩' },
+                    { id: 'MALE', label: 'Male' },
+                    { id: 'FEMALE', label: 'Female' },
                   ].map((s) => (
                     <button
                       key={s.id}
@@ -199,7 +206,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                           : 'border border-border bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span>{s.emoji}</span>
+                      <User className="h-4 w-4 text-primary" />
                       <span>{s.label}</span>
                     </button>
                   ))}
@@ -448,25 +455,30 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             {/* 3 Goal Cards */}
             <div className="grid grid-cols-3 gap-2.5">
               {[
-                { id: 'WEIGHT_LOSS', label: 'Lose body fat', emoji: '🔥', desc: 'Caloric deficit' },
-                { id: 'MAINTAIN', label: 'Maintain weight', emoji: '⚖️', desc: 'Energy equilibrium' },
-                { id: 'BULK', label: 'Gain muscle', emoji: '💪', desc: 'Caloric surplus' },
-              ].map((g) => (
-                <button
-                  key={g.id}
-                  type="button"
-                  onClick={() => setGoal(g.id as any)}
-                  className={`p-3.5 rounded-xl text-center transition-all flex flex-col items-center justify-center gap-1 ${
-                    goal === g.id
-                      ? 'border-2 border-primary bg-primary/10 text-foreground font-semibold'
-                      : 'border border-border bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }`}
-                >
-                  <span className="text-xl">{g.emoji}</span>
-                  <div className="text-xs font-semibold text-foreground">{g.label}</div>
-                  <div className="text-[11px] text-muted-foreground">{g.desc}</div>
-                </button>
-              ))}
+                { id: 'WEIGHT_LOSS', label: 'Lose body fat', icon: Flame, desc: 'Caloric deficit' },
+                { id: 'MAINTAIN', label: 'Maintain weight', icon: Scale, desc: 'Energy equilibrium' },
+                { id: 'BULK', label: 'Gain muscle', icon: Dumbbell, desc: 'Caloric surplus' },
+              ].map((g) => {
+                const IconComponent = g.icon;
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() => setGoal(g.id as any)}
+                    className={`p-3.5 rounded-xl text-center transition-all flex flex-col items-center justify-center gap-1.5 ${
+                      goal === g.id
+                        ? 'border-2 border-primary bg-primary/10 text-foreground font-semibold'
+                        : 'border border-border bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                  >
+                    <div className={`p-2 rounded-lg ${goal === g.id ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                      <IconComponent className="h-5 w-5" />
+                    </div>
+                    <div className="text-xs font-semibold text-foreground">{g.label}</div>
+                    <div className="text-[11px] text-muted-foreground">{g.desc}</div>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Progressive Disclosure for Pace */}
@@ -621,33 +633,41 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 Your daily nutrition targets
               </div>
               <div className="grid grid-cols-4 gap-2">
-                <div className="rounded-xl border border-border bg-card p-2.5 text-center">
-                  <span className="text-base">🥩</span>
-                  <div className="text-[11px] font-bold text-macro-protein mt-1">PROTEIN</div>
+                <div className="rounded-xl border border-border bg-card p-2.5 text-center flex flex-col items-center justify-center">
+                  <div className="h-7 w-7 rounded-lg bg-macro-protein/15 text-macro-protein flex items-center justify-center mb-1">
+                    <Beef className="h-4 w-4" />
+                  </div>
+                  <div className="text-[11px] font-bold text-macro-protein">PROTEIN</div>
                   <div className="text-sm font-bold font-mono text-foreground mt-0.5">
                     {metabolics.targetProtein}g
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-2.5 text-center">
-                  <span className="text-base">🍚</span>
-                  <div className="text-[11px] font-bold text-macro-carb mt-1">CARBS</div>
+                <div className="rounded-xl border border-border bg-card p-2.5 text-center flex flex-col items-center justify-center">
+                  <div className="h-7 w-7 rounded-lg bg-macro-carb/15 text-macro-carb flex items-center justify-center mb-1">
+                    <Wheat className="h-4 w-4" />
+                  </div>
+                  <div className="text-[11px] font-bold text-macro-carb">CARBS</div>
                   <div className="text-sm font-bold font-mono text-foreground mt-0.5">
                     {metabolics.targetCarbs}g
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-2.5 text-center">
-                  <span className="text-base">🥑</span>
-                  <div className="text-[11px] font-bold text-macro-fats mt-1">FAT</div>
+                <div className="rounded-xl border border-border bg-card p-2.5 text-center flex flex-col items-center justify-center">
+                  <div className="h-7 w-7 rounded-lg bg-macro-fats/15 text-macro-fats flex items-center justify-center mb-1">
+                    <Droplets className="h-4 w-4" />
+                  </div>
+                  <div className="text-[11px] font-bold text-macro-fats">FAT</div>
                   <div className="text-sm font-bold font-mono text-foreground mt-0.5">
                     {metabolics.targetFat}g
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-2.5 text-center">
-                  <span className="text-base">🌾</span>
-                  <div className="text-[11px] font-bold text-foreground mt-1">FIBER</div>
+                <div className="rounded-xl border border-border bg-card p-2.5 text-center flex flex-col items-center justify-center">
+                  <div className="h-7 w-7 rounded-lg bg-primary/15 text-primary flex items-center justify-center mb-1">
+                    <Leaf className="h-4 w-4" />
+                  </div>
+                  <div className="text-[11px] font-bold text-foreground">FIBER</div>
                   <div className="text-sm font-bold font-mono text-foreground mt-0.5">
                     {metabolics.targetFiber}g
                   </div>
