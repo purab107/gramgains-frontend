@@ -8,14 +8,12 @@ import {
   ArrowRight, 
   ArrowLeft, 
   CheckCircle2, 
-  Flame, 
   HelpCircle,
   ChevronDown,
   ChevronUp,
   Loader2
 } from 'lucide-react';
 import { ApiService, UserProfile } from '@/services/api';
-import { isDevSkip } from '@/lib/dev-skip';
 
 interface OnboardingWizardProps {
   onComplete: (profile: UserProfile) => void;
@@ -145,63 +143,11 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
   };
 
-  const handleDevSkipAdvance = () => {
-    if (!name) setName('Purab Sahare');
-    if (step < 5) {
-      setStep(step + 1);
-    } else {
-      handleFinish();
-    }
-  };
-
   return (
     <div className="dark fixed inset-0 z-50 flex min-h-screen items-center justify-center p-4 sm:p-6 bg-[#070B0A] text-[#E8EDEC] overflow-y-auto">
-      {/* Matte Finish Card Container - copied directly from welcome/login theme */}
-      <div className="w-full max-w-lg rounded-2xl border border-[#1E2B29] bg-[#0B100F] p-6 sm:p-8 shadow-2xl text-[#E8EDEC]">
+      {/* Horizontally Expanded Matte Finish Card Container */}
+      <div className="w-full max-w-2xl sm:max-w-3xl rounded-2xl border border-[#1E2B29] bg-[#0B100F] p-7 sm:p-10 shadow-2xl text-[#E8EDEC]">
         
-        {/* Header Row */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#1E2B29]">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Flame className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-sm font-bold tracking-tight text-foreground">GramGains</span>
-              <p className="text-xs text-muted-foreground">Setup</p>
-            </div>
-          </div>
-
-          {/* Dev Skip & Progress Segments */}
-          <div className="flex items-center gap-3">
-            {isDevSkip() && (
-              <button
-                type="button"
-                onClick={handleDevSkipAdvance}
-                className="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 text-xs font-semibold transition-all"
-                title="Dev Skip Step"
-              >
-                <span>DEV SKIP ⏭️</span>
-              </button>
-            )}
-
-            {/* 5-Step Segmented Bar */}
-            <div className="flex items-center gap-1.5" title={`Step ${step} of 5`}>
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === step
-                      ? 'w-6 bg-primary'
-                      : i < step
-                      ? 'w-2 bg-primary/50'
-                      : 'w-2 bg-muted'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* ============================================================== */}
         {/* SCREEN 1 — QUICK INTRODUCTION (NAME & SEX)                      */}
         {/* ============================================================== */}
