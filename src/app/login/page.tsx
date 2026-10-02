@@ -5,9 +5,12 @@ import { signIn, signUp, useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { Flame, Mail, Lock, User, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
 import { startGuestSession, endGuestSession } from '@/lib/guest-session';
+import { useDevSkip } from '@/components/dev-skip';
+import { isDevSkip } from '@/lib/dev-skip';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { jumpToStage } = useDevSkip();
   const { data: session, isPending } = useSession();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [name, setName] = useState('');
@@ -268,6 +271,22 @@ export default function LoginPage() {
               1 session
             </span>
           </button>
+
+          {/* Dev Skip Bypass */}
+          {isDevSkip() && (
+            <button
+              type="button"
+              id="dev-skip-login-btn"
+              onClick={() => {
+                jumpToStage(2); // Jump to Onboarding
+              }}
+              className="w-full flex items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 py-2.5 text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-all shadow-sm"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span>DEV SKIP: Bypass Login & Start Onboarding ⏭️</span>
+            </button>
+          )}
+
           <p className="text-center text-[11px] text-muted-foreground">
             No account required · food search &amp; tracking only · no macro calculator
           </p>
