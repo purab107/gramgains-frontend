@@ -155,12 +155,12 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-background/80 backdrop-blur-md overflow-y-auto">
+    <div className="dark fixed inset-0 z-50 flex min-h-screen items-center justify-center p-4 sm:p-6 bg-[#070B0A] text-[#E8EDEC] overflow-y-auto">
       {/* Matte Finish Card Container - copied directly from welcome/login theme */}
-      <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xl text-foreground">
+      <div className="w-full max-w-lg rounded-2xl border border-[#1E2B29] bg-[#0B100F] p-6 sm:p-8 shadow-2xl text-[#E8EDEC]">
         
         {/* Header Row */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#1E2B29]">
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <Flame className="h-5 w-5" />
