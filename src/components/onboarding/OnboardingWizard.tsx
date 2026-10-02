@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { ApiService, UserProfile } from '@/services/api';
 import { MACRO_COLORS } from '@/lib/constants';
+import { isDevSkip } from '@/lib/dev-skip';
 
 interface OnboardingWizardProps {
   onComplete: (profile: UserProfile) => void;
@@ -119,20 +120,40 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
           </div>
 
-          {/* Step Dots */}
-          <div className="flex items-center gap-1.5">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === step
-                    ? 'w-6 bg-[#0A7C6E]'
-                    : i < step
-                    ? 'w-2 bg-[#0A7C6E]/40'
-                    : 'w-2 bg-[#E1E7E5]'
-                }`}
-              />
-            ))}
+          {/* Step Dots & DevSkip */}
+          <div className="flex items-center gap-2">
+            {isDevSkip() && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (!name) setName('Purab Sahare');
+                  if (step < 4) {
+                    setStep(step + 1);
+                  } else {
+                    handleFinish();
+                  }
+                }}
+                className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/25 text-[11px] font-bold flex items-center gap-1 transition-all"
+                title="Dev Skip Onboarding Step"
+              >
+                <span>DEV SKIP ⏭️</span>
+              </button>
+            )}
+
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    i === step
+                      ? 'w-6 bg-[#0A7C6E]'
+                      : i < step
+                      ? 'w-2 bg-[#0A7C6E]/40'
+                      : 'w-2 bg-[#E1E7E5]'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
