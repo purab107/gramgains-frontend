@@ -26,8 +26,11 @@ import {
   X, 
   Search
 } from 'lucide-react';
+import { useDevSkip } from '@/components/dev-skip';
+import { isDevSkip } from '@/lib/dev-skip';
 
 function SavedMealsPage() {
+  const devSkip = useDevSkip();
   const [savedMeals, setSavedMeals] = useState<SavedMeal[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -59,6 +62,12 @@ function SavedMealsPage() {
     document.body.classList.remove('loading');
     loadSavedMeals();
   }, []);
+
+  // React to DevSkip Stage or Override changes
+  useEffect(() => {
+    if (!isDevSkip()) return;
+    loadSavedMeals();
+  }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
   const loadSavedMeals = async () => {
     try {

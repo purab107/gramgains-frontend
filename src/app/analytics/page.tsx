@@ -22,8 +22,11 @@ import { WeeklyCheckInBanner } from '@/components/adaptive/WeeklyCheckInBanner';
 import { DailyWeightModal } from '@/components/weight/DailyWeightModal';
 import { Scale, Sparkles, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useDevSkip } from '@/components/dev-skip';
+import { isDevSkip } from '@/lib/dev-skip';
 
 function AnalyticsDashboard() {
+  const devSkip = useDevSkip();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedDays, setSelectedDays] = useState<number>(30);
   const [loading, setLoading] = useState(true);
@@ -40,9 +43,27 @@ function AnalyticsDashboard() {
   const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
 
+  // React to DevSkip Modal Triggers
+  useEffect(() => {
+    if (!devSkip.activeModalTrigger) return;
+    if (devSkip.activeModalTrigger === 'weight') {
+      setIsWeightModalOpen(true);
+      devSkip.triggerModal(null);
+    } else if (devSkip.activeModalTrigger === 'checkin') {
+      setIsCheckInModalOpen(true);
+      devSkip.triggerModal(null);
+    }
+  }, [devSkip.activeModalTrigger]);
+
   useEffect(() => {
     loadAllAnalytics();
   }, [selectedDays]);
+
+  // React to DevSkip Stage or Override changes
+  useEffect(() => {
+    if (!isDevSkip()) return;
+    loadAllAnalytics();
+  }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
   const loadAllAnalytics = async () => {
     try {

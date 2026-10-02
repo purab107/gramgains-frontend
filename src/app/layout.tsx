@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
-import { DevSkipProvider, DevSkipButton, DevSkipPanel } from '@/components/dev-skip';
+import { DevSkipProvider } from '@/components/dev-skip';
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans',display:'swap'});
 
@@ -22,14 +22,12 @@ export default function RootLayout({
       <body className="loading">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
           <DevSkipProvider>
             {children}
-            <DevSkipButton />
-            <DevSkipPanel />
           </DevSkipProvider>
         </ThemeProvider>
       </body>

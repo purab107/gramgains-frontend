@@ -30,8 +30,11 @@ import {
   Sparkles,
   X
 } from 'lucide-react';
+import { useDevSkip } from '@/components/dev-skip';
+import { isDevSkip } from '@/lib/dev-skip';
 
 function DashboardHomePage() {
+  const devSkip = useDevSkip();
   const [showSplash, setShowSplash] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -51,6 +54,41 @@ function DashboardHomePage() {
   const [dismissedWeightBanner, setDismissedWeightBanner] = useState(false);
   const [pendingCheckIn, setPendingCheckIn] = useState<AdaptiveCheckInResponse | null>(null);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
+
+  // React to DevSkip Modal Triggers
+  useEffect(() => {
+    if (!devSkip.activeModalTrigger) return;
+    if (devSkip.activeModalTrigger === 'weight') {
+      setIsWeightModalOpen(true);
+      devSkip.triggerModal(null);
+    } else if (devSkip.activeModalTrigger === 'checkin') {
+      setIsCheckInModalOpen(true);
+      devSkip.triggerModal(null);
+    } else if (devSkip.activeModalTrigger === 'food') {
+      setIsLogModalOpen(true);
+      devSkip.triggerModal(null);
+    }
+  }, [devSkip.activeModalTrigger]);
+
+  // React to DevSkip Stage and Override changes
+  useEffect(() => {
+    if (!isDevSkip()) return;
+
+    if (devSkip.activeOverrides.showOnboarding === 'true') {
+      setShowOnboarding(true);
+    } else if (devSkip.activeOverrides.showOnboarding === 'false') {
+      setShowOnboarding(false);
+    }
+
+    if (devSkip.activeOverrides.hasPendingWeight === 'true') {
+      setHasPendingWeight(true);
+      setDismissedWeightBanner(false);
+    } else if (devSkip.activeOverrides.hasPendingWeight === 'false') {
+      setHasPendingWeight(false);
+    }
+
+    loadProfileAndData();
+  }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
   useEffect(() => {
     // Remove loading class to prevent flash of unstyled content
