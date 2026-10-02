@@ -25,6 +25,8 @@ import {
   Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useDevSkip } from '@/components/dev-skip';
+import { isDevSkip } from '@/lib/dev-skip';
 
 function formatDisplayDate(dateStr: string) {
   try {
@@ -49,6 +51,7 @@ function formatDisplayDate(dateStr: string) {
 }
 
 function TrackerPage() {
+  const devSkip = useDevSkip();
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
@@ -63,6 +66,14 @@ function TrackerPage() {
     setIsAddFoodOpen(true);
   };
 
+  // React to DevSkip Modal Triggers
+  useEffect(() => {
+    if (!devSkip.activeModalTrigger) return;
+    if (devSkip.activeModalTrigger === 'food') {
+      setIsAddFoodOpen(true);
+      devSkip.triggerModal(null);
+    }
+  }, [devSkip.activeModalTrigger]);
 
   const loadData = async () => {
     try {
@@ -85,6 +96,12 @@ function TrackerPage() {
     document.body.classList.remove('loading');
     loadData();
   }, [selectedDate]);
+
+  // React to DevSkip Stage or Override changes
+  useEffect(() => {
+    if (!isDevSkip()) return;
+    loadData();
+  }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
   const changeDateBy = (days: number) => {
     const current = new Date(selectedDate);
