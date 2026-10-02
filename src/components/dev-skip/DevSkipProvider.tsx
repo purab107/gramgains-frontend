@@ -18,6 +18,20 @@ import {
   notifyDevSkipChange
 } from '@/lib/dev-skip';
 import { DEV_SKIP_STAGES, DevSkipStage } from '@/lib/dev-skip-scenarios';
+import dynamic from 'next/dynamic';
+
+const DevSkipHeaderButton = dynamic(
+  () => import('./DevSkipHeaderButton').then((m) => m.DevSkipHeaderButton),
+  { ssr: false }
+);
+const DevSkipButton = dynamic(
+  () => import('./DevSkipButton').then((m) => m.DevSkipButton),
+  { ssr: false }
+);
+const DevSkipPanel = dynamic(
+  () => import('./DevSkipPanel').then((m) => m.DevSkipPanel),
+  { ssr: false }
+);
 
 interface DevSkipContextType {
   isPanelOpen: boolean;
@@ -182,6 +196,13 @@ export function DevSkipProvider({ children }: DevSkipProviderProps) {
       }}
     >
       {children}
+      {isEnabled && (
+        <>
+          <DevSkipHeaderButton />
+          <DevSkipButton />
+          <DevSkipPanel />
+        </>
+      )}
     </DevSkipContext.Provider>
   );
 }
