@@ -4,29 +4,29 @@ import React, { useState, useEffect } from 'react';
 import { signIn, signUp, useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { Flame, Mail, Lock, User, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
-import { startGuestSession } from '@/lib/guest-session';
+import { startGuestSession, endGuestSession } from '@/lib/guest-session';
 
 export default function LoginPage() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
   const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Remove loading class to prevent flash of unstyled content
     document.body.classList.remove('loading');
   }, []);
 
-  // Redirect to dashboard if already authenticated
+  // Redirect to dashboard if already authenticated (skip during active submission)
   useEffect(() => {
-    if (!isPending && session) {
+    if (!isPending && session && !isLoading) {
       router.replace('/');
     }
-  }, [session, isPending, router]);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  }, [session, isPending, isLoading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +45,9 @@ export default function LoginPage() {
           setIsLoading(false);
           return;
         }
+        endGuestSession();
+        // Redirect to account / profile settings page after creating an account
+        window.location.href = '/profile';
       } else {
         const { error: resError } = await signIn.email({ email, password });
         if (resError) {
@@ -52,9 +55,10 @@ export default function LoginPage() {
           setIsLoading(false);
           return;
         }
+        endGuestSession();
+        // Redirect to dashboard upon sign in
+        window.location.href = '/';
       }
-      // On success — force full page reload to ensure session cookies are set
-      window.location.href = '/';
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
       setIsLoading(false);
