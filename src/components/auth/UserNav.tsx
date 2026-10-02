@@ -109,7 +109,11 @@ export function UserNav({ userProfileName }: UserNavProps) {
           onSuccess={() => {
             setIsAuthOpen(false);
             endGuestSession();
-            window.location.href = '/';
+            if (authMode === 'register') {
+              window.location.href = '/profile';
+            } else {
+              window.location.href = '/';
+            }
           }}
         />
       </>
@@ -192,7 +196,12 @@ export function UserNav({ userProfileName }: UserNavProps) {
         defaultMode={authMode}
         onSuccess={() => {
           setIsAuthOpen(false);
-          window.location.href = '/';
+          endGuestSession();
+          if (authMode === 'register') {
+            window.location.href = '/profile';
+          } else {
+            window.location.href = '/';
+          }
         }}
       />
     </>
