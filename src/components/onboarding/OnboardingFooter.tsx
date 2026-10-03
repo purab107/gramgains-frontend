@@ -21,7 +21,7 @@ export const OnboardingFooter: React.FC<OnboardingFooterProps> = ({
   onFinish,
 }) => {
   return (
-    <footer className="w-full px-8 sm:px-16 lg:px-24 py-4 sm:py-5 flex items-center justify-between border-t border-zinc-900 shrink-0 bg-[#070B0A] z-10">
+    <footer className="w-full px-5 sm:px-16 lg:px-24 py-3 sm:py-5 flex items-center justify-between border-t border-zinc-900 shrink-0 bg-[#070B0A]/95 backdrop-blur z-20 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
       {/* Back Button */}
       {step > 1 ? (
         <button
@@ -41,7 +41,7 @@ export const OnboardingFooter: React.FC<OnboardingFooterProps> = ({
           type="button"
           onClick={onNext}
           disabled={!canProceed}
-          className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-8 py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
+          className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
         >
           <span>Next</span>
         </button>
@@ -50,7 +50,7 @@ export const OnboardingFooter: React.FC<OnboardingFooterProps> = ({
           type="button"
           onClick={onFinish}
           disabled={loading}
-          className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-8 py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
+          className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
         >
           {loading ? (
             <>

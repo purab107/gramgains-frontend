@@ -169,7 +169,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   };
 
   return (
-    <div className="dark fixed inset-0 z-50 flex flex-col justify-between bg-[#070B0A] text-[#E8EDEC] h-screen max-h-screen overflow-hidden select-none font-sans">
+    <div className="dark fixed inset-0 z-50 flex flex-col justify-between bg-[#070B0A] text-[#E8EDEC] h-[100dvh] max-h-[100dvh] overflow-hidden select-none font-sans">
       
       {/* Top Header */}
       <OnboardingHeader
@@ -178,7 +178,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       />
 
       {/* Main Focus Stage */}
-      <main className="flex-1 w-full max-w-4xl lg:max-w-5xl mx-auto px-8 sm:px-16 lg:px-24 flex flex-col justify-start pt-12 sm:pt-16 lg:pt-20 items-start overflow-hidden">
+      <main className="flex-1 min-h-0 w-full max-w-4xl lg:max-w-5xl mx-auto px-5 sm:px-16 lg:px-24 flex flex-col justify-start pt-3 sm:pt-12 lg:pt-16 items-start overflow-y-auto sm:overflow-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="w-full">
           <AnimatePresence mode="wait" custom={direction}>
             {step === 1 && (
