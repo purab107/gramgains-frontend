@@ -59,19 +59,15 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
 
       {/* 3 Borderless Goal Tiles Expanded Horizontally */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-        {GOAL_OPTIONS.map((g, index) => {
+        {GOAL_OPTIONS.map((g) => {
           const IconComponent = g.icon;
           const isSelected = goal === g.id;
           return (
-            <motion.button
+            <button
               key={g.id}
-              variants={slideDown}
-              initial="hidden"
-              animate="visible"
-              custom={index + 2}
               type="button"
               onClick={() => setGoal(g.id as any)}
-              className={`p-5 rounded-2xl text-left transition-all relative overflow-hidden active:scale-[0.98] ${
+              className={`p-5 rounded-2xl text-left transition-colors duration-150 relative overflow-hidden active:scale-[0.98] ${
                 isSelected
                   ? 'bg-[#12231E] ring-2 ring-emerald-500 text-white shadow-xl shadow-emerald-950/20'
                   : 'bg-[#0E1513] hover:bg-[#121B19] text-zinc-400'
@@ -88,7 +84,7 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
               <div className="text-xs text-zinc-500 mt-1">
                 {g.desc}
               </div>
-            </motion.button>
+            </button>
           );
         })}
       </div>
@@ -108,7 +104,7 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
           <button
             type="button"
             onClick={() => setPace('GRADUAL')}
-            className={`p-3 rounded-xl text-left transition-all active:scale-[0.98] ${
+            className={`p-3 rounded-xl text-left transition-colors duration-150 active:scale-[0.98] ${
               pace === 'GRADUAL'
                 ? 'bg-[#152B24] ring-1 ring-emerald-500 text-white'
                 : 'bg-[#090E0D] text-zinc-400 hover:text-zinc-200'
@@ -123,7 +119,7 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
           <button
             type="button"
             onClick={() => setPace('MODERATE')}
-            className={`p-3 rounded-xl text-left transition-all active:scale-[0.98] ${
+            className={`p-3 rounded-xl text-left transition-colors duration-150 active:scale-[0.98] ${
               pace === 'MODERATE'
                 ? 'bg-[#152B24] ring-1 ring-emerald-500 text-white'
                 : 'bg-[#090E0D] text-zinc-400 hover:text-zinc-200'

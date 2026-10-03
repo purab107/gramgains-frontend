@@ -23,17 +23,10 @@ export const OnboardingStepper: React.FC<OnboardingStepperProps> = ({
   min,
   max,
   unit,
-  stepIndex = 2,
   onChange,
 }) => {
   return (
-    <motion.div
-      variants={slideDown}
-      initial="hidden"
-      animate="visible"
-      custom={stepIndex}
-      className="py-3.5 sm:py-4 flex items-center justify-between"
-    >
+    <div className="py-3.5 sm:py-4 flex items-center justify-between">
       <div>
         <div className="text-base sm:text-lg font-medium text-white">{label}</div>
         <div className="text-xs sm:text-sm text-zinc-500">{sublabel}</div>
@@ -43,7 +36,7 @@ export const OnboardingStepper: React.FC<OnboardingStepperProps> = ({
           type="button"
           onClick={() => onChange(Math.max(min, value - 1))}
           disabled={value <= min}
-          className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+          className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-colors duration-150 active:scale-90"
           aria-label={`Decrease ${label}`}
         >
           <Minus className="h-4 w-4" />
@@ -56,13 +49,13 @@ export const OnboardingStepper: React.FC<OnboardingStepperProps> = ({
           type="button"
           onClick={() => onChange(Math.min(max, value + 1))}
           disabled={value >= max}
-          className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+          className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-colors duration-150 active:scale-90"
           aria-label={`Increase ${label}`}
         >
           <Plus className="h-4 w-4" />
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
