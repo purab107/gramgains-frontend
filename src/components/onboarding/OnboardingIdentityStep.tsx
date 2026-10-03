@@ -76,7 +76,7 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && canProceed && onEnterNext()}
-            className="w-full bg-[#0E1513] text-lg sm:text-xl font-medium text-white placeholder-zinc-600 rounded-2xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 transition-all shadow-inner"
+            className="w-full bg-[#0E1513] text-lg sm:text-xl font-medium text-white placeholder-zinc-600 rounded-2xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 transition-colors shadow-inner"
           />
         </motion.div>
 
@@ -102,7 +102,7 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => setGender(item.id as any)}
-                  className={`p-4 rounded-2xl text-left transition-all relative overflow-hidden active:scale-[0.98] ${
+                  className={`p-4 rounded-2xl text-left transition-colors duration-150 relative overflow-hidden active:scale-[0.98] ${
                     isSelected
                       ? 'bg-[#12231E] ring-2 ring-emerald-500 text-white shadow-lg shadow-emerald-950/20'
                       : 'bg-[#0E1513] hover:bg-[#121B19] text-zinc-400'

@@ -63,17 +63,13 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
 
       {/* Expanded Borderless Rows (Compact height to guarantee zero scroll) */}
       <div className="w-full divide-y divide-zinc-800/60">
-        {ACTIVITY_LEVELS.map((lvl, index) => {
+        {ACTIVITY_LEVELS.map((lvl) => {
           const isSelected = activityLevel === lvl.id;
           return (
-            <motion.div
+            <div
               key={lvl.id}
-              variants={slideDown}
-              initial="hidden"
-              animate="visible"
-              custom={index + 2}
               onClick={() => setActivityLevel(lvl.id as any)}
-              className={`py-3 px-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] ${
+              className={`py-3 px-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors duration-150 active:scale-[0.99] ${
                 isSelected
                   ? 'bg-[#12231E] ring-1 ring-emerald-500/80 shadow-md'
                   : 'hover:bg-[#0D1513]'
@@ -95,7 +91,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
                 }`}>
                   {lvl.mult}
                 </span>
-                <div className={`h-5 w-5 rounded-full border flex items-center justify-center transition-all ${
+                <div className={`h-5 w-5 rounded-full border flex items-center justify-center transition-colors ${
                   isSelected 
                     ? 'border-emerald-500 bg-emerald-500 text-black' 
                     : 'border-zinc-700 bg-transparent'
@@ -103,19 +99,13 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
                   {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
                 </div>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>
 
       {/* Steps Selector Row (Compact & Horizontal) */}
-      <motion.div 
-        variants={slideDown} 
-        initial="hidden" 
-        animate="visible" 
-        custom={7}
-        className="pt-2 flex flex-col sm:flex-row sm:items-center sm:gap-4"
-      >
+      <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:gap-4">
         <label className="text-xs uppercase tracking-wider font-semibold text-zinc-500 shrink-0">
           Average Daily Steps:
         </label>
@@ -125,7 +115,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
               key={st}
               type="button"
               onClick={() => setDailySteps(st)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors duration-150 active:scale-95 ${
                 dailySteps === st
                   ? 'bg-emerald-500 text-black font-semibold shadow-md shadow-emerald-950/30'
                   : 'bg-[#0E1513] text-zinc-400 hover:text-white hover:bg-[#121B19]'
@@ -135,7 +125,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
             </button>
           ))}
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
