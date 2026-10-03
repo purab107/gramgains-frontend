@@ -178,7 +178,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       />
 
       {/* Main Focus Stage */}
-      <main className="flex-1 w-full max-w-4xl lg:max-w-5xl mx-auto px-8 sm:px-16 lg:px-24 flex flex-col justify-center items-start overflow-hidden">
+      <main className="flex-1 w-full max-w-4xl lg:max-w-5xl mx-auto px-8 sm:px-16 lg:px-24 flex flex-col justify-start pt-12 sm:pt-16 lg:pt-20 items-start overflow-hidden">
         <div className="w-full">
           <AnimatePresence mode="wait" custom={direction}>
             {step === 1 && (
