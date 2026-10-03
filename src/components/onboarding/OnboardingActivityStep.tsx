@@ -46,7 +46,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
           initial="hidden" 
           animate="visible" 
           custom={0}
-          className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
+          className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
         >
           How active is your usual week?
         </motion.h1>
@@ -55,7 +55,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
           initial="hidden" 
           animate="visible" 
           custom={1}
-          className="mt-1.5 text-sm sm:text-base text-zinc-400"
+          className="mt-1 sm:mt-1.5 text-xs sm:text-base text-zinc-400"
         >
           Select the option that reflects your normal baseline routine.
         </motion.p>
@@ -69,7 +69,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
             <div
               key={lvl.id}
               onClick={() => setActivityLevel(lvl.id as any)}
-              className={`py-3 px-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors duration-150 active:scale-[0.99] ${
+              className={`py-2.5 sm:py-3 px-3 sm:px-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors duration-150 active:scale-[0.99] ${
                 isSelected
                   ? 'bg-[#12231E] ring-1 ring-emerald-500/80 shadow-md'
                   : 'hover:bg-[#0D1513]'
