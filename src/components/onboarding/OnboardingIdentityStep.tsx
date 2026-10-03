@@ -40,7 +40,7 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
           initial="hidden" 
           animate="visible" 
           custom={0}
-          className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
+          className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
         >
           Welcome to GramGains
         </motion.h1>
@@ -49,14 +49,14 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
           initial="hidden" 
           animate="visible" 
           custom={1}
-          className="mt-2 text-sm sm:text-base text-zinc-400"
+          className="mt-1.5 sm:mt-2 text-xs sm:text-base text-zinc-400"
         >
           Let's personalize your targets. What should we call you?
         </motion.p>
       </div>
 
       {/* Left-Aligned, Expanded Inputs */}
-      <div className="space-y-5 max-w-2xl">
+      <div className="space-y-4 sm:space-y-5 max-w-2xl">
         {/* Name Input */}
         <motion.div 
           variants={slideDown} 
@@ -76,7 +76,7 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && canProceed && onEnterNext()}
-            className="w-full bg-[#0E1513] text-lg sm:text-xl font-medium text-white placeholder-zinc-600 rounded-2xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 transition-colors shadow-inner"
+            className="w-full bg-[#0E1513] text-base sm:text-xl font-medium text-white placeholder-zinc-600 rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 transition-colors shadow-inner"
           />
         </motion.div>
 
@@ -91,7 +91,7 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
           <label className="text-xs uppercase tracking-wider font-semibold text-zinc-500">
             Biological Sex (for metabolic baseline)
           </label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
             {[
               { id: 'MALE', label: 'Male', desc: 'Calibrated metabolic constant' },
               { id: 'FEMALE', label: 'Female', desc: 'Calibrated metabolic constant' },
@@ -102,7 +102,7 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => setGender(item.id as any)}
-                  className={`p-4 rounded-2xl text-left transition-colors duration-150 relative overflow-hidden active:scale-[0.98] ${
+                  className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl text-left transition-colors duration-150 relative overflow-hidden active:scale-[0.98] ${
                     isSelected
                       ? 'bg-[#12231E] ring-2 ring-emerald-500 text-white shadow-lg shadow-emerald-950/20'
                       : 'bg-[#0E1513] hover:bg-[#121B19] text-zinc-400'
