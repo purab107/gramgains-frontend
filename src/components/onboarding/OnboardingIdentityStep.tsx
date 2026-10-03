@@ -56,7 +56,7 @@ export const OnboardingIdentityStep: React.FC<OnboardingIdentityStepProps> = ({
       </div>
 
       {/* Left-Aligned, Expanded Inputs */}
-      <div className="space-y-4 sm:space-y-5 max-w-2xl">
+      <div className="space-y-4 sm:space-y-5 w-full">
         {/* Name Input */}
         <motion.div 
           variants={slideDown} 

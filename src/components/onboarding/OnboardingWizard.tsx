@@ -177,9 +177,9 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         onSaveAndExit={handleSaveAndExit}
       />
 
-      {/* Main Focus Stage */}
-      <main className="flex-1 min-h-0 w-full max-w-4xl lg:max-w-5xl mx-auto px-5 sm:px-16 lg:px-24 flex flex-col justify-start pt-3 sm:pt-12 lg:pt-16 items-start overflow-y-auto sm:overflow-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <div className="w-full">
+      {/* Main Focus Stage (Centered on Screen) */}
+      <main className="flex-1 min-h-0 w-full px-5 sm:px-12 flex flex-col justify-center items-center overflow-y-auto sm:overflow-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="w-full max-w-2xl lg:max-w-3xl mx-auto my-auto text-left py-4 sm:py-6">
           <AnimatePresence mode="wait" custom={direction}>
             {step === 1 && (
               <OnboardingIdentityStep
