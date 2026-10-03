@@ -186,48 +186,48 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   // Horizontal slide variants for questions
   const slideVariants: any = {
     enter: (dir: number) => ({
-      x: dir > 0 ? 60 : -60,
+      x: dir > 0 ? 50 : -50,
       opacity: 0,
     }),
     center: {
       x: 0,
       opacity: 1,
       transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.28 },
+        x: { type: 'spring', stiffness: 320, damping: 32 },
+        opacity: { duration: 0.25 },
       },
     },
     exit: (dir: number) => ({
-      x: dir < 0 ? 60 : -60,
+      x: dir < 0 ? 50 : -50,
       opacity: 0,
       transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 },
+        x: { type: 'spring', stiffness: 320, damping: 32 },
+        opacity: { duration: 0.18 },
       },
     }),
   };
 
   // Slide down animation for cards, rows and input fields
   const slideDown: any = {
-    hidden: { opacity: 0, y: -14 },
+    hidden: { opacity: 0, y: -10 },
     visible: (custom: number = 0) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: custom * 0.05,
-        duration: 0.38,
+        delay: custom * 0.04,
+        duration: 0.32,
         ease: [0.16, 1, 0.3, 1] as const,
       },
     }),
   };
 
   return (
-    <div className="dark fixed inset-0 z-50 flex flex-col justify-between bg-[#070B0A] text-[#E8EDEC] overflow-x-hidden font-sans select-none">
+    <div className="dark fixed inset-0 z-50 flex flex-col justify-between bg-[#070B0A] text-[#E8EDEC] h-screen max-h-screen overflow-hidden select-none font-sans">
       
       {/* ============================================================== */}
       {/* AIRBNB-STYLE TOP HEADER                                        */}
       {/* ============================================================== */}
-      <header className="w-full px-6 sm:px-12 py-5 flex items-center justify-between z-10">
+      <header className="w-full px-8 sm:px-16 lg:px-24 py-4 sm:py-5 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-2.5">
           <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-black font-black text-lg shadow-lg shadow-emerald-950/40">
             ⚡
@@ -256,9 +256,9 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       </header>
 
       {/* ============================================================== */}
-      {/* MAIN STAGE (CENTERED, BORDERLESS CARDS, BALANCED ROWS)         */}
+      {/* MAIN STAGE (EXPANDED HORIZONTALLY, LEFT-ALIGNED, NO SCROLL)    */}
       {/* ============================================================== */}
-      <main className="flex-1 flex flex-col justify-center items-center px-6 py-6 sm:py-10 w-full max-w-2xl mx-auto overflow-y-auto">
+      <main className="flex-1 w-full max-w-4xl lg:max-w-5xl mx-auto px-8 sm:px-16 lg:px-24 flex flex-col justify-center items-start overflow-hidden">
         <div className="w-full">
           <AnimatePresence mode="wait" custom={direction}>
             
@@ -273,7 +273,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="w-full space-y-8"
+                className="w-full text-left space-y-6"
               >
                 <div>
                   <motion.h1 
@@ -281,7 +281,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={0}
-                    className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
+                    className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
                   >
                     Welcome to GramGains
                   </motion.h1>
@@ -296,15 +296,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   </motion.p>
                 </div>
 
-                {/* Balanced Borderless Rows */}
-                <div className="space-y-6">
-                  {/* Name Input Row */}
+                {/* Left-Aligned, Expanded Inputs */}
+                <div className="space-y-5 max-w-2xl">
+                  {/* Name Input */}
                   <motion.div 
                     variants={slideDown} 
                     initial="hidden" 
                     animate="visible" 
                     custom={2}
-                    className="space-y-2"
+                    className="space-y-1.5"
                   >
                     <label className="text-xs uppercase tracking-wider font-semibold text-zinc-500">
                       Your Name or Nickname
@@ -317,7 +317,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && canProceed() && goToNextStep()}
-                      className="w-full bg-[#0E1513] text-lg sm:text-xl font-medium text-white placeholder-zinc-600 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 transition-all shadow-inner"
+                      className="w-full bg-[#0E1513] text-lg sm:text-xl font-medium text-white placeholder-zinc-600 rounded-2xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 transition-all shadow-inner"
                     />
                   </motion.div>
 
@@ -327,10 +327,10 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={3}
-                    className="space-y-2 pt-2"
+                    className="space-y-1.5"
                   >
                     <label className="text-xs uppercase tracking-wider font-semibold text-zinc-500">
-                      Biological Sex (for metabolic calculations)
+                      Biological Sex (for metabolic baseline)
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       {[
@@ -359,7 +359,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                                 </div>
                               )}
                             </div>
-                            <p className="mt-1 text-xs text-zinc-500">
+                            <p className="mt-0.5 text-xs text-zinc-500">
                               {item.desc}
                             </p>
                           </button>
@@ -382,7 +382,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="w-full space-y-6 sm:space-y-8"
+                className="w-full text-left space-y-5"
               >
                 <div>
                   <motion.h1 
@@ -390,7 +390,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={0}
-                    className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
+                    className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
                   >
                     Tell us about your body
                   </motion.h1>
@@ -405,15 +405,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   </motion.p>
                 </div>
 
-                {/* Airbnb-style Borderless Rows with Dividers & Steppers */}
-                <div className="divide-y divide-zinc-800/60">
+                {/* Full-Width Borderless Rows with Dividers & Steppers */}
+                <div className="w-full divide-y divide-zinc-800/60">
                   {/* Age Row */}
                   <motion.div 
                     variants={slideDown} 
                     initial="hidden" 
                     animate="visible" 
                     custom={2}
-                    className="py-5 flex items-center justify-between"
+                    className="py-3.5 sm:py-4 flex items-center justify-between"
                   >
                     <div>
                       <div className="text-base sm:text-lg font-medium text-white">Age</div>
@@ -424,18 +424,18 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         type="button"
                         onClick={() => setAge((prev) => Math.max(14, prev - 1))}
                         disabled={age <= 14}
-                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+                        className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
                       >
                         <Minus className="h-4 w-4" />
                       </button>
-                      <span className="w-12 text-center text-lg sm:text-xl font-bold font-mono text-white">
+                      <span className="w-14 text-center text-xl font-bold font-mono text-white">
                         {age}
                       </span>
                       <button
                         type="button"
                         onClick={() => setAge((prev) => Math.min(100, prev + 1))}
                         disabled={age >= 100}
-                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+                        className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
                       >
                         <Plus className="h-4 w-4" />
                       </button>
@@ -448,7 +448,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={3}
-                    className="py-5 flex items-center justify-between"
+                    className="py-3.5 sm:py-4 flex items-center justify-between"
                   >
                     <div>
                       <div className="text-base sm:text-lg font-medium text-white">Height</div>
@@ -459,18 +459,18 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         type="button"
                         onClick={() => setHeightCm((prev) => Math.max(100, prev - 1))}
                         disabled={heightCm <= 100}
-                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+                        className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
                       >
                         <Minus className="h-4 w-4" />
                       </button>
-                      <span className="w-14 text-center text-lg sm:text-xl font-bold font-mono text-white">
+                      <span className="w-14 text-center text-xl font-bold font-mono text-white">
                         {heightCm}
                       </span>
                       <button
                         type="button"
                         onClick={() => setHeightCm((prev) => Math.min(250, prev + 1))}
                         disabled={heightCm >= 250}
-                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+                        className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
                       >
                         <Plus className="h-4 w-4" />
                       </button>
@@ -483,7 +483,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={4}
-                    className="py-5 flex items-center justify-between"
+                    className="py-3.5 sm:py-4 flex items-center justify-between"
                   >
                     <div>
                       <div className="text-base sm:text-lg font-medium text-white">Weight</div>
@@ -494,18 +494,18 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         type="button"
                         onClick={() => setWeightKg((prev) => Math.max(30, prev - 1))}
                         disabled={weightKg <= 30}
-                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+                        className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
                       >
                         <Minus className="h-4 w-4" />
                       </button>
-                      <span className="w-14 text-center text-lg sm:text-xl font-bold font-mono text-white">
+                      <span className="w-14 text-center text-xl font-bold font-mono text-white">
                         {weightKg}
                       </span>
                       <button
                         type="button"
                         onClick={() => setWeightKg((prev) => Math.min(250, prev + 1))}
                         disabled={weightKg >= 250}
-                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
+                        className="h-10 w-10 rounded-full border border-zinc-700/80 bg-[#0E1513] flex items-center justify-center text-zinc-300 hover:border-zinc-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-all active:scale-90"
                       >
                         <Plus className="h-4 w-4" />
                       </button>
@@ -519,15 +519,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   initial="hidden" 
                   animate="visible" 
                   custom={5}
-                  className="rounded-2xl bg-[#0E1513] p-4 flex items-center justify-between shadow-inner"
+                  className="rounded-2xl bg-[#0E1513] px-4 py-3 flex items-center justify-between shadow-inner"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-                      <Ruler className="h-4 w-4" />
+                    <div className="h-7 w-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                      <Ruler className="h-3.5 w-3.5" />
                     </div>
-                    <div>
-                      <div className="text-xs text-zinc-400">Calculated Basal Metabolic Rate (BMR)</div>
-                      <div className="text-sm font-semibold font-mono text-white">{metabolics.bmr} kcal / day at rest</div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs text-zinc-400">Calculated Basal Metabolic Rate (BMR):</span>
+                      <span className="text-sm font-semibold font-mono text-white">{metabolics.bmr} kcal / day at rest</span>
                     </div>
                   </div>
                   <button
@@ -542,18 +542,18 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
                 {showFormulaExplanation && (
                   <motion.div
-                    initial={{ opacity: 0, y: -8 }}
+                    initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="rounded-2xl bg-[#0B1210] p-4 text-xs text-zinc-400 leading-relaxed border border-zinc-800/40"
+                    className="rounded-xl bg-[#0B1210] p-3 text-xs text-zinc-400 leading-relaxed border border-zinc-800/40"
                   >
-                    BMR is estimated via the clinical Mifflin-St Jeor formula (10 × wt + 6.25 × ht - 5 × age + sex constant), representing the baseline energy required to sustain life.
+                    Estimated using the clinically validated Mifflin-St Jeor formula (10 × wt + 6.25 × ht - 5 × age + sex constant), calculating the baseline energy needed to sustain life at rest.
                   </motion.div>
                 )}
               </motion.div>
             )}
 
             {/* ============================================================== */}
-            {/* SCREEN 3 — USUAL WEEK ACTIVITY LEVEL                           */}
+            {/* SCREEN 3 — USUAL WEEK ACTIVITY LEVEL (NO SCROLLBAR)            */}
             {/* ============================================================== */}
             {step === 3 && (
               <motion.div
@@ -563,7 +563,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="w-full space-y-6 sm:space-y-8"
+                className="w-full text-left space-y-4"
               >
                 <div>
                   <motion.h1 
@@ -571,7 +571,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={0}
-                    className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
+                    className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
                   >
                     How active is your usual week?
                   </motion.h1>
@@ -580,14 +580,14 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={1}
-                    className="mt-2 text-sm sm:text-base text-zinc-400"
+                    className="mt-1.5 text-sm sm:text-base text-zinc-400"
                   >
                     Select the option that reflects your normal baseline routine.
                   </motion.p>
                 </div>
 
-                {/* Borderless Activity Rows */}
-                <div className="divide-y divide-zinc-800/60">
+                {/* Expanded Borderless Rows (Compact height to guarantee zero scroll) */}
+                <div className="w-full divide-y divide-zinc-800/60">
                   {[
                     { id: 'SEDENTARY', label: 'Mostly sedentary', desc: 'Desk or study job, little to no workout', mult: '1.20x' },
                     { id: 'LIGHT', label: 'Lightly active', desc: 'Light workout or sports 1–3 days/week', mult: '1.38x' },
@@ -604,22 +604,22 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         animate="visible"
                         custom={index + 2}
                         onClick={() => setActivityLevel(lvl.id as any)}
-                        className={`py-4 sm:py-5 px-3 rounded-2xl flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] ${
+                        className={`py-3 px-3.5 rounded-xl flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] ${
                           isSelected
                             ? 'bg-[#12231E] ring-1 ring-emerald-500/80 shadow-md'
                             : 'hover:bg-[#0D1513]'
                         }`}
                       >
-                        <div className="pr-4">
-                          <div className={`text-base sm:text-lg font-medium ${isSelected ? 'text-white font-semibold' : 'text-zinc-200'}`}>
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
+                          <div className={`text-base font-medium ${isSelected ? 'text-white font-semibold' : 'text-zinc-200'}`}>
                             {lvl.label}
                           </div>
-                          <div className="text-xs sm:text-sm text-zinc-400 mt-0.5">
+                          <div className="text-xs sm:text-sm text-zinc-400">
                             {lvl.desc}
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className={`text-xs font-mono font-medium px-2.5 py-1 rounded-full ${
+                          <span className={`text-xs font-mono font-medium px-2.5 py-0.5 rounded-full ${
                             isSelected 
                               ? 'bg-emerald-500/20 text-emerald-300 font-bold' 
                               : 'bg-zinc-800/80 text-zinc-400'
@@ -639,24 +639,24 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   })}
                 </div>
 
-                {/* Steps Selector Row */}
+                {/* Steps Selector Row (Compact & Horizontal) */}
                 <motion.div 
                   variants={slideDown} 
                   initial="hidden" 
                   animate="visible" 
                   custom={7}
-                  className="pt-2"
+                  className="pt-2 flex flex-col sm:flex-row sm:items-center sm:gap-4"
                 >
-                  <label className="text-xs uppercase tracking-wider font-semibold text-zinc-500 block mb-2.5">
-                    Average Daily Steps
+                  <label className="text-xs uppercase tracking-wider font-semibold text-zinc-500 shrink-0">
+                    Average Daily Steps:
                   </label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mt-1 sm:mt-0">
                     {['<4k', '4–7k', '7–10k', '10k+', 'Not sure'].map((st) => (
                       <button
                         key={st}
                         type="button"
                         onClick={() => setDailySteps(st)}
-                        className={`px-4 py-2 rounded-full text-xs font-medium transition-all active:scale-95 ${
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
                           dailySteps === st
                             ? 'bg-emerald-500 text-black font-semibold shadow-md shadow-emerald-950/30'
                             : 'bg-[#0E1513] text-zinc-400 hover:text-white hover:bg-[#121B19]'
@@ -681,7 +681,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="w-full space-y-6 sm:space-y-8"
+                className="w-full text-left space-y-5"
               >
                 <div>
                   <motion.h1 
@@ -689,7 +689,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={0}
-                    className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
+                    className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
                   >
                     What are you working toward?
                   </motion.h1>
@@ -704,8 +704,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   </motion.p>
                 </div>
 
-                {/* 3 Borderless Goal Tiles */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* 3 Borderless Goal Tiles Expanded Horizontally */}
+                <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                   {[
                     { id: 'WEIGHT_LOSS', label: 'Lose body fat', icon: Flame, desc: 'Caloric deficit' },
                     { id: 'MAINTAIN', label: 'Maintain weight', icon: Scale, desc: 'Energy equilibrium' },
@@ -744,13 +744,13 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   })}
                 </div>
 
-                {/* Progressive Disclosure for Pace (Slide Down) */}
+                {/* Progressive Disclosure for Pace */}
                 <motion.div 
                   variants={slideDown} 
                   initial="hidden" 
                   animate="visible" 
                   custom={5}
-                  className="rounded-2xl bg-[#0E1513] p-5 space-y-3 shadow-inner"
+                  className="w-full rounded-2xl bg-[#0E1513] p-4 space-y-2.5 shadow-inner"
                 >
                   <div className="text-xs uppercase tracking-wider font-semibold text-zinc-400">
                     Preferred Pace & Sustainability
@@ -759,14 +759,14 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <button
                       type="button"
                       onClick={() => setPace('GRADUAL')}
-                      className={`p-3.5 rounded-xl text-left transition-all active:scale-[0.98] ${
+                      className={`p-3 rounded-xl text-left transition-all active:scale-[0.98] ${
                         pace === 'GRADUAL'
                           ? 'bg-[#152B24] ring-1 ring-emerald-500 text-white'
                           : 'bg-[#090E0D] text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       <div className="text-sm font-semibold text-white">Gradual & Consistent</div>
-                      <div className="text-xs text-zinc-400 mt-1">
+                      <div className="text-xs text-zinc-400 mt-0.5">
                         {goal === 'WEIGHT_LOSS' ? '0.25 kg / week' : goal === 'BULK' ? '0.2 kg / week' : 'Stable maintenance'}
                       </div>
                     </button>
@@ -774,14 +774,14 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <button
                       type="button"
                       onClick={() => setPace('MODERATE')}
-                      className={`p-3.5 rounded-xl text-left transition-all active:scale-[0.98] ${
+                      className={`p-3 rounded-xl text-left transition-all active:scale-[0.98] ${
                         pace === 'MODERATE'
                           ? 'bg-[#152B24] ring-1 ring-emerald-500 text-white'
                           : 'bg-[#090E0D] text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       <div className="text-sm font-semibold text-white">Standard Target</div>
-                      <div className="text-xs text-zinc-400 mt-1">
+                      <div className="text-xs text-zinc-400 mt-0.5">
                         {goal === 'WEIGHT_LOSS' ? '0.50 kg / week' : goal === 'BULK' ? '0.35 kg / week' : 'Stable maintenance'}
                       </div>
                     </button>
@@ -801,7 +801,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="w-full space-y-6 sm:space-y-8"
+                className="w-full text-left space-y-5"
               >
                 <div>
                   <motion.h1 
@@ -809,7 +809,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={0}
-                    className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
+                    className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
                   >
                     Here is your starting blueprint, {name || 'Athlete'}.
                   </motion.h1>
@@ -825,22 +825,22 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 </div>
 
                 {/* High Impact Numbers Summary Cards */}
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="w-full grid grid-cols-2 gap-4">
                   {/* Maintenance TDEE */}
                   <motion.div 
                     variants={slideDown} 
                     initial="hidden" 
                     animate="visible" 
                     custom={2}
-                    className="rounded-2xl bg-[#0E1513] p-5 text-left shadow-inner"
+                    className="rounded-2xl bg-[#0E1513] p-4 sm:p-5 text-left shadow-inner"
                   >
                     <div className="text-xs uppercase tracking-wider font-semibold text-zinc-500">
                       Maintenance TDEE
                     </div>
-                    <div className="text-2xl sm:text-3xl font-bold font-mono text-white mt-1.5">
+                    <div className="text-2xl sm:text-3xl font-bold font-mono text-white mt-1">
                       {metabolics.tdee} <span className="text-xs sm:text-sm font-normal text-zinc-400">kcal/day</span>
                     </div>
-                    <div className="text-xs text-zinc-500 mt-1.5">
+                    <div className="text-xs text-zinc-500 mt-1">
                       Baseline daily expenditure
                     </div>
                   </motion.div>
@@ -851,15 +851,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     initial="hidden" 
                     animate="visible" 
                     custom={3}
-                    className="rounded-2xl bg-[#12231E] ring-1 ring-emerald-500/80 p-5 text-left shadow-lg shadow-emerald-950/20"
+                    className="rounded-2xl bg-[#12231E] ring-1 ring-emerald-500/80 p-4 sm:p-5 text-left shadow-lg shadow-emerald-950/20"
                   >
                     <div className="text-xs uppercase tracking-wider font-semibold text-emerald-400">
                       Daily Calorie Target
                     </div>
-                    <div className="text-2xl sm:text-3xl font-bold font-mono text-white mt-1.5">
+                    <div className="text-2xl sm:text-3xl font-bold font-mono text-white mt-1">
                       {metabolics.targetCalories} <span className="text-xs sm:text-sm font-normal text-emerald-300">kcal/day</span>
                     </div>
-                    <div className="text-xs text-zinc-400 mt-1.5">
+                    <div className="text-xs text-zinc-400 mt-1">
                       {goal === 'WEIGHT_LOSS' && `~${metabolics.tdee - metabolics.targetCalories} kcal deficit`}
                       {goal === 'BULK' && `~${metabolics.targetCalories - metabolics.tdee} kcal surplus`}
                       {goal === 'MAINTAIN' && `Exact expenditure match`}
@@ -873,15 +873,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   initial="hidden" 
                   animate="visible" 
                   custom={4}
-                  className="space-y-2.5"
+                  className="w-full space-y-2"
                 >
                   <div className="text-xs uppercase tracking-wider font-semibold text-zinc-500">
                     Daily Macronutrient Breakdown
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {/* Protein */}
-                    <div className="rounded-2xl bg-[#0E1513] p-4 text-center flex flex-col items-center justify-center">
-                      <div className="h-8 w-8 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-1.5">
+                    <div className="rounded-2xl bg-[#0E1513] p-3.5 text-center flex flex-col items-center justify-center">
+                      <div className="h-7 w-7 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-1">
                         <Beef className="h-4 w-4" />
                       </div>
                       <div className="text-xs font-bold tracking-wider text-purple-400">PROTEIN</div>
@@ -891,8 +891,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     </div>
 
                     {/* Carbs */}
-                    <div className="rounded-2xl bg-[#0E1513] p-4 text-center flex flex-col items-center justify-center">
-                      <div className="h-8 w-8 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center mb-1.5">
+                    <div className="rounded-2xl bg-[#0E1513] p-3.5 text-center flex flex-col items-center justify-center">
+                      <div className="h-7 w-7 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center mb-1">
                         <Wheat className="h-4 w-4" />
                       </div>
                       <div className="text-xs font-bold tracking-wider text-rose-400">CARBS</div>
@@ -902,8 +902,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     </div>
 
                     {/* Fat */}
-                    <div className="rounded-2xl bg-[#0E1513] p-4 text-center flex flex-col items-center justify-center">
-                      <div className="h-8 w-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center mb-1.5">
+                    <div className="rounded-2xl bg-[#0E1513] p-3.5 text-center flex flex-col items-center justify-center">
+                      <div className="h-7 w-7 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center mb-1">
                         <Droplets className="h-4 w-4" />
                       </div>
                       <div className="text-xs font-bold tracking-wider text-amber-400">FAT</div>
@@ -913,8 +913,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     </div>
 
                     {/* Fiber */}
-                    <div className="rounded-2xl bg-[#0E1513] p-4 text-center flex flex-col items-center justify-center">
-                      <div className="h-8 w-8 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-1.5">
+                    <div className="rounded-2xl bg-[#0E1513] p-3.5 text-center flex flex-col items-center justify-center">
+                      <div className="h-7 w-7 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-1">
                         <Leaf className="h-4 w-4" />
                       </div>
                       <div className="text-xs font-bold tracking-wider text-emerald-400">FIBER</div>
@@ -931,7 +931,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   initial="hidden" 
                   animate="visible" 
                   custom={5}
-                  className="rounded-2xl bg-[#0B1210] p-4 text-xs text-zinc-400 leading-relaxed border border-zinc-800/40"
+                  className="w-full rounded-2xl bg-[#0B1210] p-3 text-xs text-zinc-400 leading-relaxed border border-zinc-800/40"
                 >
                   These are your baseline estimates. As you log your food and weigh-ins, GramGains dynamically refines your calorie and macro prescription.
                 </motion.div>
@@ -943,76 +943,51 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       </main>
 
       {/* ============================================================== */}
-      {/* AIRBNB-STYLE STICKY FOOTER WITH SEGMENTED PROGRESS BAR        */}
+      {/* AIRBNB-STYLE STICKY FOOTER (NO PROGRESS PILLS)                 */}
       {/* ============================================================== */}
-      <footer className="w-full bg-[#070B0A] border-t border-zinc-900 z-10">
-        {/* 5-Step Segmented Progress Bar */}
-        <div className="w-full grid grid-cols-5 gap-1.5 px-6 sm:px-12 pt-3">
-          {[1, 2, 3, 4, 5].map((s) => {
-            const isCompleted = s < step;
-            const isCurrent = s === step;
-            return (
-              <div
-                key={s}
-                className="h-1 rounded-full overflow-hidden bg-zinc-800/80 transition-all duration-300"
-              >
-                <div
-                  className={`h-full transition-all duration-500 ease-out ${
-                    isCompleted || isCurrent
-                      ? 'w-full bg-emerald-500'
-                      : 'w-0 bg-transparent'
-                  }`}
-                />
-              </div>
-            );
-          })}
-        </div>
+      <footer className="w-full px-8 sm:px-16 lg:px-24 py-4 sm:py-5 flex items-center justify-between border-t border-zinc-900 shrink-0 bg-[#070B0A] z-10">
+        {/* Back Button */}
+        {step > 1 ? (
+          <button
+            type="button"
+            onClick={goToPrevStep}
+            className="text-sm font-medium text-zinc-300 hover:text-white underline underline-offset-4 transition-colors"
+          >
+            Back
+          </button>
+        ) : (
+          <div />
+        )}
 
-        {/* Action Controls Row */}
-        <div className="w-full px-6 sm:px-12 py-4 sm:py-5 flex items-center justify-between">
-          {/* Back Button */}
-          {step > 1 ? (
-            <button
-              type="button"
-              onClick={goToPrevStep}
-              className="text-sm font-medium text-zinc-300 hover:text-white underline underline-offset-4 transition-colors"
-            >
-              Back
-            </button>
-          ) : (
-            <div />
-          )}
-
-          {/* Next / Finish Button */}
-          {step < 5 ? (
-            <button
-              type="button"
-              onClick={goToNextStep}
-              disabled={!canProceed()}
-              className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-8 py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
-            >
-              <span>Next</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleFinish}
-              disabled={loading}
-              className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-8 py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Entering...</span>
-                </>
-              ) : (
-                <>
-                  <span>Enter GramGains →</span>
-                </>
-              )}
-            </button>
-          )}
-        </div>
+        {/* Next / Finish Button */}
+        {step < 5 ? (
+          <button
+            type="button"
+            onClick={goToNextStep}
+            disabled={!canProceed()}
+            className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-8 py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
+          >
+            <span>Next</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleFinish}
+            disabled={loading}
+            className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm sm:text-base px-8 py-3.5 shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Entering...</span>
+              </>
+            ) : (
+              <>
+                <span>Enter GramGains →</span>
+              </>
+            )}
+          </button>
+        )}
       </footer>
 
       {/* ============================================================== */}
