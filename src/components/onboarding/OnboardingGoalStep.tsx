@@ -42,7 +42,7 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
           initial="hidden" 
           animate="visible" 
           custom={0}
-          className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
+          className="text-2xl sm:text-4xl font-semibold tracking-tight text-white"
         >
           What are you working toward?
         </motion.h1>
@@ -51,14 +51,14 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
           initial="hidden" 
           animate="visible" 
           custom={1}
-          className="mt-2 text-sm sm:text-base text-zinc-400"
+          className="mt-1.5 sm:mt-2 text-xs sm:text-base text-zinc-400"
         >
           Select your primary target to calibrate daily energy balance.
         </motion.p>
       </div>
 
-      {/* 3 Borderless Goal Tiles Expanded Horizontally */}
-      <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      {/* 3 Borderless Goal Tiles Expanded Horizontally & Compact on Mobile */}
+      <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3.5">
         {GOAL_OPTIONS.map((g) => {
           const IconComponent = g.icon;
           const isSelected = goal === g.id;
@@ -67,22 +67,24 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
               key={g.id}
               type="button"
               onClick={() => setGoal(g.id as any)}
-              className={`p-5 rounded-2xl text-left transition-colors duration-150 relative overflow-hidden active:scale-[0.98] ${
+              className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl text-left transition-colors duration-150 relative overflow-hidden active:scale-[0.98] flex flex-row sm:flex-col items-center sm:items-start gap-3.5 sm:gap-0 ${
                 isSelected
                   ? 'bg-[#12231E] ring-2 ring-emerald-500 text-white shadow-xl shadow-emerald-950/20'
                   : 'bg-[#0E1513] hover:bg-[#121B19] text-zinc-400'
               }`}
             >
-              <div className={`h-10 w-10 rounded-xl flex items-center justify-center mb-3 ${
+              <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 sm:mb-3 ${
                 isSelected ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-800/60 text-zinc-400'
               }`}>
-                <IconComponent className="h-5 w-5" />
+                <IconComponent className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
-              <div className={`text-base font-semibold ${isSelected ? 'text-white' : 'text-zinc-200'}`}>
-                {g.label}
-              </div>
-              <div className="text-xs text-zinc-500 mt-1">
-                {g.desc}
+              <div className="flex-1 min-w-0">
+                <div className={`text-sm sm:text-base font-semibold ${isSelected ? 'text-white' : 'text-zinc-200'}`}>
+                  {g.label}
+                </div>
+                <div className="text-xs text-zinc-500 mt-0.5 sm:mt-1">
+                  {g.desc}
+                </div>
               </div>
             </button>
           );
@@ -90,48 +92,42 @@ export const OnboardingGoalStep: React.FC<OnboardingGoalStepProps> = ({
       </div>
 
       {/* Progressive Disclosure for Pace */}
-      <motion.div 
-        variants={slideDown} 
-        initial="hidden" 
-        animate="visible" 
-        custom={5}
-        className="w-full rounded-2xl bg-[#0E1513] p-4 space-y-2.5 shadow-inner"
-      >
-        <div className="text-xs uppercase tracking-wider font-semibold text-zinc-400">
+      <div className="w-full rounded-xl sm:rounded-2xl bg-[#0E1513] p-3 sm:p-4 space-y-2 sm:space-y-2.5 shadow-inner mt-2.5 sm:mt-4">
+        <div className="text-[11px] sm:text-xs uppercase tracking-wider font-semibold text-zinc-400">
           Preferred Pace & Sustainability
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => setPace('GRADUAL')}
-            className={`p-3 rounded-xl text-left transition-colors duration-150 active:scale-[0.98] ${
+            className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl text-left transition-colors duration-150 active:scale-[0.98] ${
               pace === 'GRADUAL'
                 ? 'bg-[#152B24] ring-1 ring-emerald-500 text-white'
                 : 'bg-[#090E0D] text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <div className="text-sm font-semibold text-white">Gradual & Consistent</div>
-            <div className="text-xs text-zinc-400 mt-0.5">
-              {goal === 'WEIGHT_LOSS' ? '0.25 kg / week' : goal === 'BULK' ? '0.2 kg / week' : 'Stable maintenance'}
+            <div className="text-xs sm:text-sm font-semibold text-white">Gradual & Consistent</div>
+            <div className="text-[11px] sm:text-xs text-zinc-400 mt-0.5">
+              {goal === 'WEIGHT_LOSS' ? '0.25 kg / wk' : goal === 'BULK' ? '0.2 kg / wk' : 'Stable'}
             </div>
           </button>
 
           <button
             type="button"
             onClick={() => setPace('MODERATE')}
-            className={`p-3 rounded-xl text-left transition-colors duration-150 active:scale-[0.98] ${
+            className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl text-left transition-colors duration-150 active:scale-[0.98] ${
               pace === 'MODERATE'
                 ? 'bg-[#152B24] ring-1 ring-emerald-500 text-white'
                 : 'bg-[#090E0D] text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <div className="text-sm font-semibold text-white">Standard Target</div>
-            <div className="text-xs text-zinc-400 mt-0.5">
-              {goal === 'WEIGHT_LOSS' ? '0.50 kg / week' : goal === 'BULK' ? '0.35 kg / week' : 'Stable maintenance'}
+            <div className="text-xs sm:text-sm font-semibold text-white">Standard Target</div>
+            <div className="text-[11px] sm:text-xs text-zinc-400 mt-0.5">
+              {goal === 'WEIGHT_LOSS' ? '0.50 kg / wk' : goal === 'BULK' ? '0.35 kg / wk' : 'Stable'}
             </div>
           </button>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
