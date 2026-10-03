@@ -68,7 +68,6 @@ export const OnboardingBodyMetricsStep: React.FC<OnboardingBodyMetricsStepProps>
           value={age}
           min={14}
           max={100}
-          stepIndex={2}
           onChange={(val) => setAge(val)}
         />
 
@@ -78,7 +77,6 @@ export const OnboardingBodyMetricsStep: React.FC<OnboardingBodyMetricsStepProps>
           value={heightCm}
           min={100}
           max={250}
-          stepIndex={3}
           onChange={(val) => setHeightCm(val)}
         />
 
@@ -88,7 +86,6 @@ export const OnboardingBodyMetricsStep: React.FC<OnboardingBodyMetricsStepProps>
           value={weightKg}
           min={30}
           max={250}
-          stepIndex={4}
           onChange={(val) => setWeightKg(val)}
         />
       </div>
