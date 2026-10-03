@@ -24,6 +24,14 @@ export * from './tracker';
 
 // Onboarding components
 export * from './onboarding/OnboardingWizard';
+export * from './onboarding/OnboardingHeader';
+export * from './onboarding/OnboardingFooter';
+export * from './onboarding/OnboardingStepper';
+export * from './onboarding/OnboardingIdentityStep';
+export * from './onboarding/OnboardingBodyMetricsStep';
+export * from './onboarding/OnboardingActivityStep';
+export * from './onboarding/OnboardingGoalStep';
+export * from './onboarding/OnboardingNutritionPlanStep';
 
 // Primitive UI components
 export * from './ui/avatar';
