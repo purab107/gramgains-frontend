@@ -317,7 +317,11 @@ function DashboardHomePage() {
                 </Button>
               </div>
 
-              <DailyTimeline logs={logs} onLogDeleted={loadProfileAndData} />
+              <DailyTimeline
+                logs={logs}
+                onLogDeleted={loadProfileAndData}
+                onAddMeal={() => setIsLogModalOpen(true)}
+              />
             </div>
           </div>
         </main>
