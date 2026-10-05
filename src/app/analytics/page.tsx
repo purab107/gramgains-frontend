@@ -115,7 +115,7 @@ function AnalyticsDashboard() {
           subtitle="Real-world energy expenditure, smoothed weight trends, and behavioral insights."
         />
 
-        <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Top Actions: Quick Log Weight & Refresh */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

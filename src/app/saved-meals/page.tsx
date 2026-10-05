@@ -233,7 +233,7 @@ function SavedMealsPage() {
       <div className="flex-1 flex flex-col min-w-0 bg-background">
         <Navbar userProfile={userProfile} />
 
-        <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Top Search Bar & Create Action Row */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="relative flex-1 w-full">
