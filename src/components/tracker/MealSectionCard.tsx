@@ -107,17 +107,17 @@ export function MealSectionCard({
   };
 
   return (
-    <Card className={`border border-border shadow-sm bg-card text-card-foreground overflow-hidden rounded-2xl transition-all ${config.borderAccent}`}>
+    <Card className={`border border-border shadow-xs bg-card text-card-foreground overflow-hidden rounded-2xl transition-all ${config.borderAccent}`}>
       {/* Meal Header */}
-      <CardHeader className="pb-3 border-b border-border bg-muted/30 px-5 pt-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-xl bg-card border border-border shadow-sm ${config.accentColor}`}>
-              <Icon className="w-5 h-5" />
+      <CardHeader className="p-3.5 sm:px-5 sm:pt-4 sm:pb-3 border-b border-border bg-muted/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2.5">
+            <div className={`w-8 h-8 rounded-xl bg-card border border-border flex items-center justify-center shadow-2xs shrink-0 ${config.accentColor}`}>
+              <Icon className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-base font-bold text-foreground leading-none">
+                <CardTitle className="text-sm sm:text-base font-bold text-foreground leading-none">
                   {config.title}
                 </CardTitle>
                 <Badge variant="outline" className={`text-[10px] font-bold px-2 py-0.5 ${config.badgeBg} ${config.badgeText}`}>
@@ -129,12 +129,12 @@ export function MealSectionCard({
           </div>
 
           {/* Subtotal Macro Badges */}
-          <div className="flex items-center gap-2 text-xs font-mono bg-card px-3 py-1.5 rounded-xl border border-border shadow-2xs self-start sm:self-auto">
+          <div className="flex items-center justify-between sm:justify-start gap-2 text-xs font-mono bg-card px-2.5 sm:px-3 py-1.5 rounded-xl border border-border shadow-2xs self-start sm:self-auto">
             <div className="flex items-center gap-1 font-bold text-foreground">
               <span className="text-primary">{Math.round(totalCalories)}</span>
               <span className="text-[10px] text-muted-foreground font-sans font-normal">kcal</span>
             </div>
-            <span className="text-muted-foreground/60">|</span>
+            <span className="text-muted-foreground/40">|</span>
             <div className="flex items-center gap-1.5 text-[11px]">
               <span className="font-bold" style={{ color: MACRO_COLORS.protein }}>{Math.round(totalProtein)}g P</span>
               <span className="font-bold" style={{ color: MACRO_COLORS.carbs }}>{Math.round(totalCarbs)}g C</span>
@@ -144,82 +144,114 @@ export function MealSectionCard({
         </div>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-5 space-y-4">
+      <CardContent className="p-3 sm:p-4 space-y-3">
         {/* Logged Items List */}
         {logs.length > 0 ? (
-          <div className="divide-y divide-border rounded-xl border border-border bg-muted/20 overflow-hidden">
+          <div className="flex flex-col gap-2">
             {logs.map((item) => {
               const isDeleting = deletingId === item.id;
+              const displayServing = !item.unitLabel || item.unitLabel.toLowerCase() === 'g' || item.unitLabel.toLowerCase() === 'grams'
+                ? `${Math.round(item.weightGrams)}g`
+                : `${item.unitLabel} (${Math.round(item.weightGrams)}g)`;
 
               return (
                 <div
                   key={item.id}
-                  className="p-3 sm:px-4 flex items-center justify-between gap-3 hover:bg-muted/40 transition-colors group"
+                  className="flex flex-col gap-2 p-2.5 sm:p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-800/80 hover:border-primary/40 transition-colors shadow-2xs"
                 >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-xs text-foreground truncate">
-                        {item.food?.name || 'Unknown Food Item'}
-                      </span>
-                      {item.food?.layer === 2 ? (
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/30">
-                          Recipe
+                  {/* Top Row: Food Name & Weight on left, Calories & Delete on right */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-bold text-xs sm:text-sm text-foreground truncate">
+                          {item.food?.name || 'Unknown Food Item'}
                         </span>
-                      ) : null}
+                        {item.food?.layer === 2 && (
+                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/30">
+                            Recipe
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[11px] text-muted-foreground mt-0.5 font-medium">
+                        {displayServing} · {item.servings} serving{item.servings !== 1 ? 's' : ''}
+                      </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-muted-foreground font-mono">
-                      <span className="font-semibold text-foreground">
-                        {item.unitLabel
-                          ? `${item.unitLabel} (${Math.round(item.weightGrams)}g)`
-                          : `${Math.round(item.weightGrams)}g`}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="font-bold font-mono text-xs text-foreground bg-background px-2 py-0.5 rounded-lg border border-border/70 shadow-2xs">
+                        {Math.round(item.calories)}{' '}
+                        <span className="text-[10px] font-normal text-muted-foreground font-sans">
+                          kcal
+                        </span>
                       </span>
-                      <span>•</span>
-                      <span className="font-bold text-foreground">{Math.round(item.calories)} kcal</span>
-                      <span>•</span>
-                      <span className="font-medium" style={{ color: MACRO_COLORS.protein }}>P: {item.protein}g</span>
-                      <span className="font-medium" style={{ color: MACRO_COLORS.carbs }}>C: {item.carbohydrates}g</span>
-                      <span className="font-medium" style={{ color: MACRO_COLORS.fat }}>F: {item.fat}g</span>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        disabled={isDeleting}
+                        title="Delete food entry"
+                        aria-label={`Delete ${item.food?.name || 'entry'}`}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 active:scale-95 transition-colors"
+                      >
+                        {isDeleting ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-destructive" />
+                        ) : (
+                          <Trash2 className="w-3.5 h-3.5" />
+                        )}
+                      </button>
                     </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      disabled={isDeleting}
-                      title="Delete food entry"
-                      className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all opacity-80 group-hover:opacity-100 active:scale-95"
+                  {/* Bottom Row: Color-coded Macro Pills */}
+                  <div className="flex items-center gap-1.5 pt-1.5 border-t border-slate-200/60 dark:border-slate-800/80">
+                    <span
+                      className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold"
+                      style={{
+                        backgroundColor: `${MACRO_COLORS.protein}18`,
+                        color: MACRO_COLORS.protein,
+                      }}
                     >
-                      {isDeleting ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-destructive" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
-                      )}
-                    </button>
+                      P: {Math.round(item.protein)}g
+                    </span>
+                    <span
+                      className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold"
+                      style={{
+                        backgroundColor: `${MACRO_COLORS.carbs}18`,
+                        color: MACRO_COLORS.carbs,
+                      }}
+                    >
+                      C: {Math.round(item.carbohydrates)}g
+                    </span>
+                    <span
+                      className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold"
+                      style={{
+                        backgroundColor: `${MACRO_COLORS.fat}18`,
+                        color: MACRO_COLORS.fat,
+                      }}
+                    >
+                      F: {Math.round(item.fat)}g
+                    </span>
                   </div>
                 </div>
               );
             })}
           </div>
         ) : (
-          <div className="py-4 px-3 rounded-xl border border-dashed border-border text-center bg-muted/20">
-            <UtensilsCrossed className="w-6 h-6 mx-auto text-muted-foreground/60 stroke-1 mb-1" />
+          <div className="py-3.5 px-3 rounded-xl border border-dashed border-border/80 text-center bg-muted/10">
+            <UtensilsCrossed className="w-5 h-5 mx-auto text-muted-foreground/50 stroke-1 mb-1" />
             <p className="text-xs font-medium text-muted-foreground">No food logged for {config.title.toLowerCase()} yet</p>
           </div>
         )}
 
         {/* Prominent Centered Add Meal Button */}
-        <div className="pt-1 flex justify-center">
+        <div className="pt-0.5 flex justify-center">
           <Button
             onClick={() => onAddMealClick(mealType)}
             variant="outline"
-            className="w-full sm:w-auto min-w-[220px] px-6 py-2 h-9 rounded-xl border-dashed border-border hover:border-primary bg-card hover:bg-primary/10 text-foreground hover:text-primary font-bold text-xs flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-98 group"
+            className="w-full sm:w-auto min-w-[200px] px-5 py-2 h-9 rounded-xl border-dashed border-border hover:border-primary bg-card hover:bg-primary/10 text-foreground hover:text-primary font-bold text-xs flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-98 group"
           >
             <div className="w-5 h-5 rounded-full bg-muted group-hover:bg-primary/20 flex items-center justify-center transition-colors">
               <Plus className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary" />
             </div>
-            <span>+ Add {config.title} Meal</span>
+            <span>Add {config.title} Meal</span>
           </Button>
         </div>
       </CardContent>
