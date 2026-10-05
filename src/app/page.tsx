@@ -238,7 +238,7 @@ function DashboardHomePage() {
           hasPendingWeight={hasPendingWeight}
         />
 
-        <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Pending Weekly Check-In Alert Banner */}
           {pendingCheckIn && (
             <WeeklyCheckInBanner

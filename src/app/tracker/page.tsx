@@ -172,7 +172,7 @@ function TrackerPage() {
           userProfile={userProfile}
         />
 
-        <main className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+        <main className="flex-1 p-4 pb-24 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           
           {/* Top Control Bar: Date Navigation & Actions */}
           <div className="flex items-center justify-between gap-4">
