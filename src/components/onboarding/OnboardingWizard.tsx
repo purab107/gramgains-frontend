@@ -129,6 +129,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         targetCarbs: metabolics.targetCarbs,
         targetFat: metabolics.targetFat,
         targetFiber: metabolics.targetFiber,
+        onboardingCompleted: true,
       });
 
       onComplete(updated);
