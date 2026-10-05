@@ -4,7 +4,6 @@ import React from 'react';
 import { MealLogItem, ApiService } from '@/services/api';
 import { Trash2, Plus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { MACRO_COLORS } from '@/lib/constants';
 
 interface DailyTimelineProps {
@@ -108,19 +107,9 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
                       {/* Top Row: Food Name & Weight on left, Calories & Delete on right */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-bold text-xs sm:text-sm text-foreground truncate">
-                              {log.food.name}
-                            </span>
-                            {log.food.source && (
-                              <Badge
-                                variant="outline"
-                                className="text-[9px] px-1 py-0 h-4 font-normal tracking-normal text-muted-foreground border-slate-300 dark:border-slate-700"
-                              >
-                                {log.food.source}
-                              </Badge>
-                            )}
-                          </div>
+                          <span className="font-bold text-xs sm:text-sm text-foreground block truncate">
+                            {log.food.name}
+                          </span>
                           <div className="text-[11px] text-muted-foreground mt-0.5">
                             {Math.round(log.weightGrams)}g · {log.servings} serving{log.servings !== 1 ? 's' : ''}
                           </div>
