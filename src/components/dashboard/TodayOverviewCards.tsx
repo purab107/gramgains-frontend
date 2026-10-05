@@ -34,70 +34,71 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
 
   return (
     <Card
-      className="lg:col-span-1 border border-slate-200/80 dark:border-slate-800 shadow-sm rounded-2xl bg-card cursor-default"
+      className="col-span-1 lg:col-span-1 border border-slate-200/80 dark:border-slate-800 shadow-xs rounded-2xl sm:rounded-3xl bg-card cursor-default transition-all duration-200"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <CardContent className="relative p-0 h-full min-h-[160px] overflow-hidden rounded-2xl">
+      <CardContent className="relative p-3.5 sm:p-5 flex flex-col justify-between h-full min-h-[145px] sm:min-h-[160px] rounded-2xl sm:rounded-3xl overflow-hidden">
 
-        {/* ── DEFAULT VIEW ── fades out on hover */}
-        <div
-          className="absolute inset-0 p-4.5 sm:p-5 flex flex-col justify-between transition-all duration-300 ease-in-out"
-          style={{
-            opacity: hovered ? 0 : 1,
-            transform: hovered ? 'scale(0.95)' : 'scale(1)',
-            pointerEvents: hovered ? 'none' : 'auto',
-          }}
-        >
+        {/* ── DEFAULT VIEW ── */}
+        <div className="flex flex-col justify-between h-full w-full">
           <div>
-            {/* Icon Container */}
-            <div
-              className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3.5 border border-transparent shadow-xs"
-              style={{
-                backgroundColor: `${color}18`,
-                color,
-              }}
-            >
-              {icon}
+            {/* Top Row: Icon on left, Percentage Badge on right */}
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center border border-transparent shadow-2xs shrink-0"
+                style={{
+                  backgroundColor: `${color}18`,
+                  color,
+                }}
+              >
+                {icon}
+              </div>
+              <span
+                className="text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full"
+                style={{
+                  backgroundColor: `${color}18`,
+                  color,
+                }}
+              >
+                {pct}%
+              </span>
             </div>
 
             {/* Label */}
-            <h4 className="font-semibold text-slate-600 dark:text-slate-300 text-sm sm:text-base mb-1">
+            <h4 className="font-semibold text-slate-600 dark:text-slate-300 text-xs sm:text-sm mb-0.5 sm:mb-1">
               {label}
             </h4>
 
-            {/* Value & Target Stacked */}
+            {/* Value & Target */}
             <div className="flex flex-col">
-              <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
+              <span className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
                 {value}
               </span>
-              <span className="text-sm sm:text-[15px] text-slate-400 dark:text-slate-500 font-medium mt-1">
+              <span className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-medium mt-0.5 truncate">
                 {target}
               </span>
             </div>
           </div>
 
-          {/* Progress Bar (Percentage visible on hover) */}
-          <div className="pt-2">
+          {/* Progress Bar */}
+          <div className="pt-2.5 sm:pt-3">
             <Progress
               value={pct}
-              className="h-3 rounded-full bg-slate-100 dark:bg-slate-800 w-full [&>div]:rounded-full"
+              className="h-2 sm:h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 w-full [&>div]:rounded-full"
               indicatorStyle={{ backgroundColor: color }}
             />
           </div>
         </div>
 
-        {/* ── HOVER VIEW ── fades in on hover */}
+        {/* ── HOVER VIEW (DESKTOP ONLY) ── */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center gap-0 transition-all duration-300 ease-in-out"
-          style={{
-            opacity: hovered ? 1 : 0,
-            transform: hovered ? 'scale(1)' : 'scale(0.94)',
-            pointerEvents: hovered ? 'auto' : 'none',
-          }}
+          className={`absolute inset-0 hidden sm:flex flex-col items-center justify-center gap-0 bg-card rounded-2xl sm:rounded-3xl transition-all duration-300 ease-in-out ${
+            hovered ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-95'
+          }`}
         >
           {/* Circle gauge */}
-          <div className="relative flex items-center justify-center w-28 h-28">
+          <div className="relative flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28">
             <svg
               viewBox="0 0 100 100"
               className="w-full h-full"
@@ -130,7 +131,7 @@ const MacroCard: React.FC<MacroCardProps> = ({ color, icon, label, value, target
             {/* Percentage label centred inside the ring */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span
-                className="text-2xl font-bold leading-none tracking-tight"
+                className="text-xl sm:text-2xl font-bold leading-none tracking-tight"
                 style={{ color }}
               >
                 {pct}%
@@ -205,16 +206,16 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5 w-full">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-5 w-full">
 
-        {/* Card 1: Today's Calories (Spans 2 columns on desktop) */}
-        <Card className="lg:col-span-2 border border-slate-200/80 dark:border-slate-800 shadow-sm rounded-3xl bg-card">
-          <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full">
+        {/* Card 1: Today's Calories (Spans both columns on mobile, 2 of 6 on desktop) */}
+        <Card className="col-span-2 lg:col-span-2 border border-slate-200/80 dark:border-slate-800 shadow-xs rounded-2xl sm:rounded-3xl bg-card">
+          <CardContent className="p-3.5 sm:p-5 flex flex-col justify-between h-full">
             {/* Header */}
-            <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
-              <Flame className="w-6 h-6 text-[#169b55] stroke-[2.3]" />
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg tracking-tight">
-                Today's Calories
+            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+              <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-[#169b55] stroke-[2.3]" />
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base sm:text-lg tracking-tight">
+                Today&apos;s Calories
               </h3>
             </div>
 
@@ -224,7 +225,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
-                      className="relative w-36 h-36 sm:w-40 sm:h-40 shrink-0 flex items-center justify-center cursor-pointer"
+                      className="relative w-28 h-28 xs:w-32 xs:h-32 sm:w-40 sm:h-40 shrink-0 flex items-center justify-center cursor-pointer"
                       onMouseEnter={() => setGaugeHovered(true)}
                       onMouseLeave={() => setGaugeHovered(false)}
                     >
@@ -254,37 +255,37 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
                       {/* ── DEFAULT TEXT ── fades out on hover */}
                       <div
-                        className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out"
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center p-1 sm:p-2 transition-all duration-300 ease-in-out"
                         style={{
                           opacity: gaugeHovered ? 0 : 1,
                           transform: gaugeHovered ? 'scale(0.88)' : 'scale(1)',
                           pointerEvents: 'none',
                         }}
                       >
-                        <span className="text-2xl sm:text-3xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-none">
+                        <span className="text-xl sm:text-3xl font-bold text-[#0f172a] dark:text-white tracking-tight leading-none">
                           {roundedConsumed.toLocaleString()}
                         </span>
-                        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+                        <span className="text-[11px] sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1">
                           kcal
                         </span>
-                        <span className="text-[11px] sm:text-xs font-normal text-slate-400 dark:text-slate-500">
+                        <span className="text-[10px] sm:text-xs font-normal text-slate-400 dark:text-slate-500">
                           consumed
                         </span>
                       </div>
 
                       {/* ── HOVER TEXT ── fades in on hover */}
                       <div
-                        className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ease-in-out"
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center p-1 sm:p-2 transition-all duration-300 ease-in-out"
                         style={{
                           opacity: gaugeHovered ? 1 : 0,
                           transform: gaugeHovered ? 'scale(1)' : 'scale(0.88)',
                           pointerEvents: 'none',
                         }}
                       >
-                        <span className="text-3xl sm:text-4xl font-bold text-[#169b55] tracking-tight leading-none">
+                        <span className="text-2xl sm:text-4xl font-bold text-[#169b55] tracking-tight leading-none">
                           {calPercent}%
                         </span>
-                        <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-1.5">
+                        <span className="text-[11px] sm:text-xs font-medium text-slate-400 dark:text-slate-500 mt-1">
                           complete
                         </span>
                       </div>
@@ -297,17 +298,17 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
               </div>
 
               {/* Stats Right Column */}
-              <div className="flex-1 min-w-0 flex flex-col justify-center gap-5 sm:gap-6 pl-1 sm:pl-2">
+              <div className="flex-1 min-w-0 flex flex-col justify-center gap-3 sm:gap-6 pl-1 sm:pl-2">
                 {/* Row 1: Remaining */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#e8f8f0] dark:bg-emerald-950/50 flex items-center justify-center text-[#169b55] shrink-0">
-                    <Salad className="w-5 h-5 stroke-[2]" />
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#e8f8f0] dark:bg-emerald-950/50 flex items-center justify-center text-[#169b55] shrink-0">
+                    <Salad className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2]" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
+                    <span className="text-[11px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
                       Remaining
                     </span>
-                    <div className="text-lg sm:text-xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-tight">
+                    <div className="text-base sm:text-xl font-bold text-[#0f172a] dark:text-white tracking-tight leading-tight">
                       {roundedRemaining.toLocaleString()}{' '}
                       <span className="text-xs sm:text-sm font-normal text-slate-400 dark:text-slate-500 font-sans">
                         kcal
@@ -317,15 +318,15 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                 </div>
 
                 {/* Row 2: Daily goal */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#f1f4f9] dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
-                    <Target className="w-4.5 h-4.5 stroke-[2]" />
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#f1f4f9] dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
+                    <Target className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2]" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
+                    <span className="text-[11px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
                       Daily goal
                     </span>
-                    <div className="text-lg sm:text-xl font-semibold text-[#0f172a] dark:text-white tracking-tight leading-tight">
+                    <div className="text-base sm:text-xl font-bold text-[#0f172a] dark:text-white tracking-tight leading-tight">
                       {roundedTarget.toLocaleString()}{' '}
                       <span className="text-xs sm:text-sm font-normal text-slate-400 dark:text-slate-500 font-sans">
                         kcal
@@ -339,40 +340,40 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
           </CardContent>
         </Card>
 
-        {/* Card 2: Protein */}
+        {/* Card 2: Protein (Mobile Row 2 Left) */}
         <MacroCard
           color={MACRO_COLORS.protein}
-          icon={<Utensils className="w-5 h-5" />}
+          icon={<Utensils className="w-4 h-4 sm:w-5 sm:h-5" />}
           label="Protein"
           value={`${proteinConsumed} g`}
           target={`/ ${proteinTarget} g`}
           pct={proteinPct}
         />
 
-        {/* Card 3: Carbs */}
+        {/* Card 3: Carbs (Mobile Row 2 Right) */}
         <MacroCard
           color={MACRO_COLORS.carbs}
-          icon={<Zap className="w-5 h-5" style={{ fill: MACRO_COLORS.carbs }} />}
+          icon={<Zap className="w-4 h-4 sm:w-5 sm:h-5" style={{ fill: MACRO_COLORS.carbs }} />}
           label="Carbs"
           value={`${carbsConsumed} g`}
           target={`/ ${carbsTarget} g`}
           pct={carbsPct}
         />
 
-        {/* Card 4: Fats */}
+        {/* Card 4: Fats (Mobile Row 3 Left) */}
         <MacroCard
           color={MACRO_COLORS.fat}
-          icon={<Flame className="w-5 h-5" style={{ fill: MACRO_COLORS.fat }} />}
+          icon={<Flame className="w-4 h-4 sm:w-5 sm:h-5" style={{ fill: MACRO_COLORS.fat }} />}
           label="Fats"
           value={`${fatConsumed} g`}
           target={`/ ${fatTarget} g`}
           pct={fatPct}
         />
 
-        {/* Card 5: Water */}
+        {/* Card 5: Water (Mobile Row 3 Right) */}
         <MacroCard
           color={MACRO_COLORS.water}
-          icon={<Droplet className="w-5 h-5" style={{ fill: MACRO_COLORS.water }} />}
+          icon={<Droplet className="w-4 h-4 sm:w-5 sm:h-5" style={{ fill: MACRO_COLORS.water }} />}
           label="Water"
           value={`${consumedWater} ml`}
           target={`/ ${targetWater} ml`}
