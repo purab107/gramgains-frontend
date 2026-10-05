@@ -1,87 +1,109 @@
 import { FoodItem } from '../services/api';
+import {
+  Drumstick,
+  Egg,
+  Fish,
+  Beef,
+  Wheat,
+  ChefHat,
+  Milk,
+  Sandwich,
+  UtensilsCrossed,
+  Soup,
+  FlameKindling,
+  Cookie,
+  Candy,
+  Coffee,
+  GlassWater,
+  Salad,
+  Apple,
+  Utensils,
+  type LucideIcon,
+} from 'lucide-react';
 
 /**
- * Maps a food item name/category to an intuitive, contextual food emoji.
+ * Maps a food item name/category to an intuitive Lucide icon component.
+ * Returns a LucideIcon component reference — render it as <Icon className="..." />.
  */
-export function getFoodEmoji(food: Pick<FoodItem, 'name' | 'category'>): string {
+export function getFoodIcon(food: Pick<FoodItem, 'name' | 'category'>): LucideIcon {
   const name = food.name.toLowerCase();
   const category = (food.category || '').toLowerCase();
 
   // Non-veg / Poultry / Meat / Seafood
   if (name.includes('chicken') || name.includes('murgh') || name.includes('kebab') || name.includes('tikka')) {
-    return '🍗';
+    return Drumstick;
   }
   if (name.includes('egg') || name.includes('anda') || name.includes('omelet') || name.includes('omlette')) {
-    return '🥚';
+    return Egg;
   }
   if (name.includes('fish') || name.includes('prawn') || name.includes('shrimp') || name.includes('machli') || category.includes('fish') || category.includes('seafood')) {
-    return '🐟';
+    return Fish;
   }
   if (name.includes('mutton') || name.includes('gosht') || name.includes('lamb') || name.includes('keema') || name.includes('beef') || name.includes('pork') || category.includes('meat')) {
-    return '🥩';
+    return Beef;
   }
 
   // Rice & Biryanis
   if (name.includes('biryani') || name.includes('pulao') || name.includes('pulav') || name.includes('rice') || name.includes('khichdi') || category.includes('rice')) {
-    return '🍚';
+    return Wheat;
   }
 
   // Dairy & Paneer
   if (name.includes('paneer') || name.includes('cheese')) {
-    return '🧀';
+    return ChefHat;
   }
   if (name.includes('milk') || name.includes('curd') || name.includes('dahi') || name.includes('yogurt') || name.includes('raita') || name.includes('buttermilk') || name.includes('lassi')) {
-    return '🥛';
+    return Milk;
   }
 
   // Breads / Rotis
   if (name.includes('roti') || name.includes('chapati') || name.includes('naan') || name.includes('paratha') || name.includes('kulcha') || name.includes('puri') || name.includes('bread') || category.includes('bread')) {
-    return '🫓';
+    return Sandwich;
   }
 
   // South Indian / Breakfast
   if (name.includes('dosa') || name.includes('idli') || name.includes('vada') || name.includes('uttapam') || name.includes('upma') || name.includes('poha')) {
-    return '🥞';
+    return UtensilsCrossed;
   }
 
   // Dal / Pulses / Soups / Gravies / Curries
   if (name.includes('soup') || category.includes('soup')) {
-    return '🥣';
+    return Soup;
   }
   if (name.includes('dal') || name.includes('daal') || name.includes('sambar') || name.includes('rasam') || name.includes('chana') || name.includes('rajma') || name.includes('curry') || category.includes('dal') || category.includes('curry')) {
-    return '🍲';
+    return FlameKindling;
   }
 
   // Snacks / Fast food
   if (name.includes('samosa') || name.includes('pakora') || name.includes('kachori') || name.includes('snack') || name.includes('chaat') || category.includes('snack')) {
-    return '🥟';
+    return Cookie;
   }
 
   // Sweets & Desserts
   if (name.includes('halwa') || name.includes('kheer') || name.includes('gulab jamun') || name.includes('laddu') || name.includes('ladoo') || name.includes('sweet') || name.includes('cake') || name.includes('barfi') || category.includes('dessert') || category.includes('sweet')) {
-    return '🍯';
+    return Candy;
   }
 
   // Beverages
   if (name.includes('tea') || name.includes('chai') || name.includes('coffee') || category.includes('beverage')) {
-    return '☕';
+    return Coffee;
   }
   if (name.includes('juice') || name.includes('shake') || name.includes('smoothie')) {
-    return '🥤';
+    return GlassWater;
   }
 
   // Vegetables & Salads
   if (name.includes('salad') || name.includes('subzi') || name.includes('sabzi') || name.includes('bhaji') || name.includes('gobi') || name.includes('palak') || name.includes('methi') || name.includes('potato') || name.includes('aloo') || name.includes('vegetable') || category.includes('vegetable')) {
-    return '🥦';
+    return Salad;
   }
 
   // Fruits
   if (name.includes('apple') || name.includes('banana') || name.includes('mango') || name.includes('orange') || category.includes('fruit')) {
-    return '🍎';
+    return Apple;
   }
 
   // Default fallback
-  return '🥗';
+  return Utensils;
 }
 
 /**

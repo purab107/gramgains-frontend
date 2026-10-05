@@ -17,7 +17,8 @@ import {
   WeeklyCaloriesBarChart,
   TodayOverviewCards,
   DailyTimeline,
-  MealLoggerModal
+  AddFoodSheet,
+  type MealTypeKey
 } from '@/components';
 import { DailyWeightModal } from '@/components/weight/DailyWeightModal';
 import { WeeklyCheckInBanner } from '@/components/adaptive/WeeklyCheckInBanner';
@@ -47,7 +48,13 @@ function DashboardHomePage() {
   const [logs, setLogs] = useState<MealLogItem[]>([]);
   const [waterTotalMl, setWaterTotalMl] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [isAddFoodOpen, setIsAddFoodOpen] = useState(false);
+  const [activeMealType, setActiveMealType] = useState<MealTypeKey>('BREAKFAST');
+
+  const handleOpenAddFood = (type: MealTypeKey = 'BREAKFAST') => {
+    setActiveMealType(type);
+    setIsAddFoodOpen(true);
+  };
 
   // Weight Prompt & Weekly Check-In states
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
@@ -66,7 +73,7 @@ function DashboardHomePage() {
       setIsCheckInModalOpen(true);
       devSkip.triggerModal(null);
     } else if (devSkip.activeModalTrigger === 'food') {
-      setIsLogModalOpen(true);
+      handleOpenAddFood('BREAKFAST');
       devSkip.triggerModal(null);
     }
   }, [devSkip.activeModalTrigger]);
@@ -233,12 +240,12 @@ function DashboardHomePage() {
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
           userProfile={userProfile}
-          onOpenLogModal={() => setIsLogModalOpen(true)}
+          onOpenLogModal={() => handleOpenAddFood('BREAKFAST')}
           onOpenWeightModal={() => setIsWeightModalOpen(true)}
           hasPendingWeight={hasPendingWeight}
         />
 
-        <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Pending Weekly Check-In Alert Banner */}
           {pendingCheckIn && (
             <WeeklyCheckInBanner
@@ -309,7 +316,7 @@ function DashboardHomePage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsLogModalOpen(true)}
+                  onClick={() => handleOpenAddFood('BREAKFAST')}
                   className="gap-1 text-primary hover:text-primary"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -317,18 +324,24 @@ function DashboardHomePage() {
                 </Button>
               </div>
 
-              <DailyTimeline logs={logs} onLogDeleted={loadProfileAndData} />
+              <DailyTimeline
+                logs={logs}
+                onLogDeleted={loadProfileAndData}
+                onAddMeal={(mealKey) => handleOpenAddFood((mealKey as MealTypeKey) || 'BREAKFAST')}
+              />
             </div>
           </div>
         </main>
       </div>
 
-      {/* Log Food Entry Modal */}
-      <MealLoggerModal
-        date={selectedDate}
-        isOpen={isLogModalOpen}
-        onClose={() => setIsLogModalOpen(false)}
-        onLogged={loadProfileAndData}
+      {/* Side Panel: Add Food Sheet */}
+      <AddFoodSheet
+        open={isAddFoodOpen}
+        onOpenChange={setIsAddFoodOpen}
+        selectedDate={selectedDate}
+        mealType={activeMealType}
+        onMealTypeChange={setActiveMealType}
+        onFoodLogged={loadProfileAndData}
       />
 
       {/* Daily Weight Modal */}

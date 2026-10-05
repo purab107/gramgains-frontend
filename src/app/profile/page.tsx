@@ -41,7 +41,7 @@ function ProfilePageContent() {
           subtitle="Configure your personal body metrics, target rate of change, and macro presets."
         />
 
-        <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-5xl mx-auto w-full">
+        <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-5xl mx-auto w-full">
           {loading ? (
             <div className="py-20 text-center text-xs text-muted-foreground">
               Loading metabolic profile...

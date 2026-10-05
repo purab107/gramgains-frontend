@@ -4,14 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { 
   ApiService, 
   DailyTrackerResponse, 
-  UserProfile 
+  UserProfile,
+  DashboardSummaryResponse 
 } from '@/services/api';
 import { 
   Sidebar,
   Navbar,
   AuthGuard,
-  TotalCaloriesCard,
-  MealCalorieCard,
+  TodayOverviewCards,
   MealSectionCard,
   WaterTrackerSection,
   AddFoodSheet,
@@ -146,20 +146,33 @@ function TrackerPage() {
       { protein: 0, carbs: 0, fat: 0 }
     );
 
-  const breakfastCalories = morningLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
-  const lunchCalories = afternoonLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
-  const snackCalories = eveningLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
-  const dinnerCalories = dinnerLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
-
-  const breakfastMacros = getMealMacros(morningLogs);
-  const lunchMacros = getMealMacros(afternoonLogs);
-  const snackMacros = getMealMacros(eveningLogs);
-  const dinnerMacros = getMealMacros(dinnerLogs);
-
   const waterTotalMl = trackerData?.water?.totalMl || 0;
   const waterLogs = trackerData?.water?.logs || [];
 
   const isToday = selectedDate === new Date().toISOString().split('T')[0];
+
+  const dashSummary: DashboardSummaryResponse = {
+    date: selectedDate,
+    calories: {
+      target: targets.calories,
+      consumed: summary.calories,
+      remaining: Math.max(0, targets.calories - summary.calories),
+      percentageDone: targets.calories > 0 ? Math.min(100, Math.round((summary.calories / targets.calories) * 100)) : 0,
+    },
+    macros: {
+      protein: { consumed: summary.protein, target: targets.protein, unit: 'g' },
+      carbohydrates: { consumed: summary.carbohydrates, target: targets.carbs, unit: 'g' },
+      fat: { consumed: summary.fat, target: targets.fat, unit: 'g' },
+      fiber: { consumed: summary.fiber, target: targets.fiber, unit: 'g' },
+    },
+    water: {
+      consumed: waterTotalMl,
+      target: targets.water,
+      unit: 'ml',
+      percentageDone: targets.water > 0 ? Math.min(100, Math.round((waterTotalMl / targets.water) * 100)) : 0,
+    },
+    totalMealsLogged: logs.length,
+  };
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -170,9 +183,10 @@ function TrackerPage() {
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
           userProfile={userProfile}
+          onOpenLogModal={() => handleOpenAddFood('BREAKFAST')}
         />
 
-        <main className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+        <main className="flex-1 p-4 pb-24 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           
           {/* Top Control Bar: Date Navigation & Actions */}
           <div className="flex items-center justify-between gap-4">
@@ -240,20 +254,13 @@ function TrackerPage() {
             </div>
           )}
 
-          {/* All Cards in One Row: Total Calories (wider) + 4 Meal Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-stretch">
-            <div className="lg:col-span-2">
-              <TotalCaloriesCard
-                summary={summary}
-                targets={targets}
-                waterTotalMl={waterTotalMl}
-              />
-            </div>
-            <MealCalorieCard mealType="BREAKFAST" calories={breakfastCalories} itemCount={morningLogs.length} dailyCalorieTarget={targets.calories} macros={breakfastMacros} />
-            <MealCalorieCard mealType="LUNCH" calories={lunchCalories} itemCount={afternoonLogs.length} dailyCalorieTarget={targets.calories} macros={lunchMacros} />
-            <MealCalorieCard mealType="SNACK" calories={snackCalories} itemCount={eveningLogs.length} dailyCalorieTarget={targets.calories} macros={snackMacros} />
-            <MealCalorieCard mealType="DINNER" calories={dinnerCalories} itemCount={dinnerLogs.length} dailyCalorieTarget={targets.calories} macros={dinnerMacros} />
-          </div>
+          {/* Modern Overview Cards (Today's Calories + Protein, Carbs, Fats, Water) — Identical to Home */}
+          <TodayOverviewCards
+            summary={dashSummary}
+            userProfile={userProfile}
+            waterTotalMl={waterTotalMl}
+            targetWaterMl={targets.water}
+          />
 
           {/* Full-Width Stacked Meal Section Cards */}
           <div className="space-y-4">

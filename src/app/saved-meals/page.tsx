@@ -8,7 +8,7 @@ import {
   FoodItem, 
   UserProfile 
 } from '../../services/api';
-import { getFoodEmoji } from '../../lib/food-utils';
+import { getFoodIcon } from '../../lib/food-utils';
 import { MACRO_COLORS } from '@/lib/constants';
 import { 
   Sidebar,
@@ -233,7 +233,7 @@ function SavedMealsPage() {
       <div className="flex-1 flex flex-col min-w-0 bg-background">
         <Navbar userProfile={userProfile} />
 
-        <main className="flex-1 p-4 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Top Search Bar & Create Action Row */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="relative flex-1 w-full">
@@ -466,7 +466,7 @@ function SavedMealsPage() {
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-base">{getFoodEmoji(food)}</span>
+                          {(() => { const FoodIcon = getFoodIcon(food); return <FoodIcon className="w-4 h-4 text-muted-foreground" />; })()}
                           <div>
                             <span className="font-semibold">{food.name}</span>
                             <span className="text-[10px] text-muted-foreground ml-2 font-mono">
