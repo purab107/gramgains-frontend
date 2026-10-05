@@ -12,6 +12,7 @@ export * from './dashboard/WeeklyCaloriesBarChart';
 // Layout components
 export * from './layout/Navbar';
 export * from './layout/Sidebar';
+export * from './layout/BottomTabBar';
 export * from './layout/SplashScreen';
 
 // Dev Skip components
