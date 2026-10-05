@@ -43,6 +43,12 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   );
   const [pace, setPace] = useState<'GRADUAL' | 'MODERATE'>('MODERATE');
 
+  React.useEffect(() => {
+    if (initialProfile?.name && (!name || name === 'Athlete')) {
+      setName(initialProfile.name);
+    }
+  }, [initialProfile]);
+
   // Navigation handlers with direction tracking for smooth slide left/right
   const goToNextStep = () => {
     if (step < 5) {
