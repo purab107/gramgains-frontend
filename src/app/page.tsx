@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
+import { isGuestSession } from '@/lib/guest-session';
 
 function DashboardHomePage() {
   const devSkip = useDevSkip();
@@ -94,6 +95,12 @@ function DashboardHomePage() {
     // Remove loading class to prevent flash of unstyled content
     document.body.classList.remove('loading');
     
+    // Check if onboarding was requested via URL query param
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('onboarding') === 'true') {
+      setShowOnboarding(true);
+    }
+
     // Only show splash screen once per browser session
     const hasSeenSplash = sessionStorage.getItem('gramgains_splash_seen');
     if (!hasSeenSplash) {
@@ -120,8 +127,18 @@ function DashboardHomePage() {
         prof = await ApiService.getProfile();
         setUserProfile(prof);
 
-        // Trigger onboarding for new users who have the auto-generated default profile
-        if (!prof || (prof.name === 'Athlete' && prof.weightKg === 70 && prof.heightCm === 175)) {
+        // Trigger onboarding for new users or if onboarding=true was requested
+        const searchParams = new URLSearchParams(window.location.search);
+        const isExplicitOnboarding = searchParams.get('onboarding') === 'true';
+        const hasLocalOnboarded = localStorage.getItem('gramgains_onboarded') === 'true';
+        const isGuest = isGuestSession();
+
+        if (
+          isExplicitOnboarding ||
+          (!isGuest && prof && prof.onboardingCompleted === false && !hasLocalOnboarded) ||
+          (!prof && !isGuest && !hasLocalOnboarded) ||
+          (prof && prof.name === 'Athlete' && prof.weightKg === 70 && prof.heightCm === 175 && !hasLocalOnboarded && !isGuest)
+        ) {
           setShowOnboarding(true);
         }
       } catch (err) {
@@ -181,6 +198,14 @@ function DashboardHomePage() {
     setUserProfile(updatedProf);
     localStorage.setItem('gramgains_onboarded', 'true');
     setShowOnboarding(false);
+
+    // Clean up ?onboarding query param if present
+    if (typeof window !== 'undefined' && window.location.search.includes('onboarding=')) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('onboarding');
+      window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
+    }
+
     loadProfileAndData();
   };
 

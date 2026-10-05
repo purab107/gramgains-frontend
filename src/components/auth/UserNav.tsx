@@ -110,7 +110,7 @@ export function UserNav({ userProfileName }: UserNavProps) {
             setIsAuthOpen(false);
             endGuestSession();
             if (authMode === 'register') {
-              window.location.href = '/profile';
+              window.location.href = '/?onboarding=true';
             } else {
               window.location.href = '/';
             }
@@ -198,7 +198,7 @@ export function UserNav({ userProfileName }: UserNavProps) {
           setIsAuthOpen(false);
           endGuestSession();
           if (authMode === 'register') {
-            window.location.href = '/profile';
+            window.location.href = '/?onboarding=true';
           } else {
             window.location.href = '/';
           }

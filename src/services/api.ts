@@ -37,6 +37,7 @@ export interface UserProfile {
   fatPercent?: number;
   checkInDayOfWeek?: number;
   lastCheckInDate?: string | null;
+  onboardingCompleted?: boolean;
   updatedAt?: string;
 }
 
