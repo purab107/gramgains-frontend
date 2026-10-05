@@ -8,7 +8,7 @@ import {
   FoodItem, 
   UserProfile 
 } from '../../services/api';
-import { getFoodEmoji } from '../../lib/food-utils';
+import { getFoodIcon } from '../../lib/food-utils';
 import { MACRO_COLORS } from '@/lib/constants';
 import { 
   Sidebar,
@@ -466,7 +466,7 @@ function SavedMealsPage() {
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-base">{getFoodEmoji(food)}</span>
+                          {(() => { const FoodIcon = getFoodIcon(food); return <FoodIcon className="w-4 h-4 text-muted-foreground" />; })()}
                           <div>
                             <span className="font-semibold">{food.name}</span>
                             <span className="text-[10px] text-muted-foreground ml-2 font-mono">
