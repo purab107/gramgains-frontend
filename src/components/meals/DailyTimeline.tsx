@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { MealLogItem, ApiService } from '@/services/api';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Sunrise, Sun, Moon, Sunset } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { MACRO_COLORS } from '@/lib/constants';
 
@@ -13,10 +13,10 @@ interface DailyTimelineProps {
 }
 
 const MEAL_TYPES = [
-  { key: 'BREAKFAST', label: 'Breakfast', icon: '🍳' },
-  { key: 'LUNCH', label: 'Lunch', icon: '🍲' },
-  { key: 'DINNER', label: 'Dinner', icon: '🍽️' },
-  { key: 'SNACK', label: 'Snacks & Extras', icon: '🍎' },
+  { key: 'BREAKFAST', label: 'Breakfast',       Icon: Sunrise },
+  { key: 'LUNCH',     label: 'Lunch',           Icon: Sun     },
+  { key: 'DINNER',    label: 'Dinner',          Icon: Moon    },
+  { key: 'SNACK',     label: 'Snacks & Extras', Icon: Sunset  },
 ];
 
 export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted, onAddMeal }) => {
@@ -31,7 +31,7 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
 
   return (
     <div className="flex flex-col gap-3">
-      {MEAL_TYPES.map(({ key, label, icon }) => {
+      {MEAL_TYPES.map(({ key, label, Icon }) => {
         const mealLogs = logs.filter((log) => log.mealType === key);
         const mealCalories = mealLogs.reduce((sum, item) => sum + item.calories, 0);
         const hasLogs = mealLogs.length > 0;
@@ -44,8 +44,8 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
             {/* Meal Category Header */}
             <div className="p-3 sm:p-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <span className="text-base shrink-0 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80">
-                  {icon}
+                <span className="shrink-0 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-muted-foreground">
+                  <Icon className="w-4 h-4" />
                 </span>
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-xs sm:text-sm text-foreground">

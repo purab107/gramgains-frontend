@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ApiService, FoodItem } from '@/services/api';
-import { getFoodEmoji, getCleanCategoryLabel, calculatePer100g } from '@/lib/food-utils';
+import { getFoodIcon, getCleanCategoryLabel, calculatePer100g } from '@/lib/food-utils';
 import { 
   Search, 
   X, 
@@ -246,15 +246,15 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                 </div>
               ) : foods.length === 0 ? (
                 <div className="py-12 text-center space-y-2">
-                  <div className="w-10 h-10 rounded-full bg-[#E6F3F1] text-[#075E54] flex items-center justify-center mx-auto text-lg">
-                    🔍
+                  <div className="w-10 h-10 rounded-full bg-[#E6F3F1] text-[#075E54] flex items-center justify-center mx-auto">
+                    <Search className="w-5 h-5" />
                   </div>
                   <p className="text-xs font-semibold text-[#171C1B]">No foods found</p>
                   <p className="text-[11px] text-[#68716F]">Try searching with a different dish name or keyword.</p>
                 </div>
               ) : (
                 foods.map((food) => {
-                  const emoji = getFoodEmoji(food);
+                  const FoodIcon = getFoodIcon(food);
                   return (
                     <div
                       key={food.id}
@@ -262,8 +262,8 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                       className="p-3 rounded-xl border border-border bg-card hover:border-primary hover:bg-muted/50 transition-all cursor-pointer flex items-center justify-between group shadow-sm active:scale-[0.99]"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-muted group-hover:bg-accent border border-border flex items-center justify-center text-lg shrink-0 transition-colors">
-                          {emoji}
+                        <div className="w-9 h-9 rounded-xl bg-muted group-hover:bg-accent border border-border flex items-center justify-center shrink-0 transition-colors text-muted-foreground">
+                          <FoodIcon className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
                           <h4 className="font-semibold text-xs text-foreground group-hover:text-primary truncate transition-colors">
@@ -303,9 +303,11 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
             {/* Header: Title + Emoji + Clean Category Subtitle */}
             <div className="bg-card border border-border rounded-2xl p-4 shadow-sm">
               <div className="flex items-start gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-accent border border-border flex items-center justify-center text-2xl shrink-0">
-                  {getFoodEmoji(selectedFood)}
+                {(() => { const DetailIcon = getFoodIcon(selectedFood); return (
+                <div className="w-12 h-12 rounded-2xl bg-accent border border-border flex items-center justify-center shrink-0 text-muted-foreground">
+                  <DetailIcon className="w-7 h-7" />
                 </div>
+                ); })()}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-bold text-foreground leading-tight">
                     {selectedFood.name}
