@@ -8,7 +8,8 @@ import {
   Eye, 
   Scale, 
   AlertCircle, 
-  Check 
+  Check,
+  Lightbulb
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ApiService, WeightLogEntry } from '@/services/api';
@@ -98,8 +99,9 @@ export const WeightHistoryDrawer: React.FC<WeightHistoryDrawerProps> = ({
           )}
 
           {/* Explanation Tip */}
-          <div className="my-3 p-3 rounded-xl bg-muted/40 border border-border text-[11px] text-muted-foreground leading-relaxed">
-            💡 <strong>Pro Tip:</strong> Had an unusually salty meal or gastrointestinal flare-up? Click the <strong>Exclude</strong> eye icon to omit temporary water spikes from skewing your adaptive TDEE calculation.
+          <div className="my-3 p-3 rounded-xl bg-muted/40 border border-border text-[11px] text-muted-foreground leading-relaxed flex items-start gap-2">
+            <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-500" />
+            <span><strong>Pro Tip:</strong> Had an unusually salty meal or gastrointestinal flare-up? Click the <strong>Exclude</strong> eye icon to omit temporary water spikes from skewing your adaptive TDEE calculation.</span>
           </div>
 
           {/* Table / List */}
