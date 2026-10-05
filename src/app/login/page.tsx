@@ -49,8 +49,8 @@ export default function LoginPage() {
           return;
         }
         endGuestSession();
-        // Redirect to account / profile settings page after creating an account
-        window.location.href = '/profile';
+        // Redirect to onboarding flow after creating an account
+        window.location.href = '/?onboarding=true';
       } else {
         const { error: resError } = await signIn.email({ email, password });
         if (resError) {
