@@ -210,22 +210,28 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
 
         {/* Card 1: Today's Calories (Spans both columns on mobile, 2 of 6 on desktop) */}
         <Card className="col-span-2 lg:col-span-2 border border-slate-200/80 dark:border-slate-800 shadow-xs rounded-2xl sm:rounded-3xl bg-card">
-          <CardContent className="p-3.5 sm:p-5 flex flex-col justify-between h-full">
+          <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full">
             {/* Header */}
-            <div className="flex items-center gap-2 mb-2 sm:mb-3">
-              <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-[#169b55] stroke-[2.3]" />
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base sm:text-lg tracking-tight">
-                Today&apos;s Calories
-              </h3>
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2">
+                <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-[#169b55] stroke-[2.3]" />
+                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-base sm:text-lg tracking-tight">
+                  Today&apos;s Calories
+                </h3>
+              </div>
+              {/* Mobile percentage badge */}
+              <span className="sm:hidden text-xs font-bold px-2.5 py-1 rounded-full bg-[#169b55]/15 text-[#169b55]">
+                {calPercent}%
+              </span>
             </div>
 
-            <div className="flex flex-row items-center justify-between gap-3 sm:gap-6 my-auto">
+            <div className="flex flex-row items-center justify-between gap-3.5 min-[400px]:gap-5 sm:gap-8 my-auto">
               {/* Gauge Left Column */}
               <div className="flex flex-col items-center justify-center shrink-0">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
-                      className="relative w-28 h-28 xs:w-32 xs:h-32 sm:w-40 sm:h-40 shrink-0 flex items-center justify-center cursor-pointer"
+                      className="relative w-36 h-36 min-[400px]:w-40 min-[400px]:h-40 sm:w-44 sm:h-44 shrink-0 flex items-center justify-center cursor-pointer"
                       onMouseEnter={() => setGaugeHovered(true)}
                       onMouseLeave={() => setGaugeHovered(false)}
                     >
@@ -236,7 +242,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           cy="70"
                           r={radius}
                           className="stroke-[#e8edf5] dark:stroke-slate-800"
-                          strokeWidth="13"
+                          strokeWidth="12"
                           fill="transparent"
                         />
                         {/* Progress Ring */}
@@ -245,7 +251,7 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           cy="70"
                           r={radius}
                           className="stroke-[#169b55] transition-all duration-700 ease-out"
-                          strokeWidth="13"
+                          strokeWidth="12"
                           strokeDasharray={circumference}
                           strokeDashoffset={strokeDashoffset}
                           strokeLinecap="round"
@@ -262,10 +268,10 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           pointerEvents: 'none',
                         }}
                       >
-                        <span className="text-xl sm:text-3xl font-bold text-[#0f172a] dark:text-white tracking-tight leading-none">
+                        <span className="text-2xl sm:text-3xl font-bold text-[#0f172a] dark:text-white tracking-tight leading-none">
                           {roundedConsumed.toLocaleString()}
                         </span>
-                        <span className="text-[11px] sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1">
+                        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
                           kcal
                         </span>
                         <span className="text-[10px] sm:text-xs font-normal text-slate-400 dark:text-slate-500">
@@ -282,10 +288,10 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                           pointerEvents: 'none',
                         }}
                       >
-                        <span className="text-2xl sm:text-4xl font-bold text-[#169b55] tracking-tight leading-none">
+                        <span className="text-3xl sm:text-4xl font-bold text-[#169b55] tracking-tight leading-none">
                           {calPercent}%
                         </span>
-                        <span className="text-[11px] sm:text-xs font-medium text-slate-400 dark:text-slate-500 mt-1">
+                        <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-1">
                           complete
                         </span>
                       </div>
@@ -298,14 +304,14 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
               </div>
 
               {/* Stats Right Column */}
-              <div className="flex-1 min-w-0 flex flex-col justify-center gap-3 sm:gap-6 pl-1 sm:pl-2">
+              <div className="flex-1 min-w-0 flex flex-col justify-center gap-2.5 sm:gap-4">
                 {/* Row 1: Remaining */}
-                <div className="flex items-center gap-2.5 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#e8f8f0] dark:bg-emerald-950/50 flex items-center justify-center text-[#169b55] shrink-0">
+                <div className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-0 rounded-2xl bg-slate-100/70 dark:bg-slate-800/50 sm:bg-transparent sm:dark:bg-transparent border border-slate-200/60 dark:border-slate-800/60 sm:border-none">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-full bg-[#e8f8f0] dark:bg-emerald-950/50 flex items-center justify-center text-[#169b55] shrink-0">
                     <Salad className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2]" />
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 block leading-tight">
                       Remaining
                     </span>
                     <div className="text-base sm:text-xl font-bold text-[#0f172a] dark:text-white tracking-tight leading-tight">
@@ -318,12 +324,12 @@ export const TodayOverviewCards: React.FC<TodayOverviewCardsProps> = ({
                 </div>
 
                 {/* Row 2: Daily goal */}
-                <div className="flex items-center gap-2.5 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#f1f4f9] dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
+                <div className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-0 rounded-2xl bg-slate-100/70 dark:bg-slate-800/50 sm:bg-transparent sm:dark:bg-transparent border border-slate-200/60 dark:border-slate-800/60 sm:border-none">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-full bg-[#f1f4f9] dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
                     <Target className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2]" />
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 block leading-tight">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 block leading-tight">
                       Daily goal
                     </span>
                     <div className="text-base sm:text-xl font-bold text-[#0f172a] dark:text-white tracking-tight leading-tight">
