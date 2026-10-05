@@ -30,7 +30,8 @@ import {
   Zap,
   Bookmark,
   ExternalLink,
-  Plus
+  Plus,
+  Check
 } from 'lucide-react';
 
 export function DevSkipPanel() {
@@ -203,7 +204,7 @@ export function DevSkipPanel() {
                               : 'bg-muted text-muted-foreground'
                           }`}
                         >
-                          {isPast ? '✓' : stage.id}
+                          {isPast ? <Check className="w-3.5 h-3.5" /> : stage.id}
                         </div>
 
                         <div className="flex-1 min-w-0">
