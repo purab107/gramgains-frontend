@@ -37,11 +37,13 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [activityLevel, setActivityLevel] = useState<
     'SEDENTARY' | 'LIGHT' | 'MODERATE' | 'VERY_ACTIVE' | 'EXTRA_ACTIVE'
   >(initialProfile?.activityLevel || 'MODERATE');
-  const [dailySteps, setDailySteps] = useState<string>('7–10k');
   const [goal, setGoal] = useState<'WEIGHT_LOSS' | 'MAINTAIN' | 'BULK'>(
     initialProfile?.goal || 'WEIGHT_LOSS'
   );
   const [pace, setPace] = useState<'GRADUAL' | 'MODERATE'>('MODERATE');
+  const [currentlyTracks, setCurrentlyTracks] = useState(false);
+  const [currentCalories, setCurrentCalories] = useState('');
+  const [currentProtein, setCurrentProtein] = useState('');
 
   React.useEffect(() => {
     if (initialProfile?.name && (!name || name === 'Athlete')) {
@@ -64,7 +66,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
   };
 
-  // Accurate Mifflin-St Jeor metabolic calculation aligned with backend
+  // Accurate Mifflin-St Jeor metabolic calculation aligned with canonical rules
   const calculateMetabolics = () => {
     let bmr = 10 * weightKg + 6.25 * heightCm - 5 * age;
     bmr += gender === 'FEMALE' ? -161 : 5;
@@ -80,34 +82,46 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     const tdee = Math.round(bmr * (activityMultipliers[activityLevel] || 1.55));
 
     let targetRateKgPerWeek = 0;
-    let targetCalories = tdee;
-
     if (goal === 'WEIGHT_LOSS') {
       targetRateKgPerWeek = pace === 'GRADUAL' ? -0.25 : -0.5;
-      const delta = Math.round((targetRateKgPerWeek * 7700) / 7);
-      const floor = gender === 'FEMALE' ? 1200 : 1500;
-      targetCalories = Math.max(floor, tdee + delta);
     } else if (goal === 'BULK') {
       targetRateKgPerWeek = pace === 'GRADUAL' ? 0.2 : 0.35;
-      const delta = Math.round((targetRateKgPerWeek * 7700) / 7);
-      targetCalories = tdee + delta;
     } else {
       targetRateKgPerWeek = 0;
-      targetCalories = tdee;
     }
 
-    // Macro allocation (matches backend allocateMacros)
-    const targetProtein = Math.round(weightKg * 2.0); // 2.0g per kg
-    const fatCalories = targetCalories * 0.25; // 25% fat
-    const targetFat = Math.round(fatCalories / 9);
-    const carbCalories = targetCalories - (targetProtein * 4 + targetFat * 9);
-    const targetCarbs = Math.max(50, Math.round(carbCalories / 4));
-    const targetFiber = 30;
+    const delta = Math.round((targetRateKgPerWeek * 7700) / 7);
+    const rawTargetCalories = tdee + delta;
+    const clinicalFloor = gender === 'FEMALE' ? 1200 : 1500;
+    const targetCalories = Math.max(clinicalFloor, rawTargetCalories);
+    const isFloorApplied = rawTargetCalories < clinicalFloor;
+    const effectiveRateKgPerWeek = isFloorApplied
+      ? Math.round(((targetCalories - tdee) * 7 / 7700) * 100) / 100
+      : targetRateKgPerWeek;
+
+    // Canonical reference weight (BMI <= 25: actual; otherwise fallback 23.0 * heightM^2)
+    const heightM = heightCm / 100;
+    const bmi = weightKg / (heightM * heightM);
+    const referenceWeightKg = bmi <= 25 ? weightKg : Math.round(23.0 * heightM * heightM * 10) / 10;
+
+    // Canonical Macro allocation
+    const targetProtein = Math.round(referenceWeightKg * 1.8);
+    const rawFatGrams = Math.round((targetCalories * 0.28) / 9);
+    const minFatGrams = Math.round(referenceWeightKg * 0.6);
+    const targetFat = Math.max(rawFatGrams, minFatGrams);
+
+    const remainingCalories = targetCalories - (targetProtein * 4) - (targetFat * 9);
+    const targetCarbs = Math.round(Math.max(0, remainingCalories) / 4);
+
+    const targetFiber = Math.min(38, Math.max(20, Math.round((targetCalories / 1000) * 14)));
 
     return {
       bmr: Math.round(bmr),
       tdee,
       targetRateKgPerWeek,
+      effectiveRateKgPerWeek,
+      isFloorApplied,
+      referenceWeightKg,
       targetCalories,
       targetProtein,
       targetCarbs,
@@ -129,12 +143,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         weightKg,
         activityLevel,
         goal,
-        targetRateKgPerWeek: metabolics.targetRateKgPerWeek,
+        targetRateKgPerWeek: metabolics.effectiveRateKgPerWeek ?? metabolics.targetRateKgPerWeek,
         targetCalories: metabolics.targetCalories,
         targetProtein: metabolics.targetProtein,
         targetCarbs: metabolics.targetCarbs,
         targetFat: metabolics.targetFat,
         targetFiber: metabolics.targetFiber,
+        currentlyTracksFood: currentlyTracks,
+        currentTrackedCalories: currentCalories ? parseFloat(currentCalories) : null,
+        currentTrackedProtein: currentProtein ? parseFloat(currentProtein) : null,
         onboardingCompleted: true,
       });
 
@@ -152,11 +169,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         weightKg,
         activityLevel,
         goal,
+        targetRateKgPerWeek: metabolics.effectiveRateKgPerWeek ?? metabolics.targetRateKgPerWeek,
         targetCalories: metabolics.targetCalories,
         targetProtein: metabolics.targetProtein,
         targetCarbs: metabolics.targetCarbs,
         targetFat: metabolics.targetFat,
         targetFiber: metabolics.targetFiber,
+        currentlyTracksFood: currentlyTracks,
+        currentTrackedCalories: currentCalories ? parseFloat(currentCalories) : null,
+        currentTrackedProtein: currentProtein ? parseFloat(currentProtein) : null,
         onboardingCompleted: true,
       } as any);
     } finally {
@@ -217,8 +238,6 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <OnboardingActivityStep
                 activityLevel={activityLevel}
                 setActivityLevel={setActivityLevel}
-                dailySteps={dailySteps}
-                setDailySteps={setDailySteps}
                 direction={direction}
               />
             )}
@@ -229,6 +248,12 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 setGoal={setGoal}
                 pace={pace}
                 setPace={setPace}
+                currentlyTracks={currentlyTracks}
+                setCurrentlyTracks={setCurrentlyTracks}
+                currentCalories={currentCalories}
+                setCurrentCalories={setCurrentCalories}
+                currentProtein={currentProtein}
+                setCurrentProtein={setCurrentProtein}
                 direction={direction}
               />
             )}
@@ -238,6 +263,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 name={name}
                 goal={goal}
                 metabolics={metabolics}
+                currentlyTracks={currentlyTracks}
+                currentCalories={currentCalories}
                 direction={direction}
               />
             )}
