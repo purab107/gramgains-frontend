@@ -23,6 +23,7 @@ import {
 import { DailyWeightModal } from '@/components/weight/DailyWeightModal';
 import { WeeklyCheckInBanner } from '@/components/adaptive/WeeklyCheckInBanner';
 import { WeeklyCheckInModal } from '@/components/adaptive/WeeklyCheckInModal';
+import { CalibratePlanCard } from '@/components/adaptive/CalibratePlanCard';
 import { Button } from '@/components/ui/button';
 import { 
   Plus, 
@@ -301,8 +302,13 @@ function DashboardHomePage() {
 
           {/* 2-Column Grid Layout: Left = 7-Day Bar Chart (7/12 cols), Right = Today's Meal Timeline (5/12 cols) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Column: 7-Day Calorie Bar Chart */}
-            <div className="lg:col-span-7">
+            {/* Left Column: Calibration Card + 7-Day Calorie Bar Chart */}
+            <div className="lg:col-span-7 space-y-4">
+              <CalibratePlanCard
+                confidenceLevel={userProfile?.confidenceLevel}
+                confidenceDays={userProfile?.confidenceDays}
+                onLogWeight={() => setIsWeightModalOpen(true)}
+              />
               <WeeklyCaloriesBarChart />
             </div>
 

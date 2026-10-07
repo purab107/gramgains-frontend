@@ -8,26 +8,20 @@ import { slideVariants, slideDown } from './onboardingAnimations';
 interface OnboardingActivityStepProps {
   activityLevel: 'SEDENTARY' | 'LIGHT' | 'MODERATE' | 'VERY_ACTIVE' | 'EXTRA_ACTIVE';
   setActivityLevel: (lvl: 'SEDENTARY' | 'LIGHT' | 'MODERATE' | 'VERY_ACTIVE' | 'EXTRA_ACTIVE') => void;
-  dailySteps: string;
-  setDailySteps: (steps: string) => void;
   direction: number;
 }
 
 const ACTIVITY_LEVELS = [
-  { id: 'SEDENTARY', label: 'Mostly sedentary', desc: 'Desk or study job, little to no workout', mult: '1.20x' },
+  { id: 'SEDENTARY', label: 'Mostly sedentary', desc: 'Desk or study job, little to no exercise', mult: '1.20x' },
   { id: 'LIGHT', label: 'Lightly active', desc: 'Light workout or sports 1–3 days/week', mult: '1.38x' },
-  { id: 'MODERATE', label: 'Moderately active', desc: 'Moderate exercise or training 3–5 days/week', mult: '1.55x' },
-  { id: 'VERY_ACTIVE', label: 'Very active', desc: 'Intense training or sports 6–7 days/week', mult: '1.73x' },
-  { id: 'EXTRA_ACTIVE', label: 'Extremely active', desc: 'Hard training + physical labor occupation', mult: '1.90x' },
+  { id: 'MODERATE', label: 'Moderately active', desc: 'Moderate training 3–5 days/week', mult: '1.55x' },
+  { id: 'VERY_ACTIVE', label: 'Very active', desc: 'Intense training 6–7 days/week', mult: '1.73x' },
+  { id: 'EXTRA_ACTIVE', label: 'Extremely active', desc: 'Hard training + physically demanding routine', mult: '1.90x' },
 ] as const;
-
-const STEP_OPTIONS = ['<4k', '4–7k', '7–10k', '10k+', 'Not sure'];
 
 export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
   activityLevel,
   setActivityLevel,
-  dailySteps,
-  setDailySteps,
   direction,
 }) => {
   return (
@@ -57,7 +51,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
           custom={1}
           className="mt-1 sm:mt-1.5 text-xs sm:text-base text-zinc-400"
         >
-          Select the option that reflects your normal baseline routine.
+          Select the option that reflects your normal baseline routine. Daily movement is already factored into each multiplier.
         </motion.p>
       </div>
 
@@ -102,29 +96,6 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
             </div>
           );
         })}
-      </div>
-
-      {/* Steps Selector Row (Compact & Horizontal) */}
-      <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:gap-4">
-        <label className="text-xs uppercase tracking-wider font-semibold text-zinc-500 shrink-0">
-          Average Daily Steps:
-        </label>
-        <div className="flex flex-wrap gap-2 mt-1 sm:mt-0">
-          {STEP_OPTIONS.map((st) => (
-            <button
-              key={st}
-              type="button"
-              onClick={() => setDailySteps(st)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors duration-150 active:scale-95 ${
-                dailySteps === st
-                  ? 'bg-emerald-500 text-black font-semibold shadow-md shadow-emerald-950/30'
-                  : 'bg-[#0E1513] text-zinc-400 hover:text-white hover:bg-[#121B19]'
-              }`}
-            >
-              {st}
-            </button>
-          ))}
-        </div>
       </div>
     </motion.div>
   );

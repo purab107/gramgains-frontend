@@ -38,6 +38,9 @@ export interface UserProfile {
   checkInDayOfWeek?: number;
   lastCheckInDate?: string | null;
   onboardingCompleted?: boolean;
+  currentlyTracksFood?: boolean;
+  currentTrackedCalories?: number | null;
+  currentTrackedProtein?: number | null;
   updatedAt?: string;
 }
 

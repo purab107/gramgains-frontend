@@ -38,8 +38,8 @@ export const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({
   const [targetRateKgPerWeek, setTargetRateKgPerWeek] = useState<number>(-0.5);
   const [isAdaptiveEnabled, setIsAdaptiveEnabled] = useState<boolean>(true);
   const [macroPreset, setMacroPreset] = useState<'BALANCED' | 'HIGH_PROTEIN' | 'KETO' | 'LOW_CARB' | 'CUSTOM'>('BALANCED');
-  const [proteinGramsPerKg, setProteinGramsPerKg] = useState<number>(2.0);
-  const [fatPercent, setFatPercent] = useState<number>(25.0);
+  const [proteinGramsPerKg, setProteinGramsPerKg] = useState<number>(1.8);
+  const [fatPercent, setFatPercent] = useState<number>(28.0);
   const [checkInDayOfWeek, setCheckInDayOfWeek] = useState<number>(1);
 
   const [loading, setLoading] = useState(false);
@@ -59,8 +59,8 @@ export const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({
       setTargetRateKgPerWeek(initialProfile.targetRateKgPerWeek ?? -0.5);
       setIsAdaptiveEnabled(initialProfile.isAdaptiveEnabled !== false);
       setMacroPreset(initialProfile.macroPreset || 'BALANCED');
-      setProteinGramsPerKg(initialProfile.proteinGramsPerKg || 2.0);
-      setFatPercent(initialProfile.fatPercent || 25.0);
+      setProteinGramsPerKg(initialProfile.proteinGramsPerKg || 1.8);
+      setFatPercent(initialProfile.fatPercent || 28.0);
       setCheckInDayOfWeek(initialProfile.checkInDayOfWeek ?? 1);
     }
   }, [initialProfile]);
@@ -76,39 +76,64 @@ export const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({
     VERY_ACTIVE: 1.725,
     EXTRA_ACTIVE: 1.9,
   };
-  const tdee = bmr * (activityMap[activityLevel] || 1.55);
+  const tdee = Math.round(bmr * (activityMap[activityLevel] || 1.55));
 
   const dailyRateDelta = Math.round((targetRateKgPerWeek * 7700) / 7);
-  const liveTargetCalories = Math.max(800, Math.round(tdee + dailyRateDelta));
+  const rawTargetCalories = Math.round(tdee + dailyRateDelta);
+  const clinicalFloor = gender === 'FEMALE' ? 1200 : 1500;
+  const liveTargetCalories = Math.max(clinicalFloor, rawTargetCalories);
 
-  // Dynamic Macro Distribution Preview
-  let previewProtein = Math.round(weightKg * proteinGramsPerKg);
-  let previewFat = Math.round((liveTargetCalories * (fatPercent / 100)) / 9);
-  let previewCarbs = Math.round(Math.max(0, liveTargetCalories - (previewProtein * 4) - (previewFat * 9)) / 4);
-  const previewFiber = Math.round((liveTargetCalories / 1000) * 14);
-
-  if (macroPreset === 'HIGH_PROTEIN') {
-    previewProtein = Math.round(weightKg * 2.2);
-    previewFat = Math.round((liveTargetCalories * 0.25) / 9);
-    previewCarbs = Math.round(Math.max(0, liveTargetCalories - (previewProtein * 4) - (previewFat * 9)) / 4);
-  } else if (macroPreset === 'KETO') {
-    previewProtein = Math.round((liveTargetCalories * 0.20) / 4);
-    previewFat = Math.round((liveTargetCalories * 0.75) / 9);
-    previewCarbs = Math.round(Math.max(0, liveTargetCalories - (previewProtein * 4) - (previewFat * 9)) / 4);
+  // Canonical Reference Body Weight
+  const heightM = heightCm / 100;
+  const bmi = weightKg / (heightM * heightM);
+  let referenceWeightKg = weightKg;
+  if (bmi > 25) {
+    if (targetWeightKg && Number(targetWeightKg) > 0) {
+      const targetBmi = Number(targetWeightKg) / (heightM * heightM);
+      if (targetBmi >= 18.5 && targetBmi <= 25) {
+        referenceWeightKg = Number(targetWeightKg);
+      } else {
+        referenceWeightKg = Math.round(23.0 * heightM * heightM * 10) / 10;
+      }
+    } else {
+      referenceWeightKg = Math.round(23.0 * heightM * heightM * 10) / 10;
+    }
   }
 
-  const isLowCalorie = (gender === 'FEMALE' && liveTargetCalories < 1200) || (gender === 'MALE' && liveTargetCalories < 1500);
+  // Dynamic Macro Distribution Preview
+  let previewProtein = Math.round(referenceWeightKg * Math.min(2.2, Math.max(1.4, proteinGramsPerKg || 1.8)));
+  let fatFraction = Math.min(0.35, Math.max(0.20, (fatPercent || 28.0) / 100));
+
+  if (macroPreset === 'HIGH_PROTEIN') {
+    previewProtein = Math.round(referenceWeightKg * 2.2);
+    fatFraction = 0.25;
+  } else if (macroPreset === 'KETO') {
+    previewProtein = Math.round(referenceWeightKg * 1.8);
+    fatFraction = 0.75;
+  } else if (macroPreset === 'LOW_CARB') {
+    previewProtein = Math.round(referenceWeightKg * 2.0);
+    fatFraction = 0.40;
+  }
+
+  let previewFat = Math.round((liveTargetCalories * fatFraction) / 9);
+  const minFatGrams = Math.round(referenceWeightKg * 0.6);
+  previewFat = Math.max(previewFat, minFatGrams);
+
+  const previewCarbs = Math.round(Math.max(0, liveTargetCalories - (previewProtein * 4) - (previewFat * 9)) / 4);
+  const previewFiber = Math.min(38, Math.max(20, Math.round((liveTargetCalories / 1000) * 14)));
+
+  const isLowCalorie = rawTargetCalories < clinicalFloor;
 
   const handlePresetSelect = (preset: typeof macroPreset) => {
     setMacroPreset(preset);
     if (preset === 'BALANCED') {
-      setProteinGramsPerKg(2.0);
-      setFatPercent(25.0);
+      setProteinGramsPerKg(1.8);
+      setFatPercent(28.0);
     } else if (preset === 'HIGH_PROTEIN') {
       setProteinGramsPerKg(2.2);
       setFatPercent(25.0);
     } else if (preset === 'KETO') {
-      setProteinGramsPerKg(1.6);
+      setProteinGramsPerKg(1.8);
       setFatPercent(75.0);
     } else if (preset === 'LOW_CARB') {
       setProteinGramsPerKg(2.0);
@@ -374,13 +399,13 @@ export const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({
           <div className="p-4 rounded-2xl bg-muted/20 border border-border space-y-4">
             <div className="space-y-1.5 text-xs">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Protein (g per kg bodyweight)</span>
+                <span className="text-muted-foreground">Protein (g per kg reference weight)</span>
                 <span className="font-bold text-foreground">{proteinGramsPerKg} g/kg</span>
               </div>
               <input
                 type="range"
-                min={1.2}
-                max={3.0}
+                min={1.4}
+                max={2.2}
                 step={0.1}
                 value={proteinGramsPerKg}
                 onChange={(e) => setProteinGramsPerKg(parseFloat(e.target.value))}
@@ -395,8 +420,8 @@ export const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({
               </div>
               <input
                 type="range"
-                min={15}
-                max={45}
+                min={20}
+                max={35}
                 step={1}
                 value={fatPercent}
                 onChange={(e) => setFatPercent(parseInt(e.target.value, 10))}

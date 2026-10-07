@@ -74,7 +74,7 @@ function CalculatorPage() {
     let bmr = 10 * weightKg + 6.25 * heightCm - 5 * age;
     bmr += gender === 'MALE' ? 5 : -161;
 
-    const activityMultipliers = {
+    const activityMultipliers: Record<string, number> = {
       SEDENTARY: 1.2,
       LIGHT: 1.375,
       MODERATE: 1.55,
@@ -82,22 +82,41 @@ function CalculatorPage() {
       EXTRA_ACTIVE: 1.9,
     };
 
-    const tdee = Math.round(bmr * activityMultipliers[activityLevel]);
+    const tdee = Math.round(bmr * (activityMultipliers[activityLevel] || 1.55));
 
-    let targetCalories = tdee;
-    if (goal === 'WEIGHT_LOSS') targetCalories = Math.max(1200, tdee - 500);
-    if (goal === 'BULK') targetCalories = tdee + 350;
+    let targetRateKgPerWeek = 0;
+    if (goal === 'WEIGHT_LOSS') targetRateKgPerWeek = -0.5;
+    else if (goal === 'BULK') targetRateKgPerWeek = 0.35;
 
-    const targetProtein = Math.round(weightKg * 2.0);
-    const fatCalories = targetCalories * 0.25;
-    const targetFat = Math.round(fatCalories / 9);
-    const carbCalories = targetCalories - (targetProtein * 4 + fatCalories);
-    const targetCarbs = Math.max(50, Math.round(carbCalories / 4));
-    const targetFiber = 30;
+    const delta = Math.round((targetRateKgPerWeek * 7700) / 7);
+    const rawTarget = tdee + delta;
+    const floor = gender === 'FEMALE' ? 1200 : 1500;
+    const targetCalories = Math.max(floor, rawTarget);
+    const isFloorApplied = rawTarget < floor;
+    const effectiveRateKgPerWeek = isFloorApplied
+      ? Math.round(((targetCalories - tdee) * 7 / 7700) * 100) / 100
+      : targetRateKgPerWeek;
+
+    const heightM = heightCm / 100;
+    const bmi = weightKg / (heightM * heightM);
+    const referenceWeightKg = bmi <= 25 ? weightKg : Math.round(23.0 * heightM * heightM * 10) / 10;
+
+    const targetProtein = Math.round(referenceWeightKg * 1.8);
+    const rawFatGrams = Math.round((targetCalories * 0.28) / 9);
+    const minFatGrams = Math.round(referenceWeightKg * 0.6);
+    const targetFat = Math.max(rawFatGrams, minFatGrams);
+
+    const carbCalories = targetCalories - (targetProtein * 4) - (targetFat * 9);
+    const targetCarbs = Math.round(Math.max(0, carbCalories) / 4);
+    const targetFiber = Math.min(38, Math.max(20, Math.round((targetCalories / 1000) * 14)));
 
     return {
       bmr: Math.round(bmr),
       tdee,
+      targetRateKgPerWeek,
+      effectiveRateKgPerWeek,
+      isFloorApplied,
+      referenceWeightKg,
       targetCalories,
       targetProtein,
       targetCarbs,
@@ -120,6 +139,7 @@ function CalculatorPage() {
         weightKg: Number(weightKg),
         activityLevel,
         goal,
+        targetRateKgPerWeek: metabolics.effectiveRateKgPerWeek ?? metabolics.targetRateKgPerWeek,
         bmr: metabolics.bmr,
         tdee: metabolics.tdee,
         targetCalories: metabolics.targetCalories,
@@ -455,7 +475,7 @@ function CalculatorPage() {
                         <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.protein }}>PROTEIN</div>
                         <div className="text-sm font-bold text-foreground">{metabolics.targetProtein}g</div>
                       </div>
-                      <span className="text-[11px] text-muted-foreground font-mono">2.0g/kg</span>
+                      <span className="text-[11px] text-muted-foreground font-mono">1.8g/kg ref</span>
                     </div>
 
                     <div className="p-2.5 rounded-lg border flex justify-between items-center" style={{ backgroundColor: `${MACRO_COLORS.carbs}15`, borderColor: `${MACRO_COLORS.carbs}35` }}>
@@ -463,7 +483,7 @@ function CalculatorPage() {
                         <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.carbs }}>CARBS</div>
                         <div className="text-sm font-bold text-foreground">{metabolics.targetCarbs}g</div>
                       </div>
-                      <span className="text-[11px] text-muted-foreground font-mono">Balance</span>
+                      <span className="text-[11px] text-muted-foreground font-mono">Remainder</span>
                     </div>
 
                     <div className="p-2.5 rounded-lg border flex justify-between items-center" style={{ backgroundColor: `${MACRO_COLORS.fat}15`, borderColor: `${MACRO_COLORS.fat}35` }}>
@@ -471,7 +491,7 @@ function CalculatorPage() {
                         <div className="text-[10px] font-sans font-bold" style={{ color: MACRO_COLORS.fat }}>FAT</div>
                         <div className="text-sm font-bold text-foreground">{metabolics.targetFat}g</div>
                       </div>
-                      <span className="text-[11px] text-muted-foreground font-mono">25% Cal</span>
+                      <span className="text-[11px] text-muted-foreground font-mono">28% Cal</span>
                     </div>
 
                     <div className="p-2.5 rounded-lg border flex justify-between items-center" style={{ backgroundColor: `${MACRO_COLORS.fiber}15`, borderColor: `${MACRO_COLORS.fiber}35` }}>
