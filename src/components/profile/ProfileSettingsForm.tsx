@@ -265,17 +265,17 @@ export const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-muted-foreground mb-1 font-medium">Activity Multiplier</label>
+            <label className="block text-muted-foreground mb-1 font-medium">Activity Level</label>
             <select
               value={activityLevel}
               onChange={(e) => setActivityLevel(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             >
-              <option value="SEDENTARY">Sedentary (Desk Job, 1.2x)</option>
-              <option value="LIGHT">Light Activity (1-3 days/wk, 1.375x)</option>
-              <option value="MODERATE">Moderate (3-5 days/wk, 1.55x)</option>
-              <option value="VERY_ACTIVE">Very Active (6-7 days/wk, 1.725x)</option>
-              <option value="EXTRA_ACTIVE">Extra Active (Athlete/Physical Job, 1.9x)</option>
+              <option value="SEDENTARY">Sedentary (Desk Job)</option>
+              <option value="LIGHT">Light Activity (1–3 days/wk)</option>
+              <option value="MODERATE">Moderate (3–5 days/wk)</option>
+              <option value="VERY_ACTIVE">Very Active (6–7 days/wk)</option>
+              <option value="EXTRA_ACTIVE">Extra Active (Athlete/Physical Job)</option>
             </select>
           </div>
         </div>
