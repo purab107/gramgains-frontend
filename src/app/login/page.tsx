@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { signIn, signUp, useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
-import { Flame, Mail, Lock, User, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
+import { Flame, Mail, Lock, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
 import { startGuestSession, endGuestSession } from '@/lib/guest-session';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
@@ -13,7 +13,6 @@ export default function LoginPage() {
   const { jumpToStage } = useDevSkip();
   const { data: session, isPending } = useSession();
   const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +40,7 @@ export default function LoginPage() {
         const { error: resError } = await signUp.email({
           email,
           password,
-          name: name.trim() || 'Athlete',
+          name: email.split('@')[0] || 'Athlete',
         });
         if (resError) {
           setError(resError.message || 'Failed to sign up. Please try again.');
@@ -164,25 +163,6 @@ export default function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'register' && (
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Alex Hunter"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-4 text-sm text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                  />
-                </div>
-              </div>
-            )}
-
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Email Address
