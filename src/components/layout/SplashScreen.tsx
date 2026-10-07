@@ -28,33 +28,33 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#fcfdfe] text-[#171C1B] transition-opacity duration-500 ease-out ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-background text-foreground transition-opacity duration-500 ease-out ${
         fadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
       <div className="flex flex-col items-center">
         {/* Brand Icon */}
-        <div className="w-16 h-16 rounded-2xl bg-[#1a875c] text-white flex items-center justify-center shadow-md mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg mb-4">
           <Flame className="w-8 h-8" />
         </div>
 
         {/* Brand Title */}
-        <h1 className="text-3xl font-extrabold tracking-tight text-[#171C1B] mb-1">
+        <h1 className="text-3xl font-extrabold tracking-tight text-foreground mb-1">
           {appName}
         </h1>
 
-        <p className="text-xs text-[#68716F] flex items-center gap-1.5 font-medium">
-          <Sparkles className="w-3.5 h-3.5 text-[#0f8651]" />
+        <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+          <Sparkles className="w-3.5 h-3.5 text-primary" />
           <span>Precision Indian Nutrition & Calorie Tracking</span>
         </p>
 
         {/* Loading Spinner / Bar */}
-        <div className="mt-6 w-36 h-1.5 bg-[#e4f7ee] rounded-full overflow-hidden border border-[#e5e7eb]">
-          <div className="h-full bg-[#0f8651] animate-pulse w-full rounded-full" />
+        <div className="mt-6 w-36 h-1.5 bg-muted rounded-full overflow-hidden border border-border">
+          <div className="h-full bg-primary animate-pulse w-full rounded-full" />
         </div>
 
-        <div className="mt-3 flex items-center gap-1 text-[11px] text-[#68716F]">
-          <Activity className="w-3 h-3 text-[#0f8651]" />
+        <div className="mt-3 flex items-center gap-1 text-[11px] text-muted-foreground">
+          <Activity className="w-3 h-3 text-primary" />
           <span>Initializing metabolic dashboard...</span>
         </div>
       </div>
