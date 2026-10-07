@@ -41,6 +41,13 @@ export interface UserProfile {
   currentlyTracksFood?: boolean;
   currentTrackedCalories?: number | null;
   currentTrackedProtein?: number | null;
+  leadUpActive?: boolean;
+  leadUpStartDate?: string | null;
+  leadUpTotalSteps?: number | null;
+  leadUpCurrentStep?: number | null;
+  leadUpScheduleJson?: any;
+  calculatedGoalTarget?: number | null;
+  skipLeadUp?: boolean;
   updatedAt?: string;
 }
 
@@ -102,6 +109,15 @@ export interface AdaptiveStatusResponse {
     };
     isCheckInAvailable: boolean;
     pendingCheckInId: string | null;
+  };
+  leadUpStatus?: {
+    isActive: boolean;
+    currentStep: number;
+    totalSteps: number;
+    startDate?: string | null;
+    calculatedGoalTarget?: number;
+    schedule?: any;
+    isSuppressed?: boolean;
   };
 }
 
