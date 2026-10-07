@@ -70,7 +70,7 @@ export const OnboardingNutritionPlanStep: React.FC<OnboardingNutritionPlanStepPr
       initial="enter"
       animate="center"
       exit="exit"
-      className="w-full text-left space-y-3.5 sm:space-y-4 max-h-[calc(100dvh-170px)] overflow-y-auto pr-1"
+      className="w-full text-left space-y-3.5 sm:space-y-4 max-h-[calc(100dvh-170px)] overflow-y-auto pr-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
       <div>
         <motion.h1
