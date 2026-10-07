@@ -6,7 +6,8 @@ import {
   UserProfile, 
   DashboardSummaryResponse, 
   MealLogItem,
-  AdaptiveCheckInResponse 
+  AdaptiveCheckInResponse,
+  AdaptiveStatusResponse,
 } from '../services/api';
 import { 
   Sidebar,
@@ -24,6 +25,7 @@ import { DailyWeightModal } from '@/components/weight/DailyWeightModal';
 import { WeeklyCheckInBanner } from '@/components/adaptive/WeeklyCheckInBanner';
 import { WeeklyCheckInModal } from '@/components/adaptive/WeeklyCheckInModal';
 import { CalibratePlanCard } from '@/components/adaptive/CalibratePlanCard';
+import { CalorieTransitionCard } from '@/components/adaptive/CalorieTransitionCard';
 import { Button } from '@/components/ui/button';
 import { 
   Plus, 
@@ -63,6 +65,7 @@ function DashboardHomePage() {
   const [dismissedWeightBanner, setDismissedWeightBanner] = useState(false);
   const [pendingCheckIn, setPendingCheckIn] = useState<AdaptiveCheckInResponse | null>(null);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
+  const [adaptiveStatus, setAdaptiveStatus] = useState<AdaptiveStatusResponse | null>(null);
 
   // React to DevSkip Modal Triggers
   useEffect(() => {
@@ -197,8 +200,26 @@ function DashboardHomePage() {
       } catch (err) {
         // Silent catch for check-in
       }
+
+      // Fetch adaptive status for calibration & lead-up
+      try {
+        const adStatus = await ApiService.getAdaptiveStatus();
+        setAdaptiveStatus(adStatus);
+      } catch (err) {
+        // Silent catch for adaptive status
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSkipLeadUp = async () => {
+    try {
+      const updated = await ApiService.updateProfile({ skipLeadUp: true });
+      setUserProfile(updated);
+      await loadProfileAndData();
+    } catch (err) {
+      console.error('Failed to skip lead-up:', err);
     }
   };
 
@@ -304,6 +325,24 @@ function DashboardHomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Column: Calibration Card + 7-Day Calorie Bar Chart */}
             <div className="lg:col-span-7 space-y-4">
+              <CalorieTransitionCard
+                leadUpStatus={
+                  adaptiveStatus?.leadUpStatus ||
+                  (userProfile?.leadUpActive
+                    ? {
+                        isActive: true,
+                        currentStep: userProfile.leadUpCurrentStep ?? 0,
+                        totalSteps: userProfile.leadUpTotalSteps ?? 1,
+                        startDate: userProfile.leadUpStartDate,
+                        calculatedGoalTarget: userProfile.calculatedGoalTarget ?? userProfile.targetCalories,
+                        schedule: userProfile.leadUpScheduleJson,
+                      }
+                    : null)
+                }
+                activeTargetCalories={userProfile?.targetCalories}
+                onSkipLeadUp={handleSkipLeadUp}
+                onLogWeight={() => setIsWeightModalOpen(true)}
+              />
               <CalibratePlanCard
                 confidenceLevel={userProfile?.confidenceLevel}
                 confidenceDays={userProfile?.confidenceDays}
