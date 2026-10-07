@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { ApiService, UserProfile } from '@/services/api';
+import { buildLeadUpSchedule } from '@/utils/calorieTransition';
 
 import { OnboardingHeader } from './OnboardingHeader';
 import { OnboardingFooter } from './OnboardingFooter';
@@ -131,6 +132,15 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   };
 
   const metabolics = calculateMetabolics();
+  const clinicalFloor = gender === 'FEMALE' ? 1200 : 1500;
+  const leadUpSchedule = buildLeadUpSchedule({
+    currentIntake: currentCalories ? parseFloat(currentCalories) : 0,
+    calculatedTarget: metabolics.targetCalories,
+    estimatedMaintenance: metabolics.tdee,
+    safetyFloor: clinicalFloor,
+    currentlyTracksFood: currentlyTracks,
+    daysSinceOnboarding: 0,
+  });
 
   const handleFinish = async () => {
     try {
@@ -265,6 +275,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 metabolics={metabolics}
                 currentlyTracks={currentlyTracks}
                 currentCalories={currentCalories}
+                leadUpSchedule={leadUpSchedule}
                 direction={direction}
               />
             )}
