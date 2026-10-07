@@ -103,9 +103,6 @@ function DashboardHomePage() {
   }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
   useEffect(() => {
-    // Remove loading class to prevent flash of unstyled content
-    document.body.classList.remove('loading');
-    
     // Check if onboarding was requested via URL query param
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('onboarding') === 'true') {

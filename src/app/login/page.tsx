@@ -18,10 +18,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Remove loading class to prevent flash of unstyled content
-    document.body.classList.remove('loading');
-  }, []);
 
   // Redirect to dashboard if already authenticated (skip during active submission)
   useEffect(() => {
