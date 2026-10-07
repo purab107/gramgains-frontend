@@ -13,7 +13,6 @@ import {
   Plus, 
   Trash2, 
   Loader2, 
-  UtensilsCrossed, 
   Clock 
 } from 'lucide-react';
 import { MACRO_COLORS } from '@/lib/constants';
@@ -120,9 +119,11 @@ export function MealSectionCard({
                 <CardTitle className="text-sm sm:text-base font-bold text-foreground leading-none">
                   {config.title}
                 </CardTitle>
-                <Badge variant="outline" className={`text-[10px] font-bold px-2 py-0.5 ${config.badgeBg} ${config.badgeText}`}>
-                  {logs.length} {logs.length === 1 ? 'item' : 'items'}
-                </Badge>
+                {logs.length > 0 && (
+                  <Badge variant="outline" className={`text-[10px] font-bold px-2 py-0.5 ${config.badgeBg} ${config.badgeText}`}>
+                    {logs.length} {logs.length === 1 ? 'item' : 'items'}
+                  </Badge>
+                )}
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">{config.subtitle}</p>
             </div>
@@ -146,7 +147,7 @@ export function MealSectionCard({
 
       <CardContent className="p-3 sm:p-4 space-y-3">
         {/* Logged Items List */}
-        {logs.length > 0 ? (
+        {logs.length > 0 && (
           <div className="flex flex-col gap-2">
             {logs.map((item) => {
               const isDeleting = deletingId === item.id;
@@ -233,11 +234,6 @@ export function MealSectionCard({
                 </div>
               );
             })}
-          </div>
-        ) : (
-          <div className="py-3.5 px-3 rounded-xl border border-dashed border-border/80 text-center bg-muted/10">
-            <UtensilsCrossed className="w-5 h-5 mx-auto text-muted-foreground/50 stroke-1 mb-1" />
-            <p className="text-xs font-medium text-muted-foreground">No food logged for {config.title.toLowerCase()} yet</p>
           </div>
         )}
 
