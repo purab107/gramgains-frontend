@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { signIn, signUp } from '@/lib/auth-client';
-import { Mail, Lock, User, X, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { Mail, Lock, X, Loader2, Sparkles, AlertCircle } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -13,7 +13,6 @@ interface AuthModalProps {
 
 export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }: AuthModalProps) {
   const [mode, setMode] = useState<'login' | 'register'>(defaultMode);
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +30,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
         const { error: resError } = await signUp.email({
           email,
           password,
-          name: name.trim() || 'Athlete',
+          name: email.split('@')[0] || 'Athlete',
         });
         if (resError) {
           setError(resError.message || 'Failed to sign up. Please try again.');
@@ -121,25 +120,6 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === 'register' && (
-            <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                Full Name
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Alex Hunter"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl border border-input bg-background/50 py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                />
-              </div>
-            </div>
-          )}
-
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1.5">
               Email Address
