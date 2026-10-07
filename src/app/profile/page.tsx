@@ -58,7 +58,7 @@ function ProfilePageContent() {
       <DailyWeightModal
         isOpen={isWeightModalOpen}
         onClose={() => setIsWeightModalOpen(false)}
-        initialWeight={userProfile?.weightKg || 70}
+        initialWeight={userProfile?.weightKg}
         onLogged={() => loadProfile()}
       />
     </div>
