@@ -44,8 +44,6 @@ function CalculatorPage() {
   const [goal, setGoal] = useState<'WEIGHT_LOSS' | 'MAINTAIN' | 'BULK'>('MAINTAIN');
 
   useEffect(() => {
-    // Remove loading class to prevent flash of unstyled content
-    document.body.classList.remove('loading');
     loadProfile();
   }, []);
 
