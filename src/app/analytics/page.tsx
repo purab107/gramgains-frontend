@@ -196,7 +196,7 @@ function AnalyticsDashboard() {
         isOpen={isWeightModalOpen}
         onClose={() => setIsWeightModalOpen(false)}
         onLogged={handleWeightLogged}
-        initialWeight={adaptiveStatus?.weightTrend?.latestRawKg || userProfile?.weightKg || 70}
+        initialWeight={adaptiveStatus?.weightTrend?.latestRawKg || userProfile?.weightKg}
       />
     </div>
   );

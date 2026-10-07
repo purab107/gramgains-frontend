@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from '@/lib/auth-client';
+import { useSharedSession } from '@/components/providers/SessionProvider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Flame } from 'lucide-react';
@@ -8,7 +8,7 @@ import { isGuestSession } from '@/lib/guest-session';
 import { isDevSkip } from '@/lib/dev-skip';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending } = useSharedSession();
   const router = useRouter();
 
   useEffect(() => {

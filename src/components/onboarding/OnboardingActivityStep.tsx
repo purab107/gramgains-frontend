@@ -12,11 +12,11 @@ interface OnboardingActivityStepProps {
 }
 
 const ACTIVITY_LEVELS = [
-  { id: 'SEDENTARY', label: 'Mostly sedentary', desc: 'Desk or study job, little to no exercise', mult: '1.20x' },
-  { id: 'LIGHT', label: 'Lightly active', desc: 'Light workout or sports 1–3 days/week', mult: '1.38x' },
-  { id: 'MODERATE', label: 'Moderately active', desc: 'Moderate training 3–5 days/week', mult: '1.55x' },
-  { id: 'VERY_ACTIVE', label: 'Very active', desc: 'Intense training 6–7 days/week', mult: '1.73x' },
-  { id: 'EXTRA_ACTIVE', label: 'Extremely active', desc: 'Hard training + physically demanding routine', mult: '1.90x' },
+  { id: 'SEDENTARY', label: 'Mostly sedentary', desc: 'Desk or study job, little to no exercise' },
+  { id: 'LIGHT', label: 'Lightly active', desc: 'Light workout or sports 1–3 days/week' },
+  { id: 'MODERATE', label: 'Moderately active', desc: 'Moderate training 3–5 days/week' },
+  { id: 'VERY_ACTIVE', label: 'Very active', desc: 'Intense training 6–7 days/week' },
+  { id: 'EXTRA_ACTIVE', label: 'Extremely active', desc: 'Hard training + physically demanding routine' },
 ] as const;
 
 export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
@@ -51,7 +51,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
           custom={1}
           className="mt-1 sm:mt-1.5 text-xs sm:text-base text-zinc-400"
         >
-          Select the option that reflects your normal baseline routine. Daily movement is already factored into each multiplier.
+          Select the option that reflects your normal baseline routine. Daily movement and training are factored in automatically.
         </motion.p>
       </div>
 
@@ -77,14 +77,7 @@ export const OnboardingActivityStep: React.FC<OnboardingActivityStepProps> = ({
                   {lvl.desc}
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className={`text-xs font-mono font-medium px-2.5 py-0.5 rounded-full ${
-                  isSelected 
-                    ? 'bg-emerald-500/20 text-emerald-300 font-bold' 
-                    : 'bg-zinc-800/80 text-zinc-400'
-                }`}>
-                  {lvl.mult}
-                </span>
+              <div className="flex items-center">
                 <div className={`h-5 w-5 rounded-full border flex items-center justify-center transition-colors ${
                   isSelected 
                     ? 'border-emerald-500 bg-emerald-500 text-black' 

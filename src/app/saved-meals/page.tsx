@@ -263,15 +263,76 @@ function SavedMealsPage() {
             </div>
           ) : savedMeals.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4 text-center">
-              <div className="w-32 h-32 relative mb-6 flex items-center justify-center">
-                <Image
-                  src="/images/saved-meal-empty.png"
-                  alt="No saved meals"
-                  width={140}
-                  height={140}
-                  className="object-contain"
-                  priority
-                />
+              <div className="w-36 h-36 relative mb-6 flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 1366 1151"
+                  fill="none"
+                  className="w-full h-full"
+                  aria-label="No saved meals"
+                >
+                  <defs>
+                    <linearGradient id="bowlOuter" x1="310" y1="570" x2="1010" y2="1000" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#5ED47D"/>
+                      <stop offset="0.5" stopColor="#4FC875"/>
+                      <stop offset="1" stopColor="#35A95F"/>
+                    </linearGradient>
+                    <linearGradient id="bowlInner" x1="400" y1="620" x2="850" y2="900" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#D9F5D9"/>
+                      <stop offset="0.55" stopColor="#BCE8C2"/>
+                      <stop offset="1" stopColor="#A9DFB2"/>
+                    </linearGradient>
+                    <linearGradient id="leafGradient" x1="470" y1="300" x2="750" y2="550" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#15965B"/>
+                      <stop offset="1" stopColor="#087A48"/>
+                    </linearGradient>
+                    <linearGradient id="leafLight" x1="760" y1="270" x2="930" y2="450" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#31A968"/>
+                      <stop offset="1" stopColor="#168650"/>
+                    </linearGradient>
+
+                    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+                      <feDropShadow dx="0" dy="12" stdDeviation="14" floodColor="#37C96A" floodOpacity="0.45"/>
+                    </filter>
+                    <linearGradient id="highlight" x1="370" y1="650" x2="950" y2="850" gradientUnits="userSpaceOnUse">
+                      <stop id="hlStop0" offset="0" stopColor="#FFFFFF" stopOpacity="0.55"/>
+                      <stop id="hlStop1" offset="1" stopColor="#FFFFFF" stopOpacity="0"/>
+                    </linearGradient>
+                    <style>{`
+                      .dark #bowlInner stop:nth-child(1) { stop-color: #122B1A; }
+                      .dark #bowlInner stop:nth-child(2) { stop-color: #0E2415; }
+                      .dark #bowlInner stop:nth-child(3) { stop-color: #0B1E11; }
+                      .dark #hlStop0 { stop-opacity: 0; }
+                      .dark #hlStop1 { stop-opacity: 0; }
+                      .dark .svg-left-highlight { stroke: #1A4228; }
+                      .dark .svg-top-edge { stroke: #1E4A2E; }
+                      .dark #leafGradient stop:nth-child(1) { stop-color: #0A5535; }
+                      .dark #leafGradient stop:nth-child(2) { stop-color: #063D24; }
+                      .dark #leafLight stop:nth-child(1) { stop-color: #175C37; }
+                      .dark #leafLight stop:nth-child(2) { stop-color: #0C4529; }
+                      .dark .svg-rear-leaf { fill: #1E5C2A; }
+                      .dark .svg-stem-dark { stroke: #1A4A2A; }
+                      .dark .svg-stem-light { stroke: #245733; }
+                      .dark .svg-vein { stroke: #2A5C34; }
+                    `}</style>
+                  </defs>
+
+                  <path d="M662 574 C653 529 636 484 612 445 C582 395 547 353 511 326" className="svg-stem-dark" stroke="#54B96E" strokeWidth="13" strokeLinecap="round" fill="none"/>
+                  <path d="M662 574 C653 529 636 484 612 445 C582 395 547 353 511 326" className="svg-stem-light" stroke="#8EE89B" strokeWidth="4" strokeLinecap="round" fill="none" opacity="0.8"/>
+                  <path d="M640 548 C587 548 533 525 494 491 C456 458 434 414 428 362 C426 339 439 325 462 324 C517 321 570 342 609 376 C646 408 666 453 671 503 C674 527 663 544 640 548Z" fill="url(#leafGradient)" stroke="#087A4A" strokeWidth="5"/>
+                  <path d="M531 411 C570 445 610 482 653 533" className="svg-vein" stroke="#B5F2B1" strokeWidth="10" strokeLinecap="round" opacity="0.65"/>
+                  <path d="M672 508 C645 475 631 432 633 390 C636 345 655 303 681 277 C693 266 707 268 719 281 C747 311 756 353 749 397 C742 443 719 481 689 510 C682 517 676 516 672 508Z" fill="url(#leafGradient)" stroke="#087A4A" strokeWidth="5"/>
+                  <path d="M686 456 C687 419 690 383 698 344" className="svg-vein" stroke="#A8EEA6" strokeWidth="9" strokeLinecap="round" opacity="0.7"/>
+                  <path d="M752 460 C762 410 788 354 827 315 C862 280 907 259 943 264 C965 267 975 282 974 305 C974 354 954 402 920 436 C884 472 837 487 784 484 C762 483 750 475 752 460Z" fill="url(#leafLight)" stroke="#16804D" strokeWidth="5"/>
+                  <path d="M814 435 C835 398 861 361 892 333" className="svg-vein" stroke="#D0F7C8" strokeWidth="10" strokeLinecap="round" opacity="0.8"/>
+                  <path d="M735 535 C737 500 751 472 775 451 C800 429 831 423 854 429 C865 433 869 442 866 454 C857 487 834 514 803 532 C776 548 751 550 735 535Z" className="svg-rear-leaf" fill="#70D27C" opacity="0.72"/>
+                  <path d="M278 594 C276 581 286 570 302 570 L1055 570 C1071 570 1082 582 1080 597 L1057 774 C1050 841 1014 897 958 931 C912 960 857 976 799 982 L614 982 C555 978 501 964 452 939 C389 906 350 853 336 788 L281 620 C277 609 276 600 278 594Z" fill="url(#bowlOuter)" stroke="#55C974" strokeWidth="7" filter="url(#shadow)"/>
+                  <path d="M315 600 L1017 600 C1018 600 1019 602 1018 605 C1008 659 993 706 969 751 C928 828 855 881 772 900 C691 918 603 912 526 883 C441 851 377 794 344 713 C330 678 319 639 315 600Z" fill="url(#bowlInner)"/>
+                  <path d="M315 600 L1017 600 C1011 620 1005 641 997 660 C965 746 908 813 830 852 C759 888 676 901 596 884 C508 866 431 818 383 747 C350 698 330 650 315 600Z" fill="url(#highlight)"/>
+                  <path d="M364 658 C372 701 392 749 423 786" className="svg-left-highlight" stroke="#F2FFF0" strokeWidth="34" strokeLinecap="round" opacity="0.65"/>
+                  <path d="M317 600 L1015 600" className="svg-top-edge" stroke="#D5F6D7" strokeWidth="7" opacity="0.8"/>
+                  <path d="M458 912 C536 954 630 967 721 960 C808 953 885 924 947 877" stroke="#8CE19A" strokeWidth="9" strokeLinecap="round" opacity="0.45" fill="none"/>
+                </svg>
               </div>
               <h2 className="text-2xl font-extrabold text-foreground tracking-tight mb-2">
                 No saved meals yet
@@ -279,13 +340,6 @@ function SavedMealsPage() {
               <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 leading-relaxed font-normal">
                 Create custom recipes by combining ingredients and save them for quick logging.
               </p>
-              <button
-                onClick={handleOpenCreateModal}
-                className="px-6 py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 border border-primary/20"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Create Your First Meal</span>
-              </button>
             </div>
           ) : filteredSavedMeals.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground text-sm">
