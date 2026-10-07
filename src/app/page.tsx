@@ -173,7 +173,7 @@ function DashboardHomePage() {
       try {
         const todayStr = new Date().toISOString().split('T')[0];
         const weightRes = await ApiService.getWeightLogs(7);
-        const loggedToday = weightRes?.logs?.some((l) => l.date === todayStr);
+        const loggedToday = weightRes?.logs?.some((l) => l.date?.startsWith(todayStr));
 
         if (!loggedToday) {
           setHasPendingWeight(true);
@@ -397,7 +397,7 @@ function DashboardHomePage() {
           setHasPendingWeight(false);
           loadProfileAndData();
         }}
-        initialWeight={userProfile?.weightKg || 70}
+        initialWeight={userProfile?.weightKg}
       />
 
       {/* Weekly Check-In Modal */}

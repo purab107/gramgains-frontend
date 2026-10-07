@@ -25,17 +25,17 @@ export const DailyWeightModal: React.FC<DailyWeightModalProps> = ({
   isOpen,
   onClose,
   onLogged,
-  initialWeight = 70.0,
+  initialWeight,
   date = new Date().toISOString().split('T')[0],
 }) => {
-  const [weight, setWeight] = useState<number>(initialWeight);
+  const [weight, setWeight] = useState<number>(initialWeight ?? 70.0);
   const [note, setNote] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
 
   useEffect(() => {
-    if (initialWeight > 0) {
+    if (initialWeight !== undefined && initialWeight > 0) {
       setWeight(initialWeight);
     }
   }, [initialWeight]);
