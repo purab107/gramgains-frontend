@@ -42,18 +42,23 @@ export const DailyWeightModal: React.FC<DailyWeightModalProps> = ({
   const [success, setSuccess] = useState<boolean>(false);
 
   useEffect(() => {
-    if (initialWeight !== undefined && initialWeight > 0) {
-      setWeight(initialWeight);
-    } else if (isOpen) {
-      ApiService.getProfile()
-        .then((profile) => {
-          if (profile?.weightKg && profile.weightKg > 0) {
-            setWeight(profile.weightKg);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [initialWeight, isOpen]);
+    if (!isOpen) return;
+
+    // Fetch the user's current profile weight whenever the modal opens
+    ApiService.getProfile()
+      .then((profile) => {
+        if (profile?.weightKg && profile.weightKg > 0) {
+          setWeight(profile.weightKg);
+        } else if (initialWeight !== undefined && initialWeight > 0) {
+          setWeight(initialWeight);
+        }
+      })
+      .catch(() => {
+        if (initialWeight !== undefined && initialWeight > 0) {
+          setWeight(initialWeight);
+        }
+      });
+  }, [isOpen, initialWeight]);
 
   if (!isOpen) return null;
 

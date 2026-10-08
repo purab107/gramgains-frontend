@@ -32,7 +32,9 @@ import {
   Calendar,
   Scale,
   Sparkles,
-  X
+  X,
+  Flame,
+  Loader2,
 } from 'lucide-react';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
@@ -250,6 +252,23 @@ function DashboardHomePage() {
 
     loadProfileAndData();
   };
+
+  // If profile is not yet loaded on initial render, show branded loading screen to prevent dashboard flash
+  if (!userProfile && loading && !isGuestSession() && !isDevSkip()) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground animate-pulse shadow-lg">
+            <Flame className="h-6 w-6" />
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            <span>Loading GramGains...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (showOnboarding) {
     return (
