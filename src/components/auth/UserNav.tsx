@@ -28,15 +28,26 @@ export function UserNav({ userProfileName }: UserNavProps) {
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    try {
+      await signOut();
+    } catch (e) {
+      console.warn('Sign out request error:', e);
+    }
     setIsDropdownOpen(false);
-    router.replace('/login');
+    if (typeof window !== 'undefined') {
+      sessionStorage.clear();
+      localStorage.removeItem('gramgains_onboarded');
+      window.location.href = '/login';
+    }
   };
 
   const handleExitGuest = () => {
     endGuestSession();
     setIsDropdownOpen(false);
-    router.replace('/login');
+    if (typeof window !== 'undefined') {
+      sessionStorage.clear();
+      window.location.href = '/login';
+    }
   };
 
   if (isPending && !isGuest) {

@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { MACRO_COLORS } from '@/lib/constants';
 
+import { QuantitySelector, ServingSelection } from './QuantitySelector';
+
 interface MealLoggerModalProps {
   date: string;
   isOpen: boolean;
@@ -36,9 +38,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   
   const [mealType, setMealType] = useState<'BREAKFAST' | 'LUNCH' | 'DINNER' | 'SNACK'>('LUNCH');
-  const [useCustomWeight, setUseCustomWeight] = useState(false);
-  const [servings, setServings] = useState<number>(1);
-  const [customWeightGrams, setCustomWeightGrams] = useState<number>(100);
+  const [servingSelection, setServingSelection] = useState<ServingSelection | null>(null);
   const [loading, setLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [successToast, setSuccessToast] = useState(false);
@@ -50,8 +50,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
     } else {
       setSearchQuery('');
       setSelectedFood(null);
-      setServings(1);
-      setUseCustomWeight(false);
+      setServingSelection(null);
     }
   }, [isOpen]);
 
@@ -78,24 +77,18 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
   const handleSelectFood = (food: FoodItem) => {
     setSelectedFood(food);
-    setServings(1);
-    setCustomWeightGrams(food.servingWeight || 100);
-    setUseCustomWeight(false);
     setView('detail');
   };
 
   const handleBackToSearch = () => {
     setView('search');
     setSelectedFood(null);
-  };
-
-  const handleAdjustServings = (delta: number) => {
-    setServings((prev) => Math.max(0.5, Math.round((prev + delta) * 2) / 2));
+    setServingSelection(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFood) return;
+    if (!selectedFood || !servingSelection) return;
 
     setLoading(true);
     try {
@@ -103,8 +96,10 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
         date,
         mealType,
         foodId: selectedFood.id,
-        servings: useCustomWeight ? undefined : servings,
-        customWeightGrams: useCustomWeight ? customWeightGrams : undefined,
+        customWeightGrams: servingSelection.resolvedWeightGrams,
+        displayQuantity: servingSelection.displayQuantity,
+        displayUnit: servingSelection.displayUnit,
+        unitLabel: servingSelection.displayUnit,
       });
       setSuccessToast(true);
       setTimeout(() => {
@@ -121,15 +116,8 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Active Weight & Multiplier — Scientific standard: food.calories stored per 100g
-  const servingBaseWeight = selectedFood?.servingWeight || 100;
-  const activeWeight = selectedFood
-    ? useCustomWeight
-      ? customWeightGrams
-      : Math.round(servingBaseWeight * servings)
-    : 100;
-
-  // multiplier = totalWeightGrams / 100 (canonical per-100g base)
+  // Active Weight & Multiplier from ServingSelection — Scientific standard: food.calories stored per 100g
+  const activeWeight = servingSelection?.resolvedWeightGrams || selectedFood?.servingWeight || 100;
   const multiplier = activeWeight / 100;
 
   const activeCalories = selectedFood ? Math.round(selectedFood.calories * multiplier) : 0;
@@ -361,117 +349,37 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
               </div>
             </div>
 
-            {/* ──────────────────── SERVING SECTION ──────────────────── */}
-            <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-                  SERVING PORTION
-                </span>
-                {/* Toggle Servings vs Grams */}
-                <div className="flex items-center bg-muted/60 p-0.5 rounded-lg border border-border text-[10px] font-semibold">
+            {/* ──────────────────── SERVING & QUANTITY SELECTOR ──────────────────── */}
+            <QuantitySelector
+              food={selectedFood}
+              onChange={setServingSelection}
+            />
+
+            {/* Meal Category Segmented Selector */}
+            <div className="bg-card border border-border rounded-2xl p-3.5 shadow-xs space-y-2">
+              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block px-0.5">
+                Log to Meal Time
+              </label>
+              <div className="grid grid-cols-4 gap-1.5 text-xs">
+                {[
+                  { id: 'BREAKFAST', label: 'Breakfast' },
+                  { id: 'LUNCH', label: 'Lunch' },
+                  { id: 'DINNER', label: 'Dinner' },
+                  { id: 'SNACK', label: 'Snack' },
+                ].map((m) => (
                   <button
+                    key={m.id}
                     type="button"
-                    onClick={() => setUseCustomWeight(false)}
-                    className={`px-2 py-1 rounded-md transition-all ${
-                      !useCustomWeight
-                        ? 'bg-primary text-primary-foreground shadow-xs'
-                        : 'text-muted-foreground hover:text-foreground'
+                    onClick={() => setMealType(m.id as any)}
+                    className={`py-2 rounded-xl font-semibold text-center border text-[11px] transition-all ${
+                      mealType === m.id
+                        ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                        : 'bg-card text-foreground border-border hover:bg-muted'
                     }`}
                   >
-                    Servings
+                    {m.label}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setUseCustomWeight(true)}
-                    className={`px-2 py-1 rounded-md transition-all ${
-                      useCustomWeight
-                        ? 'bg-primary text-primary-foreground shadow-xs'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    Custom Grams
-                  </button>
-                </div>
-              </div>
-
-              {!useCustomWeight ? (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-muted/40 border border-border">
-                  <div>
-                    <div className="text-xs font-bold text-foreground">
-                      {servings} {servings === 1 ? 'serving' : 'servings'}
-                    </div>
-                    <div className="text-[11px] text-muted-foreground font-mono mt-0.5">
-                      ≈ {activeWeight}g total portion
-                    </div>
-                  </div>
-
-                  {/* Stepper Controls: [ - ] count [ + ] */}
-                  <div className="flex items-center gap-2 bg-card px-2 py-1.5 rounded-xl border border-border shadow-xs font-mono">
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustServings(-0.5)}
-                      className="p-1 rounded-lg hover:bg-muted text-foreground hover:text-primary active:scale-90 transition-all"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="px-2 font-bold text-sm text-foreground min-w-[2.5rem] text-center">
-                      {servings}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustServings(0.5)}
-                      className="p-1 rounded-lg hover:bg-muted text-foreground hover:text-primary active:scale-90 transition-all"
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1.5">
-                  <label className="text-[11px] text-muted-foreground font-medium block">
-                    Custom Portion Weight in Grams
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      min="1"
-                      value={customWeightGrams}
-                      onChange={(e) => setCustomWeightGrams(Math.max(1, Number(e.target.value)))}
-                      className="w-full px-3 py-2 bg-background border border-border rounded-lg text-xs text-foreground font-mono font-bold outline-none focus:border-primary"
-                    />
-                    <span className="absolute right-3 top-2 text-xs text-muted-foreground font-mono">
-                      grams
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* Meal Category Segmented Selector */}
-              <div>
-                <label className="text-[11px] font-semibold text-muted-foreground block mb-1.5">
-                  Log to Meal Time
-                </label>
-                <div className="grid grid-cols-4 gap-1.5 text-xs">
-                  {[
-                    { id: 'BREAKFAST', label: 'Breakfast' },
-                    { id: 'LUNCH', label: 'Lunch' },
-                    { id: 'DINNER', label: 'Dinner' },
-                    { id: 'SNACK', label: 'Snack' },
-                  ].map((m) => (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => setMealType(m.id as any)}
-                      className={`py-2 rounded-lg font-semibold text-center border text-[11px] transition-all ${
-                        mealType === m.id
-                          ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                          : 'bg-card text-foreground border-border hover:bg-muted'
-                      }`}
-                    >
-                      {m.label}
-                    </button>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
 
@@ -526,11 +434,17 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98] border border-primary"
+                  disabled={loading || !servingSelection}
+                  className="w-full py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98] border border-primary"
                 >
                   <Plus size={16} />
-                  <span>{loading ? 'Adding to Meal...' : 'Add to Meal'}</span>
+                  <span>
+                    {loading
+                      ? 'Adding to Meal...'
+                      : servingSelection
+                      ? `Add ${servingSelection.displayQuantity} ${servingSelection.displayUnit}`
+                      : 'Add to Meal'}
+                  </span>
                 </button>
               </div>
             )}
