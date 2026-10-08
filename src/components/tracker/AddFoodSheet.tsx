@@ -39,6 +39,8 @@ import {
 } from 'lucide-react';
 import { MealTypeKey } from './MealSectionCard';
 import { MACRO_COLORS } from '@/lib/constants';
+import { getServingSubtitle } from '@/lib/food-utils';
+import { QuantitySelector, ServingSelection } from '../meals/QuantitySelector';
 
 export interface AddFoodSheetProps {
   open: boolean;
@@ -52,12 +54,6 @@ export interface AddFoodSheetProps {
 
 type FilterTab = 'all' | 'history' | 'saved_meals';
 type SheetView = 'search' | 'add_food';
-
-interface ServingOption {
-  id: string;
-  label: string;
-  weightGrams: number;
-}
 
 const MEAL_DETAILS: Record<MealTypeKey, { label: string; sub: string; icon: React.ElementType; color: string; badgeClass: string }> = {
   BREAKFAST: {
@@ -124,10 +120,7 @@ export function AddFoodSheet({
 
   // Add Food Detail State
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
-  const [servingsInput, setServingsInput] = useState<string>('1');
-  const [selectedServingOptionId, setSelectedServingOptionId] = useState<string>('1g');
-  const [customUnitWeight, setCustomUnitWeight] = useState<string>('100');
-  const [servingDropdownOpen, setServingDropdownOpen] = useState(false);
+  const [servingSelection, setServingSelection] = useState<ServingSelection | null>(null);
   const [isLogging, setIsLogging] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
@@ -142,12 +135,12 @@ export function AddFoodSheet({
   useEffect(() => {
     if (open) {
       setMealPickerOpen(false);
-      setServingDropdownOpen(false);
     } else {
       // Delay reset so exit animation is clean
       const timer = setTimeout(() => {
         setSheetView('search');
         setSelectedFood(null);
+        setServingSelection(null);
         setSuccessToast(null);
       }, 300);
       return () => clearTimeout(timer);
@@ -302,31 +295,20 @@ export function AddFoodSheet({
   // Transition to Add Food view when clicking the plus button
   const handleFoodPlusClick = (food: FoodItem) => {
     setSelectedFood(food);
+    setServingSelection(null);
     // Cache this food in guest storage so logMeal can resolve macro data
     try {
       const { GuestStorageService } = require('@/lib/guest-session');
       GuestStorageService.cacheFood(food);
     } catch {}
 
-    // Natural, industry-standard default:
-    // If food has a defined serving (e.g. 40g, 200g bowl), select that serving with count = 1.
-    // Otherwise, default to standard 100g with count = 1.
-    const hasCustomServing = food.servingWeight && food.servingWeight !== 100 && food.servingWeight !== 1;
-    if (hasCustomServing) {
-      setSelectedServingOptionId('package_serving');
-    } else {
-      setSelectedServingOptionId('100g');
-    }
-    setServingsInput('1');
     setMealPickerOpen(false);
-    setServingDropdownOpen(false);
     setSheetView('add_food');
 
     if (onAddFoodClick) {
       onAddFoodClick(food, 'food');
     }
   };
-
 
   const handleSavedMealPlusClick = async (meal: SavedMeal) => {
     if (onAddFoodClick) {
@@ -352,78 +334,6 @@ export function AddFoodSheet({
     }
   };
 
-  // Available serving options for the selected food
-  const servingOptions: ServingOption[] = useMemo(() => {
-    if (!selectedFood) return [];
-    const opts: ServingOption[] = [];
-
-    // Package or default portion
-    if (selectedFood.servingWeight && selectedFood.servingWeight !== 100 && selectedFood.servingWeight !== 1) {
-      opts.push({
-        id: 'package_serving',
-        label: `1 serving (${selectedFood.servingWeight}${selectedFood.servingUnit || 'g'})`,
-        weightGrams: selectedFood.servingWeight,
-      });
-    }
-
-    // Additional servings defined on food if any
-    if (selectedFood.servings && selectedFood.servings.length > 0) {
-      selectedFood.servings.forEach((s) => {
-        if (s.weightGrams !== 100 && s.weightGrams !== 1 && s.weightGrams !== selectedFood.servingWeight) {
-          opts.push({
-            id: `serving_${s.id}`,
-            label: `1 ${s.unitLabel || 'serving'} (${s.weightGrams}g)`,
-            weightGrams: s.weightGrams,
-          });
-        }
-      });
-    }
-
-    // Standard 100g option
-    opts.push({ id: '100g', label: '100g', weightGrams: 100.0 });
-
-    // Precision 1.0g scale weight
-    opts.push({ id: '1g', label: '1.0g', weightGrams: 1.0 });
-
-    // Custom size option
-    opts.push({
-      id: 'custom',
-      label: 'Custom size',
-      weightGrams: parseFloat(customUnitWeight) || 100,
-    });
-
-    return opts;
-  }, [selectedFood, customUnitWeight]);
-
-  const activeServingOption = useMemo(() => {
-    return (
-      servingOptions.find((o) => o.id === selectedServingOptionId) ||
-      servingOptions[0] || { id: '100g', label: '100g', weightGrams: 100.0 }
-    );
-  }, [servingOptions, selectedServingOptionId]);
-
-  // Switch serving option while preserving or adjusting the quantity intuitively
-  const handleSelectServingOption = (option: ServingOption) => {
-    const currentServings = parseFloat(servingsInput) || 1;
-    const currentWeight = currentServings * activeServingOption.weightGrams;
-
-    setSelectedServingOptionId(option.id);
-    setServingDropdownOpen(false);
-
-    // Intuitively update number of servings to preserve current consumed weight
-    const targetUnitWeight = option.id === 'custom' ? (parseFloat(customUnitWeight) || 100) : option.weightGrams;
-    if (targetUnitWeight > 0) {
-      if (option.id === '1g') {
-        setServingsInput(String(Math.round(currentWeight)));
-      } else if (option.id === '100g') {
-        setServingsInput(String(Math.round((currentWeight / 100) * 10) / 10));
-      } else {
-        const newCount = Math.round((currentWeight / targetUnitWeight) * 10) / 10;
-        setServingsInput(String(newCount > 0 ? newCount : 1));
-      }
-    }
-  };
-
   // Real-time scientific macro calculations
   const calculated = useMemo(() => {
     if (!selectedFood) {
@@ -439,8 +349,7 @@ export function AddFoodSheet({
       };
     }
 
-    const servings = Math.max(0, parseFloat(servingsInput) || 0);
-    const totalWeight = servings * activeServingOption.weightGrams;
+    const totalWeight = servingSelection?.resolvedWeightGrams ?? (selectedFood.servingWeight || 100);
 
     // Scientific standard: Food table stores nutrition per 100g
     const multiplier = totalWeight / 100;
@@ -476,28 +385,26 @@ export function AddFoodSheet({
       fatPercent,
       proteinPercent,
     };
-  }, [selectedFood, servingsInput, activeServingOption]);
-
-  // Stepper adjustments for number of servings
-  const handleStepServings = (delta: number) => {
-    const current = parseFloat(servingsInput) || 0;
-    const nextVal = Math.max(0.1, Math.round((current + delta) * 10) / 10);
-    setServingsInput(String(nextVal));
-  };
+  }, [selectedFood, servingSelection]);
 
   // Log food submission
   const handleLogFood = async () => {
     if (!selectedFood) return;
     try {
       setIsLogging(true);
-      const servings = parseFloat(servingsInput) || 1;
+      const displayQuantity = servingSelection?.displayQuantity || 1;
+      const displayUnit = servingSelection?.displayUnit || selectedFood.servingUnit || 'g';
+      const weightGrams = servingSelection?.resolvedWeightGrams || calculated.totalWeight;
+
       await ApiService.logMeal({
         date: selectedDate,
         mealType: currentMeal,
         foodId: selectedFood.id,
-        servings: servings,
-        customWeightGrams: calculated.totalWeight > 0 ? calculated.totalWeight : undefined,
-        unitLabel: activeServingOption.label,
+        servings: 1,
+        customWeightGrams: weightGrams > 0 ? weightGrams : undefined,
+        displayQuantity,
+        displayUnit,
+        unitLabel: displayUnit,
       });
 
       setSuccessToast(`Added ${selectedFood.name} to ${MEAL_DETAILS[currentMeal].label}!`);
@@ -507,6 +414,7 @@ export function AddFoodSheet({
         setSuccessToast(null);
         setSheetView('search');
         setSelectedFood(null);
+        setServingSelection(null);
       }, 1000);
     } catch (err) {
       console.error('Failed to log meal:', err);
@@ -812,7 +720,7 @@ export function AddFoodSheet({
                             <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>
                               {f} f
                             </span>
-                            <span>, {weight} g</span>
+                            <span>, {getServingSubtitle(food)}</span>
                           </div>
                         </div>
 
@@ -941,128 +849,12 @@ export function AddFoodSheet({
                     </div>
                   </div>
 
-                  {/* Row 2: Number of Servings */}
-                  <div className="p-3.5 sm:p-4 space-y-2">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-xs font-semibold text-muted-foreground">
-                        Number of servings
-                      </span>
-
-                      {/* Interactive Stepper & Direct Input */}
-                      <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl border border-border">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleStepServings(-1)}
-                          className="h-7 w-7 rounded-lg hover:bg-card text-foreground"
-                          title="Decrease servings"
-                        >
-                          <Minus className="w-3.5 h-3.5" />
-                        </Button>
-
-                        <Input
-                          type="number"
-                          step="any"
-                          min="0.1"
-                          value={servingsInput}
-                          onChange={(e) => setServingsInput(e.target.value)}
-                          className="w-16 h-7 text-center font-bold text-xs text-foreground bg-card border-border rounded-lg shadow-2xs p-0 focus-visible:ring-1"
-                        />
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleStepServings(1)}
-                          className="h-7 w-7 rounded-lg hover:bg-card text-foreground"
-                          title="Increase servings"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Quick Pick Servings Multipliers */}
-                    <div className="flex items-center justify-end gap-1.5 pt-1">
-                      <span className="text-[10px] font-semibold text-muted-foreground mr-1">Quick:</span>
-                      {[0.5, 1, 1.5, 2, 40].map((val) => (
-                        <button
-                          key={val}
-                          type="button"
-                          onClick={() => setServingsInput(String(val))}
-                          className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all ${
-                            parseFloat(servingsInput) === val
-                              ? 'bg-primary text-primary-foreground shadow-2xs'
-                              : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-                          }`}
-                        >
-                          {val}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Row 3: Serving Size Selector */}
-                  <div className="p-3.5 sm:p-4 flex items-center justify-between relative">
-                    <span className="text-xs font-semibold text-muted-foreground">
-                      Serving Size
-                    </span>
-
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={() => setServingDropdownOpen((prev) => !prev)}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-muted/50 hover:bg-muted text-xs font-bold text-foreground transition-all active:scale-98"
-                      >
-                        <Scale className="w-3.5 h-3.5 text-primary" />
-                        <span>{activeServingOption.label}</span>
-                        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${servingDropdownOpen ? 'rotate-180' : ''}`} />
-                      </button>
-
-                      {/* Dropdown with Industry Standard Options */}
-                      {servingDropdownOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 w-60 bg-popover text-popover-foreground rounded-2xl border border-border shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 space-y-1">
-                          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2 py-1">
-                            Choose Serving Size
-                          </div>
-                          {servingOptions.map((opt) => {
-                            const isSelected = opt.id === activeServingOption.id;
-                            return (
-                              <button
-                                key={opt.id}
-                                type="button"
-                                onClick={() => handleSelectServingOption(opt)}
-                                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold transition-all ${
-                                  isSelected
-                                    ? 'bg-primary/10 text-primary font-bold'
-                                    : 'text-foreground hover:bg-muted'
-                                }`}
-                              >
-                                <span>{opt.label}</span>
-                                {isSelected && <Check className="w-3.5 h-3.5 text-primary" />}
-                              </button>
-                            );
-                          })}
-
-                          {/* Custom size input if selected */}
-                          {selectedServingOptionId === 'custom' && (
-                            <div className="p-2 pt-1 border-t border-border">
-                              <label className="text-[10px] font-bold text-muted-foreground block mb-1">
-                                Custom grams per serving:
-                              </label>
-                              <Input
-                                type="number"
-                                min="1"
-                                value={customUnitWeight}
-                                onChange={(e) => setCustomUnitWeight(e.target.value)}
-                                className="h-7 text-xs font-bold border-border bg-background text-foreground"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                  {/* Row 2: Serving Unit & Quantity Selector */}
+                  <div className="p-3.5 sm:p-4">
+                    <QuantitySelector
+                      food={selectedFood}
+                      onChange={setServingSelection}
+                    />
                   </div>
 
                 </div>
@@ -1239,7 +1031,9 @@ export function AddFoodSheet({
                   ) : (
                     <>
                       <Plus className="w-4 h-4" />
-                      <span>Add to {activeMealInfo.label}</span>
+                      <span>
+                        Add {servingSelection ? `${servingSelection.displayQuantity} ${servingSelection.displayUnit}` : ''} to {activeMealInfo.label}
+                      </span>
                     </>
                   )}
                 </Button>

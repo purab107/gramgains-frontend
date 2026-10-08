@@ -250,6 +250,14 @@ function DashboardHomePage() {
       window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
     }
 
+    // Always prompt the first daily weight check-in immediately after completing onboarding
+    const todayStr = getLocalDateString();
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(`gramgains_weight_popup_${todayStr}`, 'true');
+    }
+    setHasPendingWeight(true);
+    setIsWeightModalOpen(true);
+
     loadProfileAndData();
   };
 
