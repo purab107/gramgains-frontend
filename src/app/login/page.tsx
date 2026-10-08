@@ -7,6 +7,7 @@ import { Flame, Mail, Lock, Loader2, AlertCircle, Sparkles, UserX } from 'lucide
 import { startGuestSession, endGuestSession } from '@/lib/guest-session';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
+import { ApiService } from '@/services/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,7 +18,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
 
   // Redirect to dashboard if already authenticated (skip during active submission)
   useEffect(() => {
@@ -31,28 +31,70 @@ export default function LoginPage() {
     setError(null);
     setIsLoading(true);
 
+    const trimmedEmail = email.trim().toLowerCase();
+
     try {
       if (mode === 'register') {
-        const { error: resError } = await signUp.email({
-          email,
-          password,
-          name: email.split('@')[0] || 'Athlete',
-        });
-        if (resError) {
-          setError(resError.message || 'Failed to sign up. Please try again.');
+        // Pre-check if user already exists
+        const { exists } = await ApiService.checkEmailExists(trimmedEmail);
+        if (exists) {
+          setError('An account with this email already exists. Please sign in instead.');
           setIsLoading(false);
           return;
         }
+
+        const { error: resError } = await signUp.email({
+          email: trimmedEmail,
+          password,
+          name: trimmedEmail.split('@')[0] || 'Athlete',
+        });
+
+        if (resError) {
+          const errMsg = resError.message || '';
+          if (
+            errMsg.toLowerCase().includes('already exists') ||
+            (resError as any).code === 'USER_ALREADY_EXISTS' ||
+            (resError as any).status === 422
+          ) {
+            setError('An account with this email already exists. Please sign in instead.');
+          } else {
+            setError(errMsg || 'Failed to sign up. Please try again.');
+          }
+          setIsLoading(false);
+          return;
+        }
+
         endGuestSession();
         // Redirect to onboarding flow after creating an account
         window.location.href = '/?onboarding=true';
       } else {
-        const { error: resError } = await signIn.email({ email, password });
-        if (resError) {
-          setError(resError.message || 'Invalid email or password.');
+        // Pre-check if user exists before attempting sign-in
+        const { exists } = await ApiService.checkEmailExists(trimmedEmail);
+        if (!exists) {
+          setError('User does not exist. Please register first.');
           setIsLoading(false);
           return;
         }
+
+        const { error: resError } = await signIn.email({
+          email: trimmedEmail,
+          password,
+        });
+
+        if (resError) {
+          const errMsg = resError.message || '';
+          if (
+            errMsg.toLowerCase().includes('not found') ||
+            errMsg.toLowerCase().includes('user does not exist')
+          ) {
+            setError('User does not exist. Please register first.');
+          } else {
+            setError('Incorrect password. Please try again.');
+          }
+          setIsLoading(false);
+          return;
+        }
+
         endGuestSession();
         // Redirect to dashboard upon sign in
         window.location.href = '/';

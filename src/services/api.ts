@@ -348,7 +348,25 @@ export interface SavedMeal {
 }
 
 export class ApiService {
-  // --- PROFILE ---
+  // --- PROFILE & AUTH ---
+  static async checkEmailExists(email: string): Promise<{ exists: boolean }> {
+    if (isGuestSession() || isDevSkip()) {
+      return { exists: false };
+    }
+    try {
+      const res = await apiFetch(`${API_BASE_URL}/profile/check-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) return { exists: false };
+      const json = await res.json();
+      return { exists: Boolean(json.exists) };
+    } catch {
+      return { exists: false };
+    }
+  }
+
   static async getProfile(): Promise<UserProfile> {
     if (isGuestSession()) return GuestStorageService.getProfile();
     if (isDevSkip()) {
