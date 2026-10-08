@@ -21,6 +21,8 @@ export * from './dev-skip';
 // Meals & Tracking components
 export * from './meals/DailyTimeline';
 export * from './meals/MealLoggerModal';
+export * from './meals/SaveMealSheet';
+export * from './meals/QuantitySelector';
 export * from './tracker';
 
 // Onboarding components
