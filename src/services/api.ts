@@ -211,10 +211,14 @@ export interface AnalyticsPatternsResponse {
   }>;
 }
 
+export type ServingUnitType = 'WEIGHT' | 'VOLUME' | 'COUNT' | 'HOUSEHOLD';
+
 export interface FoodServing {
   id: string;
   foodId?: string;
   unitLabel: string;
+  unitType?: ServingUnitType;
+  displayQuantity?: number | null;
   weightGrams: number;
   isDefault: boolean;
 }
@@ -227,6 +231,8 @@ export interface FoodItem {
   brand?: string;
   servingUnit: string;
   servingWeight: number;
+  servingUnitType?: ServingUnitType;
+  servingDisplayQuantity?: number | null;
   servings?: FoodServing[];
   calories: number;
   protein: number;
@@ -245,6 +251,8 @@ export interface MealLogItem {
   food: FoodItem;
   servings: number;
   weightGrams: number;
+  displayQuantity?: number | null;
+  displayUnit?: string | null;
   unitLabel?: string | null;
   calories: number;
   protein: number;
@@ -326,6 +334,9 @@ export interface SavedMealItem {
   foodId: string;
   food?: FoodItem;
   weightGrams: number;
+  displayQuantity?: number | null;
+  displayUnit?: string | null;
+  unitLabel?: string | null;
   calories?: number;
   protein?: number;
   carbs?: number;
@@ -337,6 +348,8 @@ export interface SavedMeal {
   id: string;
   name: string;
   description?: string;
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
   totalCalories: number;
   totalProtein: number;
   totalCarbs: number;
@@ -465,6 +478,8 @@ export class ApiService {
     servings?: number;
     customWeightGrams?: number;
     unitLabel?: string;
+    displayQuantity?: number | null;
+    displayUnit?: string;
   }): Promise<MealLogItem> {
     if (isGuestSession()) return GuestStorageService.logMeal(payload);
     if (isDevSkip()) {
@@ -491,7 +506,9 @@ export class ApiService {
         },
         servings: payload.servings || 1,
         weightGrams: payload.customWeightGrams || 100,
-        unitLabel: payload.unitLabel || 'g',
+        displayQuantity: payload.displayQuantity,
+        displayUnit: payload.displayUnit || payload.unitLabel || 'g',
+        unitLabel: payload.unitLabel || payload.displayUnit || 'g',
         calories: 0,
         protein: 0,
         carbohydrates: 0,
@@ -512,7 +529,14 @@ export class ApiService {
 
   static async updateLog(
     id: string,
-    payload: { servings?: number; customWeightGrams?: number; mealType?: string; unitLabel?: string }
+    payload: {
+      servings?: number;
+      customWeightGrams?: number;
+      mealType?: string;
+      unitLabel?: string;
+      displayQuantity?: number | null;
+      displayUnit?: string;
+    }
   ): Promise<MealLogItem> {
     if (isGuestSession()) return GuestStorageService.updateLog(id, payload);
     if (isDevSkip()) {
@@ -539,7 +563,9 @@ export class ApiService {
         },
         servings: payload.servings || 1,
         weightGrams: payload.customWeightGrams || 100,
-        unitLabel: payload.unitLabel || 'g',
+        displayQuantity: payload.displayQuantity,
+        displayUnit: payload.displayUnit || payload.unitLabel || 'g',
+        unitLabel: payload.unitLabel || payload.displayUnit || 'g',
         calories: 0,
         protein: 0,
         carbohydrates: 0,
@@ -633,10 +659,41 @@ export class ApiService {
     return json.data;
   }
 
+  static async uploadImage(file: File): Promise<{ url: string; publicId: string }> {
+    if (isDevSkip()) {
+      return {
+        url: URL.createObjectURL(file),
+        publicId: 'dev-mock-image-id',
+      };
+    }
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await apiFetch(`${API_BASE_URL}/upload/image`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const errorJson = await res.json().catch(() => null);
+      throw new Error(errorJson?.error || errorJson?.message || 'Failed to upload image');
+    }
+    const json = await res.json();
+    return { url: json.url, publicId: json.publicId };
+  }
+
   static async createSavedMeal(payload: {
     name: string;
     description?: string;
-    items: { foodId: string; weightGrams: number }[];
+    imageUrl?: string | null;
+    imagePublicId?: string | null;
+    items: {
+      foodId: string;
+      weightGrams: number;
+      displayQuantity?: number | null;
+      displayUnit?: string;
+      unitLabel?: string;
+    }[];
   }): Promise<SavedMeal> {
     if (isDevSkip()) {
       // Silent no-op in dev skip mode
@@ -644,6 +701,8 @@ export class ApiService {
         id: 'dev-saved-placeholder',
         name: payload.name,
         description: payload.description,
+        imageUrl: payload.imageUrl,
+        imagePublicId: payload.imagePublicId,
         totalCalories: 0,
         totalProtein: 0,
         totalCarbs: 0,
@@ -652,6 +711,9 @@ export class ApiService {
         items: payload.items.map(item => ({
           foodId: item.foodId,
           weightGrams: item.weightGrams,
+          displayQuantity: item.displayQuantity,
+          displayUnit: item.displayUnit || item.unitLabel,
+          unitLabel: item.unitLabel || item.displayUnit,
           calories: 0,
           protein: 0,
           carbs: 0,
@@ -677,7 +739,15 @@ export class ApiService {
     payload: {
       name?: string;
       description?: string;
-      items?: { foodId: string; weightGrams: number }[];
+      imageUrl?: string | null;
+      imagePublicId?: string | null;
+      items?: {
+        foodId: string;
+        weightGrams: number;
+        displayQuantity?: number | null;
+        displayUnit?: string;
+        unitLabel?: string;
+      }[];
     }
   ): Promise<SavedMeal> {
     if (isDevSkip()) {
@@ -686,6 +756,8 @@ export class ApiService {
         id,
         name: payload.name || 'Mock Saved Meal',
         description: payload.description,
+        imageUrl: payload.imageUrl,
+        imagePublicId: payload.imagePublicId,
         totalCalories: 0,
         totalProtein: 0,
         totalCarbs: 0,
@@ -694,6 +766,9 @@ export class ApiService {
         items: payload.items?.map(item => ({
           foodId: item.foodId,
           weightGrams: item.weightGrams,
+          displayQuantity: item.displayQuantity,
+          displayUnit: item.displayUnit || item.unitLabel,
+          unitLabel: item.unitLabel || item.displayUnit,
           calories: 0,
           protein: 0,
           carbs: 0,

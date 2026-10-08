@@ -137,3 +137,21 @@ export function calculatePer100g(food: FoodItem) {
     fiber: Math.round((food.fiber || 0) * 10) / 10,
   };
 }
+
+/**
+ * Returns a clean, human-readable serving subtitle (e.g. "per 180ml", "per 1 piece", "per 100g").
+ */
+export function getServingSubtitle(food: FoodItem): string {
+  const defaultServing = food.servings?.find((s) => s.isDefault) || food.servings?.[0];
+  const qty = food.servingDisplayQuantity ?? defaultServing?.displayQuantity ?? (food.servingUnitType === 'WEIGHT' || !food.servingUnitType ? food.servingWeight : null);
+  const unit = food.servingUnit || defaultServing?.unitLabel || 'g';
+
+  if (qty !== null && qty !== undefined && qty > 0) {
+    return `per ${qty}${unit}`;
+  }
+  if (food.servingWeight && food.servingWeight > 0) {
+    return `per ${food.servingWeight}${unit}`;
+  }
+  return 'per 100g';
+}
+
