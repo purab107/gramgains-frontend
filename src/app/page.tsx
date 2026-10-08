@@ -40,8 +40,14 @@ import { isGuestSession } from '@/lib/guest-session';
 
 function DashboardHomePage() {
   const devSkip = useDevSkip();
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      return p.get('onboarding') === 'true';
+    }
+    return false;
+  });
   const [showSplash, setShowSplash] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -105,11 +111,14 @@ function DashboardHomePage() {
   useEffect(() => {
     // Check if onboarding was requested via URL query param
     const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.get('onboarding') === 'true') {
+    const isExplicitOnboarding = searchParams.get('onboarding') === 'true';
+    if (isExplicitOnboarding) {
       setShowOnboarding(true);
+      setShowSplash(false);
+      return;
     }
 
-    // Only show splash screen once per browser session
+    // Only show splash screen once per browser session for normal dashboard visits
     const hasSeenSplash = sessionStorage.getItem('gramgains_splash_seen');
     if (!hasSeenSplash) {
       setShowSplash(true);
@@ -131,26 +140,27 @@ function DashboardHomePage() {
 
       // Load User Profile
       let prof: UserProfile | null = null;
+      let shouldOnboard = false;
+      const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+      const isExplicitOnboarding = searchParams.get('onboarding') === 'true';
+      const isGuest = isGuestSession();
+
       try {
         prof = await ApiService.getProfile();
         setUserProfile(prof);
 
-        // Trigger onboarding for new users or if onboarding=true was requested
-        const searchParams = new URLSearchParams(window.location.search);
-        const isExplicitOnboarding = searchParams.get('onboarding') === 'true';
-        const hasLocalOnboarded = localStorage.getItem('gramgains_onboarded') === 'true';
-        const isGuest = isGuestSession();
-
-        if (
+        shouldOnboard =
           isExplicitOnboarding ||
-          (!isGuest && prof && prof.onboardingCompleted === false && !hasLocalOnboarded) ||
-          (!prof && !isGuest && !hasLocalOnboarded) ||
-          (prof && prof.name === 'Athlete' && prof.weightKg === 70 && prof.heightCm === 175 && !hasLocalOnboarded && !isGuest)
-        ) {
+          (!isGuest && prof && prof.onboardingCompleted === false);
+
+        if (shouldOnboard) {
           setShowOnboarding(true);
         }
       } catch (err) {
         console.warn('Backend profile not available yet, using defaults', err);
+        if (isExplicitOnboarding) {
+          setShowOnboarding(true);
+        }
       }
 
       // Fetch Summary & Logs for selected date
@@ -166,24 +176,26 @@ function DashboardHomePage() {
         console.error('Failed loading daily summary/logs:', err);
       }
 
-      // Check weight logs for today and trigger initial pop-up if not logged yet
-      try {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const weightRes = await ApiService.getWeightLogs(7);
-        const loggedToday = weightRes?.logs?.some((l) => l.date?.startsWith(todayStr));
+      // Check weight logs for today ONLY if onboarding is completed
+      if (!shouldOnboard && (prof?.onboardingCompleted !== false || isGuestSession())) {
+        try {
+          const todayStr = new Date().toISOString().split('T')[0];
+          const weightRes = await ApiService.getWeightLogs(7);
+          const loggedToday = weightRes?.logs?.some((l) => l.date?.startsWith(todayStr));
 
-        if (!loggedToday) {
-          setHasPendingWeight(true);
-          const hasShownPopupSession = sessionStorage.getItem(`gramgains_weight_popup_${todayStr}`);
-          if (!hasShownPopupSession) {
-            sessionStorage.setItem(`gramgains_weight_popup_${todayStr}`, 'true');
-            setIsWeightModalOpen(true);
+          if (!loggedToday) {
+            setHasPendingWeight(true);
+            const hasShownPopupSession = sessionStorage.getItem(`gramgains_weight_popup_${todayStr}`);
+            if (!hasShownPopupSession) {
+              sessionStorage.setItem(`gramgains_weight_popup_${todayStr}`, 'true');
+              setIsWeightModalOpen(true);
+            }
+          } else {
+            setHasPendingWeight(false);
           }
-        } else {
-          setHasPendingWeight(false);
+        } catch (err) {
+          console.warn('Failed checking today weight log status:', err);
         }
-      } catch (err) {
-        console.warn('Failed checking today weight log status:', err);
       }
 
       // Check if weekly check-in is pending
@@ -222,7 +234,6 @@ function DashboardHomePage() {
 
   const handleOnboardingComplete = (updatedProf: UserProfile) => {
     setUserProfile(updatedProf);
-    localStorage.setItem('gramgains_onboarded', 'true');
     setShowOnboarding(false);
 
     // Clean up ?onboarding query param if present
@@ -235,10 +246,6 @@ function DashboardHomePage() {
     loadProfileAndData();
   };
 
-  if (showSplash) {
-    return <SplashScreen onFinish={handleSplashFinish} />;
-  }
-
   if (showOnboarding) {
     return (
       <OnboardingWizard
@@ -246,6 +253,10 @@ function DashboardHomePage() {
         initialProfile={userProfile}
       />
     );
+  }
+
+  if (showSplash) {
+    return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
   return (

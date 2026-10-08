@@ -37,6 +37,10 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login', onSuccess }:
           setIsLoading(false);
           return;
         }
+        if (typeof window !== 'undefined') {
+          window.location.href = '/?onboarding=true';
+          return;
+        }
       } else {
         const { error: resError } = await signIn.email({
           email,
