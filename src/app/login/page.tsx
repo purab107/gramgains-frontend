@@ -17,14 +17,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Redirect to dashboard if already authenticated (skip during active submission)
+  // Redirect to dashboard if already authenticated (skip during active submission / onboarding redirect)
   useEffect(() => {
-    if (!isPending && session && !isLoading) {
+    if (!isPending && session && !isLoading && !isRedirecting) {
       router.replace('/');
     }
-  }, [session, isPending, isLoading, router]);
+  }, [session, isPending, isLoading, isRedirecting, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +65,7 @@ export default function LoginPage() {
           return;
         }
 
+        setIsRedirecting(true);
         endGuestSession();
         // Redirect to onboarding flow after creating an account
         window.location.href = '/?onboarding=true';
