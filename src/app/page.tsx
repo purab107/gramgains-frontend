@@ -38,6 +38,13 @@ import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
 import { isGuestSession } from '@/lib/guest-session';
 
+function getLocalDateString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function DashboardHomePage() {
   const devSkip = useDevSkip();
   const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
@@ -50,9 +57,7 @@ function DashboardHomePage() {
   const [showSplash, setShowSplash] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(() => getLocalDateString());
   const [summary, setSummary] = useState<DashboardSummaryResponse | null>(null);
   const [logs, setLogs] = useState<MealLogItem[]>([]);
   const [waterTotalMl, setWaterTotalMl] = useState<number>(0);
@@ -179,7 +184,7 @@ function DashboardHomePage() {
       // Check weight logs for today ONLY if onboarding is completed
       if (!shouldOnboard && (prof?.onboardingCompleted !== false || isGuestSession())) {
         try {
-          const todayStr = new Date().toISOString().split('T')[0];
+          const todayStr = getLocalDateString();
           const weightRes = await ApiService.getWeightLogs(7);
           const loggedToday = weightRes?.logs?.some((l) => l.date?.startsWith(todayStr));
 

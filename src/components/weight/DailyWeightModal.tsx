@@ -13,6 +13,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { ApiService } from '@/services/api';
 
+function getLocalDateString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 interface DailyWeightModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,7 +33,7 @@ export const DailyWeightModal: React.FC<DailyWeightModalProps> = ({
   onClose,
   onLogged,
   initialWeight,
-  date = new Date().toISOString().split('T')[0],
+  date = getLocalDateString(),
 }) => {
   const [weight, setWeight] = useState<number>(initialWeight ?? 70.0);
   const [note, setNote] = useState<string>('');
@@ -85,7 +92,7 @@ export const DailyWeightModal: React.FC<DailyWeightModalProps> = ({
 
   const handleSkip = () => {
     // Record dismissal for today in localStorage
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getLocalDateString();
     localStorage.setItem(`gramgains_weight_dismissed_${todayStr}`, 'true');
     onClose();
   };
