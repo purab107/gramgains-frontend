@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { ApiService, UserProfile } from '@/services/api';
 import { buildLeadUpSchedule } from '@/utils/calorieTransition';
+import { logPageLoaded, logEvent, logError, logStepEntered, logStepLeft, logLoadingStart, logLoadingEnd } from '@/lib/onboarding-logger';
 
 import { OnboardingHeader } from './OnboardingHeader';
 import { OnboardingFooter } from './OnboardingFooter';
@@ -47,6 +48,11 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [currentProtein, setCurrentProtein] = useState('');
 
   React.useEffect(() => {
+    logPageLoaded('OnboardingWizard', { initialProfile: initialProfile?.name ?? null });
+    logStepEntered(1, 'forward'); // Wizard always starts at step 1
+  }, []);
+
+  React.useEffect(() => {
     if (initialProfile?.name && (!name || name === 'Athlete')) {
       setName(initialProfile.name);
     }
@@ -55,15 +61,25 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   // Navigation handlers with direction tracking for smooth slide left/right
   const goToNextStep = () => {
     if (step < 5) {
+      logStepLeft(step);
       setDirection(1);
-      setStep((prev) => prev + 1);
+      setStep((prev) => {
+        const next = prev + 1;
+        logStepEntered(next, 'forward');
+        return next;
+      });
     }
   };
 
   const goToPrevStep = () => {
     if (step > 1) {
+      logStepLeft(step);
       setDirection(-1);
-      setStep((prev) => prev - 1);
+      setStep((prev) => {
+        const next = prev - 1;
+        logStepEntered(next, 'backward');
+        return next;
+      });
     }
   };
 
@@ -145,6 +161,16 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const handleFinish = async () => {
     try {
       setLoading(true);
+      logStepLeft(step); // leaving final step
+      logLoadingStart('OnboardingSubmit');
+      logEvent('Submitting onboarding profile to API', {
+        name: name.trim() || 'Athlete',
+        goal,
+        targetCalories: metabolics.targetCalories,
+        targetProtein: metabolics.targetProtein,
+        targetCarbs: metabolics.targetCarbs,
+        targetFat: metabolics.targetFat,
+      });
       const updated = await ApiService.updateProfile({
         name: name.trim() || 'Athlete',
         gender,
@@ -165,8 +191,12 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         onboardingCompleted: true,
       });
 
+      logLoadingEnd('OnboardingSubmit');
+      logEvent('Onboarding profile saved successfully');
       onComplete(updated);
     } catch (err) {
+      logError('handleFinish / updateProfile', err);
+      logLoadingEnd('OnboardingSubmit');
       console.error('Failed to update profile:', err);
       // Fallback for offline or dev mock mode
       onComplete({
