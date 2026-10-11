@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Flame, Sparkles, Activity } from 'lucide-react';
+import { logLoadingStart, logLoadingEnd, logEvent } from '@/lib/onboarding-logger';
 
 interface SplashScreenProps {
   onFinish?: () => void;
@@ -15,9 +16,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
   const [fadingOut, setFadingOut] = useState(false);
 
   useEffect(() => {
+    logLoadingStart('SplashScreenAnimation');
+
     const timer = setTimeout(() => {
+      logEvent('SplashScreen animation finished, starting fade out');
       setFadingOut(true);
       const finishTimer = setTimeout(() => {
+        logLoadingEnd('SplashScreenAnimation');
         if (onFinish) onFinish();
       }, 500);
       return () => clearTimeout(finishTimer);
