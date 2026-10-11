@@ -8,6 +8,7 @@ import { startGuestSession, endGuestSession } from '@/lib/guest-session';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
 import { ApiService } from '@/services/api';
+import { logPageLoaded, logEvent, logError, logLoadingStart, logLoadingEnd } from '@/lib/onboarding-logger';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,6 +20,12 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Log page mount
+  useEffect(() => {
+    logPageLoaded('Login / Register Page', { initialMode: mode });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Redirect to dashboard if already authenticated (skip during active submission / onboarding redirect)
   useEffect(() => {
@@ -33,17 +40,23 @@ export default function LoginPage() {
     setIsLoading(true);
 
     const trimmedEmail = email.trim().toLowerCase();
+    logEvent(`Auth form submitted: ${mode}`, { email: trimmedEmail });
+    logLoadingStart(`auth_${mode}`);
 
     try {
       if (mode === 'register') {
         // Pre-check if user already exists
+        logEvent('Pre-checking email existence for register');
         const { exists } = await ApiService.checkEmailExists(trimmedEmail);
         if (exists) {
+          logEvent('Register blocked: email already exists', { email: trimmedEmail });
           setError('An account with this email already exists. Please sign in instead.');
+          logLoadingEnd(`auth_${mode}`);
           setIsLoading(false);
           return;
         }
 
+        logEvent('Calling signUp.email');
         const { error: resError } = await signUp.email({
           email: trimmedEmail,
           password,
@@ -52,6 +65,7 @@ export default function LoginPage() {
 
         if (resError) {
           const errMsg = resError.message || '';
+          logError('signUp.email', resError);
           if (
             errMsg.toLowerCase().includes('already exists') ||
             (resError as any).code === 'USER_ALREADY_EXISTS' ||
@@ -61,23 +75,30 @@ export default function LoginPage() {
           } else {
             setError(errMsg || 'Failed to sign up. Please try again.');
           }
+          logLoadingEnd(`auth_${mode}`);
           setIsLoading(false);
           return;
         }
 
+        logLoadingEnd(`auth_${mode}`);
+        logEvent('Registration SUCCESS — redirecting to onboarding', { email: trimmedEmail });
         setIsRedirecting(true);
         endGuestSession();
         // Redirect to onboarding flow after creating an account
         window.location.href = '/?onboarding=true';
       } else {
         // Pre-check if user exists before attempting sign-in
+        logEvent('Pre-checking email existence for login');
         const { exists } = await ApiService.checkEmailExists(trimmedEmail);
         if (!exists) {
+          logEvent('Login blocked: user not found', { email: trimmedEmail });
           setError('User does not exist. Please register first.');
+          logLoadingEnd(`auth_${mode}`);
           setIsLoading(false);
           return;
         }
 
+        logEvent('Calling signIn.email');
         const { error: resError } = await signIn.email({
           email: trimmedEmail,
           password,
@@ -85,6 +106,7 @@ export default function LoginPage() {
 
         if (resError) {
           const errMsg = resError.message || '';
+          logError('signIn.email', resError);
           if (
             errMsg.toLowerCase().includes('not found') ||
             errMsg.toLowerCase().includes('user does not exist')
@@ -93,16 +115,21 @@ export default function LoginPage() {
           } else {
             setError('Incorrect password. Please try again.');
           }
+          logLoadingEnd(`auth_${mode}`);
           setIsLoading(false);
           return;
         }
 
+        logLoadingEnd(`auth_${mode}`);
+        logEvent('Login SUCCESS — redirecting to dashboard', { email: trimmedEmail });
         endGuestSession();
         // Redirect to dashboard upon sign in
         window.location.href = '/';
       }
     } catch (err: any) {
+      logError('handleSubmit', err);
       setError(err.message || 'An unexpected error occurred.');
+      logLoadingEnd(`auth_${mode}`);
       setIsLoading(false);
     }
   };

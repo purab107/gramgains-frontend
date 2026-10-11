@@ -39,6 +39,15 @@ import {
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
 import { isGuestSession } from '@/lib/guest-session';
+import {
+  logPageLoaded,
+  logEvent,
+  logError,
+  logLoadingStart,
+  logLoadingEnd,
+  startTimer,
+  endTimer,
+} from '@/lib/onboarding-logger';
 
 function getLocalDateString(d: Date = new Date()): string {
   const year = d.getFullYear();
@@ -119,7 +128,15 @@ function DashboardHomePage() {
     // Check if onboarding was requested via URL query param
     const searchParams = new URLSearchParams(window.location.search);
     const isExplicitOnboarding = searchParams.get('onboarding') === 'true';
+
+    logPageLoaded('Dashboard Home Page', {
+      isGuest: isGuestSession(),
+      isDevSkip: isDevSkip(),
+      isExplicitOnboarding,
+    });
+
     if (isExplicitOnboarding) {
+      logEvent('Onboarding triggered via ?onboarding=true URL param');
       setShowOnboarding(true);
       setShowSplash(false);
       return;
@@ -128,11 +145,17 @@ function DashboardHomePage() {
     // Only show splash screen once per browser session for normal dashboard visits
     const hasSeenSplash = sessionStorage.getItem('gramgains_splash_seen');
     if (!hasSeenSplash) {
+      logEvent('SplashScreen will be shown (first visit this session)');
+      logLoadingStart('SplashScreen');
       setShowSplash(true);
+    } else {
+      logEvent('SplashScreen skipped (already seen this session)');
     }
   }, []);
 
   const handleSplashFinish = () => {
+    logLoadingEnd('SplashScreen');
+    logEvent('SplashScreen finished — transitioning to dashboard');
     sessionStorage.setItem('gramgains_splash_seen', 'true');
     setShowSplash(false);
   };
@@ -144,6 +167,8 @@ function DashboardHomePage() {
   const loadProfileAndData = async () => {
     try {
       setLoading(true);
+      startTimer('loadProfileAndData');
+      logEvent('loadProfileAndData START', { selectedDate });
 
       // Load User Profile
       let prof: UserProfile | null = null;
@@ -153,6 +178,7 @@ function DashboardHomePage() {
       const isGuest = isGuestSession();
 
       try {
+        logEvent('Fetching user profile from API');
         prof = await ApiService.getProfile();
         setUserProfile(prof);
 
@@ -160,18 +186,29 @@ function DashboardHomePage() {
           isExplicitOnboarding ||
           (!isGuest && prof && prof.onboardingCompleted === false);
 
+        logEvent('Profile loaded', {
+          onboardingCompleted: prof?.onboardingCompleted,
+          shouldOnboard,
+          isExplicitOnboarding,
+          isGuest,
+        });
+
         if (shouldOnboard) {
+          logEvent('OnboardingWizard will be shown (profile not completed or explicit param)');
           setShowOnboarding(true);
         }
       } catch (err) {
+        logError('getProfile', err);
         console.warn('Backend profile not available yet, using defaults', err);
         if (isExplicitOnboarding) {
+          logEvent('Onboarding forced ON despite profile error (explicit param present)');
           setShowOnboarding(true);
         }
       }
 
       // Fetch Summary & Logs for selected date
       try {
+        logEvent('Fetching dashboard summary & daily logs', { selectedDate });
         const [sumData, dailyData] = await Promise.all([
           ApiService.getDashboardSummary(selectedDate),
           ApiService.getDailyLogs(selectedDate),
@@ -179,7 +216,9 @@ function DashboardHomePage() {
         setSummary(sumData);
         setLogs(dailyData.logs);
         setWaterTotalMl(dailyData.water?.totalMl || sumData?.water?.consumed || 0);
+        logEvent('Dashboard summary & logs loaded', { logCount: dailyData.logs?.length });
       } catch (err) {
+        logError('getDashboardSummary/getDailyLogs', err);
         console.error('Failed loading daily summary/logs:', err);
       }
 
@@ -194,13 +233,18 @@ function DashboardHomePage() {
             setHasPendingWeight(true);
             const hasShownPopupSession = sessionStorage.getItem(`gramgains_weight_popup_${todayStr}`);
             if (!hasShownPopupSession) {
+              logEvent('Weight modal will auto-open (no weight logged today, first time this session)');
               sessionStorage.setItem(`gramgains_weight_popup_${todayStr}`, 'true');
               setIsWeightModalOpen(true);
+            } else {
+              logEvent('Weight banner shown (no weight today, modal already shown this session)');
             }
           } else {
+            logEvent('Weight already logged today — no prompt needed');
             setHasPendingWeight(false);
           }
         } catch (err) {
+          logError('getWeightLogs', err);
           console.warn('Failed checking today weight log status:', err);
         }
       }
@@ -209,6 +253,7 @@ function DashboardHomePage() {
       try {
         const checkInData = await ApiService.getCheckIn();
         if (checkInData && checkInData.status === 'PENDING') {
+          logEvent('Weekly check-in PENDING — banner will be shown', { headline: checkInData.headline });
           setPendingCheckIn(checkInData);
         } else {
           setPendingCheckIn(null);
@@ -221,10 +266,12 @@ function DashboardHomePage() {
       try {
         const adStatus = await ApiService.getAdaptiveStatus();
         setAdaptiveStatus(adStatus);
+        logEvent('Adaptive status loaded', { confidenceLevel: (adStatus as any)?.confidenceLevel });
       } catch (err) {
         // Silent catch for adaptive status
       }
     } finally {
+      endTimer('loadProfileAndData');
       setLoading(false);
     }
   };
@@ -240,6 +287,10 @@ function DashboardHomePage() {
   };
 
   const handleOnboardingComplete = (updatedProf: UserProfile) => {
+    logEvent('OnboardingWizard COMPLETE — returning to dashboard', {
+      targetCalories: updatedProf.targetCalories,
+      goal: updatedProf.goal,
+    });
     setUserProfile(updatedProf);
     setShowOnboarding(false);
 
@@ -263,6 +314,7 @@ function DashboardHomePage() {
 
   // If profile is not yet loaded on initial render, show branded loading screen to prevent dashboard flash
   if (!userProfile && loading && !isGuestSession() && !isDevSkip()) {
+    logLoadingStart('BrandedLoadingScreen');
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
         <div className="flex flex-col items-center gap-4">
