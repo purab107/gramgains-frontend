@@ -2,10 +2,11 @@
 
 import { useSharedSession } from '@/components/providers/SessionProvider';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Flame, Loader2 } from 'lucide-react';
 import { isGuestSession } from '@/lib/guest-session';
 import { isDevSkip } from '@/lib/dev-skip';
+import { logLoadingStart, logLoadingEnd, logEvent } from '@/lib/onboarding-logger';
 
 function hasAuthCookie(): boolean {
   if (typeof document === 'undefined') return false;
@@ -21,6 +22,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSharedSession();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const loadingLoggedRef = useRef(false);
 
   useEffect(() => {
     setMounted(true);
@@ -31,21 +33,42 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     // Allow guest sessions and dev skip mode through — no redirect needed
     if (isGuestSession() || isDevSkip()) {
+      logEvent('AuthGuard passed (guest or dev-skip session)');
       return;
     }
 
     // Fast check: If session check is pending but user has no auth cookie in browser,
     // redirect to login immediately instead of hanging on sleeping backend cold start
     if (isPending && !hasAuthCookie()) {
+      logEvent('AuthGuard: No auth cookie detected, fast redirecting to /login');
       router.replace('/login');
       return;
     }
 
     // When session check finishes and user has no active session
     if (!isPending && !session) {
+      logEvent('AuthGuard: Session verification failed (no active session), redirecting to /login');
+      if (loadingLoggedRef.current) {
+        logLoadingEnd('AuthGuardSessionCheck');
+        loadingLoggedRef.current = false;
+      }
       router.replace('/login');
+    } else if (!isPending && session) {
+      logEvent('AuthGuard: Session authenticated successfully', { userId: session.user?.id, email: session.user?.email });
+      if (loadingLoggedRef.current) {
+        logLoadingEnd('AuthGuardSessionCheck');
+        loadingLoggedRef.current = false;
+      }
     }
   }, [mounted, isPending, session, router]);
+
+  // Track loading screen display
+  useEffect(() => {
+    if (isPending && hasAuthCookie() && !loadingLoggedRef.current) {
+      logLoadingStart('AuthGuardSessionCheck');
+      loadingLoggedRef.current = true;
+    }
+  }, [isPending]);
 
   // If already authenticated or in guest/dev mode
   if (session || isGuestSession() || isDevSkip()) {
