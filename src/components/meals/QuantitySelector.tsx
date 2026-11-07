@@ -62,7 +62,7 @@ function unitVolumeInMl(unitLabel: string): number | undefined {
 }
 
 /** Derive NormalizedServing from a FoodServing (api.ts) + parent food context */
-function adaptServing(serving: FoodServing, food: FoodItem, index: number): NormalizedServing {
+export function adaptServing(serving: FoodServing, food: FoodItem, index: number): NormalizedServing {
   const unitType = serving.unitType ?? (serving.unitLabel?.toLowerCase() === 'g' ? 'WEIGHT' : 'HOUSEHOLD');
   const rawLabel = serving.unitLabel || 'g';
   const qty = typeof serving.displayQuantity === 'number' && serving.displayQuantity > 0
@@ -97,7 +97,7 @@ function adaptServing(serving: FoodServing, food: FoodItem, index: number): Norm
 }
 
 /** Adapt a FoodItem (api.ts) to FoodItemInput (portion-calculator.ts) */
-function adaptFood(food: FoodItem): FoodItemInput {
+export function adaptFood(food: FoodItem): FoodItemInput {
   const adaptedServings: NormalizedServing[] = [];
 
   if (food.servings && food.servings.length > 0) {
