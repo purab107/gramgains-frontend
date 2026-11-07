@@ -1,4 +1,4 @@
-import { FoodItem } from '../services/api';
+import type { FoodItem } from '../services/api';
 import {
   Drumstick,
   Egg,
@@ -139,19 +139,67 @@ export function calculatePer100g(food: FoodItem) {
 }
 
 /**
- * Returns a clean, human-readable serving subtitle (e.g. "per 180ml", "per 1 piece", "per 100g").
+ * Resolves a clean primary serving with accurate gravimetric mass and scaled macros.
+ */
+export interface PrimaryServingInfo {
+  servingLabel: string;      // e.g. "1 katori (150g)" or "100g"
+  displaySubtitle: string;   // e.g. "per 1 katori (150g)" or "per 100g"
+  weightGrams: number;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export function getPrimaryServingInfo(food: FoodItem): PrimaryServingInfo {
+  const defaultServing = food.servings?.find((s) => s.isDefault) || food.servings?.[0];
+
+  // Resolve reference weight in grams
+  const weightGrams = defaultServing?.weightGrams || food.servingWeight || 100;
+  const multiplier = weightGrams > 0 ? weightGrams / 100 : 1;
+
+  // Resolve display quantity and raw unit string
+  const rawUnit = (food.servingUnit || defaultServing?.unitLabel || 'g').trim();
+  const rawQty = food.servingDisplayQuantity ?? defaultServing?.displayQuantity;
+
+  let cleanLabel = '';
+
+  // Check if rawUnit already starts with a number or fraction (e.g. "1 katori", "1/2 medium", "2 medium")
+  const startsWithNumber = /^(\d+(\.\d+)?|\d+\/\d+)\s*/i.test(rawUnit);
+
+  if (startsWithNumber) {
+    cleanLabel = rawUnit;
+  } else if (rawQty !== null && rawQty !== undefined && rawQty > 0) {
+    cleanLabel = `${rawQty} ${rawUnit}`.trim();
+  } else if (rawUnit.toLowerCase() === 'g' || rawUnit.toLowerCase() === 'grams') {
+    cleanLabel = `${Math.round(weightGrams)}g`;
+  } else {
+    cleanLabel = `1 ${rawUnit}`.trim();
+  }
+
+  // Append gram mass if not already present
+  const hasWeightInParens = /\(\s*\d+\s*(g|ml|kg)\s*\)/i.test(cleanLabel);
+  if (!hasWeightInParens && weightGrams > 0 && !cleanLabel.endsWith('g') && !cleanLabel.endsWith('ml')) {
+    cleanLabel = `${cleanLabel} (${Math.round(weightGrams)}g)`;
+  }
+
+  const displaySubtitle = `per ${cleanLabel}`;
+
+  return {
+    servingLabel: cleanLabel,
+    displaySubtitle,
+    weightGrams: Math.round(weightGrams * 10) / 10,
+    calories: Math.round(food.calories * multiplier),
+    protein: Math.round((food.protein || 0) * multiplier * 10) / 10,
+    carbs: Math.round((food.carbohydrates || 0) * multiplier * 10) / 10,
+    fat: Math.round((food.fat || 0) * multiplier * 10) / 10,
+  };
+}
+
+/**
+ * Returns a clean, human-readable serving subtitle (e.g. "per 1 katori (150g)", "per 100g").
  */
 export function getServingSubtitle(food: FoodItem): string {
-  const defaultServing = food.servings?.find((s) => s.isDefault) || food.servings?.[0];
-  const qty = food.servingDisplayQuantity ?? defaultServing?.displayQuantity ?? (food.servingUnitType === 'WEIGHT' || !food.servingUnitType ? food.servingWeight : null);
-  const unit = food.servingUnit || defaultServing?.unitLabel || 'g';
-
-  if (qty !== null && qty !== undefined && qty > 0) {
-    return `per ${qty}${unit}`;
-  }
-  if (food.servingWeight && food.servingWeight > 0) {
-    return `per ${food.servingWeight}${unit}`;
-  }
-  return 'per 100g';
+  return getPrimaryServingInfo(food).displaySubtitle;
 }
 
