@@ -39,8 +39,9 @@ import {
 } from 'lucide-react';
 import { MealTypeKey } from './MealSectionCard';
 import { MACRO_COLORS } from '@/lib/constants';
-import { getServingSubtitle } from '@/lib/food-utils';
-import { QuantitySelector, ServingSelection } from '../meals/QuantitySelector';
+import { getServingSubtitle, getPrimaryServingInfo } from '@/lib/food-utils';
+import { QuantitySelector, ServingSelection, adaptFood } from '../meals/QuantitySelector';
+import { createQuickAddPayload } from '@/lib/portion-calculator';
 
 export interface AddFoodSheetProps {
   open: boolean;
@@ -123,6 +124,17 @@ export function AddFoodSheet({
   const [servingSelection, setServingSelection] = useState<ServingSelection | null>(null);
   const [isLogging, setIsLogging] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
+
+  // 1-Tap Quick Add & Undo Toast State
+  const [quickAddLoadingId, setQuickAddLoadingId] = useState<string | null>(null);
+  const [quickAddSuccessId, setQuickAddSuccessId] = useState<string | null>(null);
+  const [undoToast, setUndoToast] = useState<{
+    logId: string;
+    foodName: string;
+    servingLabel: string;
+    mealLabel: string;
+  } | null>(null);
+  const undoTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sync prop mealType
   useEffect(() => {
@@ -293,7 +305,7 @@ export function AddFoodSheet({
   }, [query, activeTab, open, sheetView]);
 
   // Transition to Add Food view when clicking the plus button
-  const handleFoodPlusClick = (food: FoodItem) => {
+  const handleFoodCardClick = (food: FoodItem) => {
     setSelectedFood(food);
     setServingSelection(null);
     // Cache this food in guest storage so logMeal can resolve macro data
@@ -307,6 +319,65 @@ export function AddFoodSheet({
 
     if (onAddFoodClick) {
       onAddFoodClick(food, 'food');
+    }
+  };
+
+  // 1-Tap Quick Add directly logs 1 verified default portion into the active meal slot
+  const handleFoodQuickAdd = async (e: React.MouseEvent, food: FoodItem) => {
+    e.stopPropagation();
+    try {
+      setQuickAddLoadingId(food.id);
+      const adapted = adaptFood(food);
+      const payload = createQuickAddPayload(adapted, undefined, currentMeal);
+
+      const logged = await ApiService.logMeal({
+        date: selectedDate,
+        mealType: currentMeal,
+        foodId: payload.foodId,
+        servings: payload.servings,
+        customWeightGrams: payload.customWeightGrams,
+        displayQuantity: payload.displayQuantity,
+        displayUnit: payload.displayUnit,
+        unitLabel: payload.unitLabel,
+      });
+
+      onFoodLogged?.();
+
+      setQuickAddSuccessId(food.id);
+      setTimeout(() => {
+        setQuickAddSuccessId((prev) => (prev === food.id ? null : prev));
+      }, 1500);
+
+      const primaryInfo = getPrimaryServingInfo(food);
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+      setUndoToast({
+        logId: logged.id,
+        foodName: food.name,
+        servingLabel: primaryInfo.servingLabel,
+        mealLabel: MEAL_DETAILS[currentMeal]?.label || 'Meal',
+      });
+
+      undoTimerRef.current = setTimeout(() => {
+        setUndoToast(null);
+      }, 4000);
+    } catch (err) {
+      console.error('Failed to quick add food:', err);
+      alert('Could not log food. Please try again.');
+    } finally {
+      setQuickAddLoadingId(null);
+    }
+  };
+
+  const handleUndoQuickAdd = async () => {
+    if (!undoToast) return;
+    const { logId } = undoToast;
+    setUndoToast(null);
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    try {
+      await ApiService.deleteLog(logId);
+      onFoodLogged?.();
+    } catch (err) {
+      console.error('Failed to undo meal log:', err);
     }
   };
 
@@ -612,7 +683,8 @@ export function AddFoodSheet({
                     return (
                       <div
                         key={meal.id}
-                        className="p-3 bg-card rounded-xl border border-border shadow-2xs hover:border-primary/40 hover:bg-muted/30 transition-all flex items-center justify-between gap-3 group"
+                        onClick={() => handleSavedMealPlusClick(meal)}
+                        className="p-3 bg-card rounded-xl border border-border shadow-2xs hover:border-primary/50 hover:bg-muted/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99]"
                       >
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
@@ -676,20 +748,19 @@ export function AddFoodSheet({
                   }
 
                   return currentList.map((food) => {
-                    const cal = Math.round(food.calories);
-                    const p = Math.round((food.protein || 0) * 10) / 10;
-                    const c = Math.round((food.carbohydrates || 0) * 10) / 10;
-                    const f = Math.round((food.fat || 0) * 10) / 10;
-                    const weight = Math.round(food.servingWeight || 100);
+                    const primaryInfo = getPrimaryServingInfo(food);
+                    const isAdding = quickAddLoadingId === food.id;
+                    const isAdded = quickAddSuccessId === food.id;
 
                     return (
                       <div
                         key={food.id}
-                        className="p-3 bg-card rounded-xl border border-border shadow-2xs hover:border-primary/40 hover:bg-muted/30 transition-all flex items-center justify-between gap-3 group"
+                        onClick={() => handleFoodCardClick(food)}
+                        className="p-3 bg-card rounded-xl border border-border shadow-2xs hover:border-primary/50 hover:bg-muted/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99]"
                       >
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-bold text-xs sm:text-sm text-foreground truncate">
+                            <span className="font-bold text-xs sm:text-sm text-foreground truncate group-hover:text-primary transition-colors">
                               {food.name}
                             </span>
                             {food.brand ? (
@@ -707,32 +778,43 @@ export function AddFoodSheet({
                             ) : null}
                           </div>
 
-                          <div className="text-[11px] text-muted-foreground font-medium mt-1">
-                            <span>{cal} cal, </span>
+                          <div className="text-[11px] text-muted-foreground font-medium mt-1 font-mono">
+                            <span className="font-bold text-foreground">{primaryInfo.calories} <span className="text-[10px] font-normal text-muted-foreground">cal</span>, </span>
                             <span className="font-semibold" style={{ color: MACRO_COLORS.protein }}>
-                              {p} p
+                              {primaryInfo.protein}p
                             </span>
                             <span>, </span>
                             <span className="font-semibold" style={{ color: MACRO_COLORS.carbs }}>
-                              {c} c
+                              {primaryInfo.carbs}c
                             </span>
                             <span>, </span>
                             <span className="font-semibold" style={{ color: MACRO_COLORS.fat }}>
-                              {f} f
+                              {primaryInfo.fat}f
                             </span>
-                            <span>, {getServingSubtitle(food)}</span>
+                            <span className="text-muted-foreground font-sans">, {primaryInfo.displaySubtitle}</span>
                           </div>
                         </div>
 
                         <Button
                           type="button"
-                          variant="outline"
+                          variant={isAdded ? "default" : "outline"}
                           size="icon"
-                          onClick={() => handleFoodPlusClick(food)}
-                          className="h-8 w-8 rounded-lg border-border text-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/30 shadow-2xs shrink-0 transition-all active:scale-95"
-                          title="Add food item"
+                          disabled={isAdding}
+                          onClick={(e) => handleFoodQuickAdd(e, food)}
+                          className={`h-8 w-8 rounded-lg shadow-2xs shrink-0 transition-all active:scale-90 ${
+                            isAdded
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs scale-105'
+                              : 'border-border text-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/30'
+                          }`}
+                          title={isAdded ? "Added to meal!" : "Quick add to meal"}
                         >
-                          <Plus className="w-4 h-4" />
+                          {isAdding ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : isAdded ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            <Plus className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                     );
@@ -740,6 +822,25 @@ export function AddFoodSheet({
                 })()
               )}
             </div>
+
+            {/* 1-Tap Quick Add Undo Toast */}
+            {undoToast && (
+              <div className="absolute bottom-4 left-4 right-4 z-50 bg-foreground text-background p-3 rounded-2xl shadow-xl flex items-center justify-between gap-3 text-xs animate-in fade-in slide-in-from-bottom-2 border border-border/20">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span className="truncate">
+                    Added <strong>{undoToast.foodName}</strong> ({undoToast.servingLabel}) to {undoToast.mealLabel}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleUndoQuickAdd}
+                  className="px-2.5 py-1 rounded-lg bg-background/20 hover:bg-background/30 text-background font-bold text-[11px] shrink-0 transition-colors uppercase tracking-wider"
+                >
+                  Undo
+                </button>
+              </div>
+            )}
           </>
         ) : (
           /* ============================================================

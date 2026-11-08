@@ -387,7 +387,10 @@ export class ApiService {
       if (mock) return mock;
     }
     const res = await apiFetch(`${API_BASE_URL}/profile`);
-    if (!res.ok) throw new Error('Failed to fetch user profile');
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      throw new Error(err?.error || err?.message || 'Failed to fetch user profile');
+    }
     const json = await res.json();
     return json.data;
   }
@@ -403,7 +406,10 @@ export class ApiService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error('Failed to update profile');
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      throw new Error(err?.error || err?.message || 'Failed to update profile');
+    }
     const json = await res.json();
     return json.data;
   }
@@ -416,7 +422,10 @@ export class ApiService {
       if (mock) return mock.summary;
     }
     const res = await apiFetch(`${API_BASE_URL}/dashboard/summary?date=${date}`);
-    if (!res.ok) throw new Error('Failed to fetch dashboard summary');
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      throw new Error(err?.error || err?.message || 'Failed to fetch dashboard summary');
+    }
     const json = await res.json();
     return json.data;
   }
@@ -428,7 +437,10 @@ export class ApiService {
       if (mock) return mock.heatmap;
     }
     const res = await apiFetch(`${API_BASE_URL}/dashboard/heatmap?days=${days}`);
-    if (!res.ok) throw new Error('Failed to fetch heatmap');
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      throw new Error(err?.error || err?.message || 'Failed to fetch heatmap');
+    }
     const json = await res.json();
     return json.data;
   }
