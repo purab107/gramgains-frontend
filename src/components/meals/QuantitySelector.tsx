@@ -102,10 +102,33 @@ export function adaptFood(food: FoodItem): FoodItemInput {
 
   if (food.servings && food.servings.length > 0) {
     food.servings.forEach((s, i) => adaptedServings.push(adaptServing(s, food, i)));
-  } else {
-    // Synthetic fallback serving
+  } else if (food.servingUnit && food.servingUnit.toLowerCase() !== 'g' && food.servingUnit.toLowerCase() !== 'grams') {
     adaptedServings.push({
-      id: 'synthetic-100g',
+      id: `${food.id}-default-serving`,
+      originalLabel: food.servingUnit,
+      cleanUnitName: food.servingUnit.charAt(0).toUpperCase() + food.servingUnit.slice(1),
+      displayLabel: food.servingUnit,
+      capsuleUnitSuffix: food.servingUnit,
+      unitType: food.servingUnitType ?? 'HOUSEHOLD',
+      baseQuantity: food.servingDisplayQuantity ?? 1,
+      referenceWeightGrams: food.servingWeight || 100,
+      isDefault: true,
+      isSynthetic: false,
+    });
+  }
+
+  // Ensure scale Grams is ALWAYS an available option so user can weigh any food on a kitchen scale
+  const hasGramsServing = adaptedServings.some(
+    (s) =>
+      s.unitType === 'WEIGHT' &&
+      (s.cleanUnitName.toLowerCase() === 'grams' ||
+       s.cleanUnitName.toLowerCase() === 'g' ||
+       s.capsuleUnitSuffix.toLowerCase() === 'g')
+  );
+
+  if (!hasGramsServing) {
+    adaptedServings.unshift({
+      id: `${food.id}-scale-grams`,
       originalLabel: 'g',
       cleanUnitName: 'Grams',
       displayLabel: 'Grams (100g)',
@@ -113,7 +136,7 @@ export function adaptFood(food: FoodItem): FoodItemInput {
       unitType: 'WEIGHT',
       baseQuantity: 100,
       referenceWeightGrams: 100,
-      isDefault: true,
+      isDefault: false,
       isSynthetic: true,
     });
   }
