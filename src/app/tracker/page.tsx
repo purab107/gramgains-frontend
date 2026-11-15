@@ -5,7 +5,8 @@ import {
   ApiService, 
   DailyTrackerResponse, 
   UserProfile,
-  DashboardSummaryResponse 
+  DashboardSummaryResponse,
+  MealLogItem
 } from '@/services/api';
 import { 
   Sidebar,
@@ -60,9 +61,17 @@ function TrackerPage() {
   const [loading, setLoading] = useState(true);
   const [isAddFoodOpen, setIsAddFoodOpen] = useState(false);
   const [activeMealType, setActiveMealType] = useState<MealTypeKey>('BREAKFAST');
+  const [editingLog, setEditingLog] = useState<MealLogItem | null>(null);
 
   const handleOpenAddFood = (type: MealTypeKey) => {
+    setEditingLog(null);
     setActiveMealType(type);
+    setIsAddFoodOpen(true);
+  };
+
+  const handleEditMeal = (log: MealLogItem) => {
+    setEditingLog(log);
+    setActiveMealType(log.mealType);
     setIsAddFoodOpen(true);
   };
 
@@ -266,6 +275,7 @@ function TrackerPage() {
               mealType="BREAKFAST"
               logs={morningLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
 
@@ -273,6 +283,7 @@ function TrackerPage() {
               mealType="LUNCH"
               logs={afternoonLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
 
@@ -280,6 +291,7 @@ function TrackerPage() {
               mealType="SNACK"
               logs={eveningLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
 
@@ -287,6 +299,7 @@ function TrackerPage() {
               mealType="DINNER"
               logs={dinnerLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
           </div>
@@ -303,11 +316,15 @@ function TrackerPage() {
           {/* Right-Side Search & Add Food Panel */}
           <AddFoodSheet
             open={isAddFoodOpen}
-            onOpenChange={setIsAddFoodOpen}
+            onOpenChange={(open) => {
+              setIsAddFoodOpen(open);
+              if (!open) setEditingLog(null);
+            }}
             selectedDate={selectedDate}
             mealType={activeMealType}
             onMealTypeChange={setActiveMealType}
             onFoodLogged={loadData}
+            editingLog={editingLog}
           />
 
 

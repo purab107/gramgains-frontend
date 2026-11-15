@@ -75,9 +75,17 @@ function DashboardHomePage() {
   const [loading, setLoading] = useState(true);
   const [isAddFoodOpen, setIsAddFoodOpen] = useState(false);
   const [activeMealType, setActiveMealType] = useState<MealTypeKey>('BREAKFAST');
+  const [editingLog, setEditingLog] = useState<MealLogItem | null>(null);
 
   const handleOpenAddFood = (type: MealTypeKey = 'BREAKFAST') => {
+    setEditingLog(null);
     setActiveMealType(type);
+    setIsAddFoodOpen(true);
+  };
+
+  const handleEditMeal = (log: MealLogItem) => {
+    setEditingLog(log);
+    setActiveMealType(log.mealType);
     setIsAddFoodOpen(true);
   };
 
@@ -465,6 +473,7 @@ function DashboardHomePage() {
                 logs={logs}
                 onLogDeleted={loadProfileAndData}
                 onAddMeal={(mealKey) => handleOpenAddFood((mealKey as MealTypeKey) || 'BREAKFAST')}
+                onEditMeal={handleEditMeal}
               />
             </div>
           </div>
@@ -474,11 +483,15 @@ function DashboardHomePage() {
       {/* Side Panel: Add Food Sheet */}
       <AddFoodSheet
         open={isAddFoodOpen}
-        onOpenChange={setIsAddFoodOpen}
+        onOpenChange={(open) => {
+          setIsAddFoodOpen(open);
+          if (!open) setEditingLog(null);
+        }}
         selectedDate={selectedDate}
         mealType={activeMealType}
         onMealTypeChange={setActiveMealType}
         onFoodLogged={loadProfileAndData}
+        editingLog={editingLog}
       />
 
       {/* Daily Weight Modal */}
