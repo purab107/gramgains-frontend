@@ -12,6 +12,7 @@ import {
   Moon, 
   Plus, 
   Trash2, 
+  Pencil,
   Loader2, 
   Clock 
 } from 'lucide-react';
@@ -73,6 +74,7 @@ interface MealSectionCardProps {
   logs: MealLogItem[];
   onAddMealClick: (mealType: MealTypeKey) => void;
   onLogDeleted: () => void;
+  onEditMealClick?: (item: MealLogItem) => void;
 }
 
 export function MealSectionCard({
@@ -80,6 +82,7 @@ export function MealSectionCard({
   logs,
   onAddMealClick,
   onLogDeleted,
+  onEditMealClick,
 }: MealSectionCardProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -185,6 +188,18 @@ export function MealSectionCard({
                           kcal
                         </span>
                       </span>
+                      {onEditMealClick && (
+                        <button
+                          type="button"
+                          onClick={() => onEditMealClick(item)}
+                          disabled={isDeleting}
+                          title="Edit food entry"
+                          aria-label={`Edit ${item.food?.name || 'entry'}`}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                       <button
                         onClick={() => handleDelete(item.id)}
                         disabled={isDeleting}
