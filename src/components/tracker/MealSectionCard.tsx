@@ -17,6 +17,7 @@ import {
   Clock 
 } from 'lucide-react';
 import { MACRO_COLORS } from '@/lib/constants';
+import { formatPortionString } from '@/lib/portion-calculator';
 
 export type MealTypeKey = 'BREAKFAST' | 'LUNCH' | 'SNACK' | 'DINNER';
 
@@ -154,9 +155,11 @@ export function MealSectionCard({
           <div className="flex flex-col gap-2">
             {logs.map((item) => {
               const isDeleting = deletingId === item.id;
-              const displayServing = !item.unitLabel || item.unitLabel.toLowerCase() === 'g' || item.unitLabel.toLowerCase() === 'grams'
+              const rawUnit = item.displayUnit || item.unitLabel || '';
+              const isGram = !rawUnit || rawUnit.toLowerCase() === 'g' || rawUnit.toLowerCase() === 'grams';
+              const displayServing = isGram
                 ? `${Math.round(item.weightGrams)}g`
-                : `${item.unitLabel} (${Math.round(item.weightGrams)}g)`;
+                : `${formatPortionString(item.displayQuantity || 1, rawUnit)} (${Math.round(item.weightGrams)}g)`;
 
               return (
                 <div
