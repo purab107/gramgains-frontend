@@ -42,7 +42,7 @@ import { MealTypeKey } from './MealSectionCard';
 import { MACRO_COLORS } from '@/lib/constants';
 import { getServingSubtitle, getPrimaryServingInfo } from '@/lib/food-utils';
 import { QuantitySelector, ServingSelection, adaptFood } from '../meals/QuantitySelector';
-import { createQuickAddPayload } from '@/lib/portion-calculator';
+import { createQuickAddPayload, formatPortionString, parseServingUnitLabel } from '@/lib/portion-calculator';
 
 export interface AddFoodSheetProps {
   open: boolean;
@@ -167,12 +167,14 @@ export function AddFoodSheet({
     }
 
     const unit = (editingLog.displayUnit || editingLog.unitLabel || '').toLowerCase();
+    const cleanUnit = parseServingUnitLabel(unit).unit.toLowerCase();
     const servings = selectedFood.servings || [];
 
-    // 1. Try to find matching serving by unitLabel
-    const matchedServing = servings.find(
-      (s) => (s.unitLabel || '').toLowerCase() === unit
-    );
+    // 1. Try to find matching serving by unitLabel or normalized unit name
+    const matchedServing = servings.find((s) => {
+      const sUnit = (s.unitLabel || '').toLowerCase();
+      return sUnit === unit || parseServingUnitLabel(sUnit).unit.toLowerCase() === cleanUnit;
+    });
 
     // 2. If unit is grams / g, or matched serving is weight/g
     let servingId: string | undefined = undefined;
@@ -1217,14 +1219,14 @@ export function AddFoodSheet({
                         <>
                           <Check className="w-4 h-4" />
                           <span>
-                            Update {servingSelection ? `${servingSelection.displayQuantity} ${servingSelection.displayUnit}` : ''} in {activeMealInfo.label}
+                            Update {servingSelection ? formatPortionString(servingSelection.displayQuantity, servingSelection.displayUnit) : ''} in {activeMealInfo.label}
                           </span>
                         </>
                       ) : (
                         <>
                           <Plus className="w-4 h-4" />
                           <span>
-                            Add {servingSelection ? `${servingSelection.displayQuantity} ${servingSelection.displayUnit}` : ''} to {activeMealInfo.label}
+                            Add {servingSelection ? formatPortionString(servingSelection.displayQuantity, servingSelection.displayUnit) : ''} to {activeMealInfo.label}
                           </span>
                         </>
                       )}
