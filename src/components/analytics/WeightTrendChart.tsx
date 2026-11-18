@@ -75,7 +75,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
               </button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Dots indicate daily scale weigh-ins; the green curve isolates sustained tissue change.
+              Dots indicate daily scale weigh-ins; the green curve shows your underlying weight trend, with daily fluctuations filtered out.
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
 
       {showTooltipInfo && (
         <div className="p-3 rounded-2xl bg-muted/40 border border-border text-xs text-muted-foreground leading-relaxed animate-in fade-in duration-150">
-          Scale weight naturally fluctuates by 1–3 kg due to sodium intake, hydration, and glycogen binding (1g carb binds 3–4g water). GramGains filters out this noise using Holt’s Double Exponential Smoothing to determine your true rate of tissue loss or gain.
+          Scale weight naturally fluctuates by 1–3 kg due to sodium intake, hydration, and glycogen binding (1g carb binds 3–4g water). GramGains filters out this noise using Holt’s Double Exponential Smoothing to reveal your underlying weight trend.
         </div>
       )}
 
