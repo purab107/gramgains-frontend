@@ -78,7 +78,7 @@ function AnalyticsDashboard() {
         ApiService.getWeightLogs(selectedDays).catch(() => null),
         ApiService.getAnalyticsOverview(selectedDays).catch(() => null),
         ApiService.getAnalyticsPatterns(14).catch(() => null),
-        ApiService.getAnalyticsTrends(tdeeDays).catch(() => null),
+        ApiService.getAnalyticsTrends(Math.max(90, tdeeDays)).catch(() => null),
       ]);
 
       setUserProfile(prof);

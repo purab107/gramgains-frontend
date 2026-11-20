@@ -68,7 +68,13 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
     // Flux delta based on confidence
     const fluxDelta = confidenceLevel === 'HIGH' ? 25 : confidenceLevel === 'MODERATE' ? 40 : 60;
 
-    return series.map((item) => {
+    // Locally slice series to selectedDays window for instantaneous, buttery 60fps morphing
+    const targetSlice =
+      selectedDays && series.length > selectedDays
+        ? series.slice(-selectedDays)
+        : series;
+
+    return targetSlice.map((item) => {
       const dateObj = new Date(item.date);
       const displayDate = isNaN(dateObj.getTime())
         ? item.date
@@ -87,7 +93,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
         caloriesConsumed: item.caloriesConsumed ? Math.round(item.caloriesConsumed) : null,
       };
     });
-  }, [series, confidenceLevel]);
+  }, [series, confidenceLevel, selectedDays]);
 
   // Compute domain bounds for Y-Axis and header KPIs
   const { minTdee, maxTdee, avgEffective, diffKcal, dateRangeStr } = useMemo(() => {
@@ -228,7 +234,10 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
           </div>
         ) : (
           <div className="w-full flex-1 min-h-[190px] pt-1">
-            <ChartContainer config={chartConfig} className="w-full h-[195px] aspect-auto">
+            <ChartContainer 
+              config={chartConfig} 
+              className="w-full h-[195px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+            >
               <ComposedChart
                 data={chartData}
                 margin={{ top: 8, right: 6, left: -22, bottom: 2 }}
@@ -290,17 +299,19 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   }
                 />
 
-                {/* Shaded Flux Range Area with subtle border glow */}
+                {/* Shaded Flux Range Area: 60fps Morphing Animation */}
                 <Area
                   type="monotone"
                   dataKey="fluxRange"
                   stroke="rgba(255, 107, 74, 0.35)"
                   strokeWidth={1}
                   fill="rgba(255, 107, 74, 0.20)"
-                  isAnimationActive={false}
+                  isAnimationActive={true}
+                  animationDuration={600}
+                  animationEasing="ease-in-out"
                 />
 
-                {/* Smooth Coral Expenditure Line */}
+                {/* Smooth Coral Expenditure Line: 60fps Morphing Animation */}
                 <Line
                   type="monotone"
                   dataKey="effectiveTdee"
@@ -308,6 +319,9 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   stroke="#ff6b4a"
                   strokeWidth={2.75}
                   dot={false}
+                  isAnimationActive={true}
+                  animationDuration={600}
+                  animationEasing="ease-in-out"
                   activeDot={{
                     r: 5,
                     fill: '#ff6b4a',
