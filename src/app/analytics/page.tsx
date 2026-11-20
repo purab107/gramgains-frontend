@@ -8,7 +8,8 @@ import {
   WeightHistoryResponse, 
   AnalyticsOverviewResponse, 
   AnalyticsPatternsResponse, 
-  AdaptiveCheckInResponse 
+  AdaptiveCheckInResponse,
+  AnalyticsTrendsResponse 
 } from '@/services/api';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Navbar } from '@/components/layout/Navbar';
@@ -29,6 +30,7 @@ function AnalyticsDashboard() {
   const devSkip = useDevSkip();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedDays, setSelectedDays] = useState<number>(30);
+  const [tdeeDays, setTdeeDays] = useState<number>(30);
   const [loading, setLoading] = useState(true);
 
   // Data states
@@ -36,6 +38,7 @@ function AnalyticsDashboard() {
   const [weightHistory, setWeightHistory] = useState<WeightHistoryResponse | null>(null);
   const [overview, setOverview] = useState<AnalyticsOverviewResponse | null>(null);
   const [patterns, setPatterns] = useState<AnalyticsPatternsResponse | null>(null);
+  const [trends, setTrends] = useState<AnalyticsTrendsResponse | null>(null);
   const [checkIn, setCheckIn] = useState<AdaptiveCheckInResponse | null>(null);
 
   // Modal / Drawer states
@@ -68,12 +71,13 @@ function AnalyticsDashboard() {
   const loadAllAnalytics = async () => {
     try {
       setLoading(true);
-      const [prof, statusData, weightData, overviewData, patternsData] = await Promise.all([
+      const [prof, statusData, weightData, overviewData, patternsData, trendsData] = await Promise.all([
         ApiService.getProfile().catch(() => null),
         ApiService.getAdaptiveStatus().catch(() => null),
         ApiService.getWeightLogs(selectedDays).catch(() => null),
         ApiService.getAnalyticsOverview(selectedDays).catch(() => null),
         ApiService.getAnalyticsPatterns(14).catch(() => null),
+        ApiService.getAnalyticsTrends(tdeeDays).catch(() => null),
       ]);
 
       setUserProfile(prof);
@@ -81,6 +85,7 @@ function AnalyticsDashboard() {
       setWeightHistory(weightData);
       setOverview(overviewData);
       setPatterns(patternsData);
+      setTrends(trendsData);
 
       // Check for pending check-in
       if (statusData?.targets?.isCheckInAvailable) {
@@ -91,6 +96,18 @@ function AnalyticsDashboard() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTdeeDaysChange = async (days: number) => {
+    setTdeeDays(days);
+    try {
+      const trendsData = await ApiService.getAnalyticsTrends(days).catch(() => null);
+      if (trendsData) {
+        setTrends(trendsData);
+      }
+    } catch (err) {
+      console.error('Failed to update TDEE trends:', err);
     }
   };
 
@@ -157,8 +174,13 @@ function AnalyticsDashboard() {
             />
           )}
 
-          {/* CARD 1: Adaptive Metabolic Engine Status */}
-          <MetabolicEngineCard status={adaptiveStatus} />
+          {/* CARD 1: Adaptive Metabolic Engine Status & Historical TDEE Dot Chart */}
+          <MetabolicEngineCard 
+            status={adaptiveStatus}
+            trends={trends}
+            selectedDays={tdeeDays}
+            onDaysChange={handleTdeeDaysChange}
+          />
 
           {/* CARD 2: Dual Curve Weight Trend Chart (Recharts) */}
           <WeightTrendChart
