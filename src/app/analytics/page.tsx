@@ -182,6 +182,8 @@ function AnalyticsDashboard() {
               trends={trends}
               baselineTdee={adaptiveStatus?.expenditure?.formulaBaselineTdee}
               currentObservedTdee={adaptiveStatus?.expenditure?.observedTdee}
+              confidenceLevel={adaptiveStatus?.confidence?.level}
+              confidenceScore={adaptiveStatus?.confidence?.score}
               selectedDays={tdeeDays}
               onDaysChange={handleTdeeDaysChange}
             />
