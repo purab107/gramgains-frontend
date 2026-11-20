@@ -10,13 +10,22 @@ import {
   TrendingDown, 
   Activity 
 } from 'lucide-react';
-import { AdaptiveStatusResponse } from '@/services/api';
+import { AdaptiveStatusResponse, AnalyticsTrendsResponse } from '@/services/api';
+import { MetabolicTdeeHistoryChart } from './MetabolicTdeeHistoryChart';
 
 interface MetabolicEngineCardProps {
   status: AdaptiveStatusResponse | null;
+  trends?: AnalyticsTrendsResponse | null;
+  selectedDays?: number;
+  onDaysChange?: (days: number) => void;
 }
 
-export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ status }) => {
+export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ 
+  status,
+  trends,
+  selectedDays = 30,
+  onDaysChange,
+}) => {
   if (!status) return null;
 
   const { confidence, expenditure, targets } = status;
@@ -126,6 +135,15 @@ export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ status
           <span className="text-[10px] text-primary/80 font-medium">Anti-whiplash stabilized</span>
         </div>
       </div>
+
+      {/* Historical TDEE Expenditure Dot Chart (shadcn/ui) */}
+      <MetabolicTdeeHistoryChart
+        trends={trends ?? null}
+        baselineTdee={expenditure.formulaBaselineTdee}
+        currentObservedTdee={expenditure.observedTdee}
+        selectedDays={selectedDays}
+        onDaysChange={onDaysChange}
+      />
     </div>
   );
 };
