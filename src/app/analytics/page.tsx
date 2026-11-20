@@ -16,6 +16,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { WeightTrendChart } from '@/components/analytics/WeightTrendChart';
 import { MetabolicEngineCard } from '@/components/analytics/MetabolicEngineCard';
+import { MetabolicTdeeHistoryChart } from '@/components/analytics/MetabolicTdeeHistoryChart';
 import { AdherenceAndChronoCards } from '@/components/analytics/AdherenceAndChronoCards';
 import { WeightHistoryDrawer } from '@/components/weight/WeightHistoryDrawer';
 import { WeeklyCheckInModal } from '@/components/adaptive/WeeklyCheckInModal';
@@ -174,13 +175,17 @@ function AnalyticsDashboard() {
             />
           )}
 
-          {/* CARD 1: Adaptive Metabolic Engine Status & Historical TDEE Dot Chart */}
-          <MetabolicEngineCard 
-            status={adaptiveStatus}
-            trends={trends}
-            selectedDays={tdeeDays}
-            onDaysChange={handleTdeeDaysChange}
-          />
+          {/* 2-COLUMN SECTION: Adaptive Metabolic Engine (Left) & Expenditure Trend (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
+            <MetabolicEngineCard status={adaptiveStatus} />
+            <MetabolicTdeeHistoryChart
+              trends={trends}
+              baselineTdee={adaptiveStatus?.expenditure?.formulaBaselineTdee}
+              currentObservedTdee={adaptiveStatus?.expenditure?.observedTdee}
+              selectedDays={tdeeDays}
+              onDaysChange={handleTdeeDaysChange}
+            />
+          </div>
 
           {/* CARD 2: Dual Curve Weight Trend Chart (Recharts) */}
           <WeightTrendChart
