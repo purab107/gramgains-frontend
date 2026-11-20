@@ -9,7 +9,6 @@ import {
   ReferenceLine,
   XAxis,
   YAxis,
-  ResponsiveContainer,
 } from 'recharts';
 import {
   ChartConfig,
@@ -214,7 +213,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
           </div>
         ) : (
           <div className="w-full flex-1 min-h-[200px]">
-            <ResponsiveContainer width="100%" height={210}>
+            <ChartContainer config={chartConfig} className="w-full h-[210px] aspect-auto">
               <ComposedChart
                 data={chartData}
                 margin={{ top: 12, right: 0, left: -20, bottom: 4 }}
@@ -295,7 +294,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   }}
                 />
               </ComposedChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </div>
         )}
 
