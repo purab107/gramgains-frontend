@@ -10,21 +10,16 @@ import {
   TrendingDown, 
   Activity 
 } from 'lucide-react';
-import { AdaptiveStatusResponse, AnalyticsTrendsResponse } from '@/services/api';
-import { MetabolicTdeeHistoryChart } from './MetabolicTdeeHistoryChart';
+import { AdaptiveStatusResponse } from '@/services/api';
 
 interface MetabolicEngineCardProps {
   status: AdaptiveStatusResponse | null;
-  trends?: AnalyticsTrendsResponse | null;
-  selectedDays?: number;
-  onDaysChange?: (days: number) => void;
+  className?: string;
 }
 
 export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ 
   status,
-  trends,
-  selectedDays = 30,
-  onDaysChange,
+  className = '',
 }) => {
   if (!status) return null;
 
@@ -44,7 +39,7 @@ export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({
   const validPercent = Math.min(100, Math.round((confidence.validFoodDays / 28) * 100));
 
   return (
-    <div className="w-full bg-card border border-border rounded-3xl p-5 shadow-sm space-y-4">
+    <div className={`bg-card border border-border rounded-3xl p-5 shadow-sm flex flex-col justify-between space-y-4 ${className}`}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -92,58 +87,59 @@ export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({
         </p>
       </div>
 
-      {/* 3-Column Expenditure Comparison */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {/* Baseline Formula TDEE */}
-        <div className="p-3.5 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block mb-0.5">Formula Estimate</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-bold text-muted-foreground">
-              {Math.round(expenditure.formulaBaselineTdee)}
-            </span>
-            <span className="text-xs text-muted-foreground">kcal</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Mifflin-St Jeor prior</span>
-        </div>
-
-        {/* Observed Real TDEE */}
-        <div className="p-3.5 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block mb-0.5">Observed Real TDEE</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-bold text-foreground">
-              {expenditure.observedTdee ? Math.round(expenditure.observedTdee) : '—'}
-            </span>
-            <span className="text-xs text-foreground">kcal</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Solved from scale &amp; intake</span>
-        </div>
-
-        {/* Effective Blended Target */}
-        <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20">
-          <span className="text-[11px] font-bold text-primary block mb-0.5">Active Target Intake</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-black text-foreground">
-              {Math.round(targets.recommendedCalories)}
-            </span>
-            <span className="text-xs text-foreground font-semibold">kcal</span>
-            {targets.adjustmentKcal !== 0 && (
-              <span className={`ml-auto text-xs font-bold ${targets.adjustmentKcal > 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
-                {targets.adjustmentKcal > 0 ? `+${targets.adjustmentKcal}` : targets.adjustmentKcal}
+      {/* Balanced 2+1 Metric Card Layout */}
+      <div className="space-y-3">
+        {/* Row 1: Baseline Formula TDEE & Observed Real TDEE */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-3.5 rounded-2xl bg-muted/20 border border-border">
+            <span className="text-[11px] text-muted-foreground block mb-0.5">Formula Estimate</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-bold text-muted-foreground">
+                {Math.round(expenditure.formulaBaselineTdee)}
               </span>
-            )}
+              <span className="text-xs text-muted-foreground">kcal</span>
+            </div>
+            <span className="text-[10px] text-muted-foreground">Mifflin-St Jeor prior</span>
           </div>
-          <span className="text-[10px] text-primary/80 font-medium">Anti-whiplash stabilized</span>
+
+          <div className="p-3.5 rounded-2xl bg-muted/20 border border-border">
+            <span className="text-[11px] text-muted-foreground block mb-0.5">Observed Real TDEE</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-bold text-foreground">
+                {expenditure.observedTdee ? Math.round(expenditure.observedTdee) : '—'}
+              </span>
+              <span className="text-xs text-foreground">kcal</span>
+            </div>
+            <span className="text-[10px] text-muted-foreground">Solved from scale &amp; intake</span>
+          </div>
+        </div>
+
+        {/* Row 2: Prominent Active Target Intake Highlight */}
+        <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-bold text-primary block mb-0.5">Active Target Intake</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-black text-foreground">
+                {Math.round(targets.recommendedCalories)}
+              </span>
+              <span className="text-xs text-foreground font-semibold">kcal</span>
+              {targets.adjustmentKcal !== 0 && (
+                <span className={`ml-2 text-xs font-bold ${targets.adjustmentKcal > 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                  {targets.adjustmentKcal > 0 ? `+${targets.adjustmentKcal}` : targets.adjustmentKcal} kcal
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-[10px] text-primary/80 font-medium block">
+              Anti-whiplash stabilized
+            </span>
+            <span className="text-[10px] text-muted-foreground block">
+              Dynamic calorie floor
+            </span>
+          </div>
         </div>
       </div>
-
-      {/* Historical TDEE Expenditure Dot Chart (shadcn/ui) */}
-      <MetabolicTdeeHistoryChart
-        trends={trends ?? null}
-        baselineTdee={expenditure.formulaBaselineTdee}
-        currentObservedTdee={expenditure.observedTdee}
-        selectedDays={selectedDays}
-        onDaysChange={onDaysChange}
-      />
     </div>
   );
 };
