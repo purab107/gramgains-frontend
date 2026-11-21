@@ -17,6 +17,7 @@ import { AuthGuard } from '@/components/auth/AuthGuard';
 import { WeightTrendChart } from '@/components/analytics/WeightTrendChart';
 import { MetabolicEngineCard } from '@/components/analytics/MetabolicEngineCard';
 import { MetabolicTdeeHistoryChart } from '@/components/analytics/MetabolicTdeeHistoryChart';
+import { BodyProgressCard } from '@/components/analytics/BodyProgressCard';
 import { AdherenceAndChronoCards } from '@/components/analytics/AdherenceAndChronoCards';
 import { WeightHistoryDrawer } from '@/components/weight/WeightHistoryDrawer';
 import { WeeklyCheckInModal } from '@/components/adaptive/WeeklyCheckInModal';
@@ -189,14 +190,18 @@ function AnalyticsDashboard() {
             />
           </div>
 
-          {/* CARD 2: Dual Curve Weight Trend Chart (Recharts) */}
+          {/* CARD 2: Dual Curve Weight Trend Chart (MacroFactor Style) */}
           <WeightTrendChart
             data={weightHistory}
             targetWeightKg={userProfile?.targetWeightKg}
             selectedDays={selectedDays}
             onDaysChange={setSelectedDays}
             onOpenHistory={() => setIsHistoryDrawerOpen(true)}
+            onRefresh={loadAllAnalytics}
           />
+
+          {/* CARD 3: Body Circumference & Progress Section */}
+          <BodyProgressCard />
 
           {/* CARDS 3 & 4: Adherence, Energy Balance, and Chrono-Nutrition */}
           <AdherenceAndChronoCards
