@@ -191,6 +191,35 @@ export interface AnalyticsPatternsResponse {
     dinnerPercent: number;
     snackPercent: number;
   };
+  proteinDistribution?: {
+    breakfastGrams: number;
+    lunchGrams: number;
+    dinnerGrams: number;
+    snackGrams: number;
+    totalGrams: number;
+  };
+  dailyMealSeries?: Array<{
+    date: string;
+    displayDate: string;
+    calories: number;
+    protein: number;
+    breakfast: number;
+    lunch: number;
+    dinner: number;
+    snack: number;
+    breakfastProtein: number;
+    lunchProtein: number;
+    dinnerProtein: number;
+    snackProtein: number;
+    isWeekend: boolean;
+  }>;
+  weekdayVsWeekend?: {
+    weekdayAvgCalories: number | null;
+    weekendAvgCalories: number | null;
+    deltaCalories: number;
+    weekdayAvgProtein: number | null;
+    weekendAvgProtein: number | null;
+  };
   macroAverages: {
     proteinGrams: number;
     carbsGrams: number;

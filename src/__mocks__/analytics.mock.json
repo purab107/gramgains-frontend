@@ -68,6 +68,29 @@
       "dinnerPercent": 32,
       "snackPercent": 11
     },
+    "proteinDistribution": {
+      "breakfastGrams": 32,
+      "lunchGrams": 48,
+      "dinnerGrams": 54,
+      "snackGrams": 18,
+      "totalGrams": 152
+    },
+    "dailyMealSeries": [
+      { "date": "2026-11-14", "displayDate": "Nov 14", "calories": 1850, "protein": 148, "breakfast": 420, "lunch": 640, "dinner": 610, "snack": 180, "breakfastProtein": 30, "lunchProtein": 45, "dinnerProtein": 55, "snackProtein": 18, "isWeekend": false },
+      { "date": "2026-11-15", "displayDate": "Nov 15", "calories": 1920, "protein": 155, "breakfast": 450, "lunch": 680, "dinner": 620, "snack": 170, "breakfastProtein": 32, "lunchProtein": 50, "dinnerProtein": 55, "snackProtein": 18, "isWeekend": true },
+      { "date": "2026-11-16", "displayDate": "Nov 16", "calories": 1980, "protein": 152, "breakfast": 430, "lunch": 710, "dinner": 660, "snack": 180, "breakfastProtein": 28, "lunchProtein": 48, "dinnerProtein": 58, "snackProtein": 18, "isWeekend": true },
+      { "date": "2026-11-17", "displayDate": "Nov 17", "calories": 1860, "protein": 150, "breakfast": 410, "lunch": 650, "dinner": 610, "snack": 190, "breakfastProtein": 34, "lunchProtein": 46, "dinnerProtein": 52, "snackProtein": 18, "isWeekend": false },
+      { "date": "2026-11-18", "displayDate": "Nov 18", "calories": 1890, "protein": 154, "breakfast": 440, "lunch": 660, "dinner": 600, "snack": 190, "breakfastProtein": 32, "lunchProtein": 48, "dinnerProtein": 56, "snackProtein": 18, "isWeekend": false },
+      { "date": "2026-11-19", "displayDate": "Nov 19", "calories": 1870, "protein": 151, "breakfast": 400, "lunch": 670, "dinner": 620, "snack": 180, "breakfastProtein": 30, "lunchProtein": 47, "dinnerProtein": 56, "snackProtein": 18, "isWeekend": false },
+      { "date": "2026-11-20", "displayDate": "Nov 20", "calories": 1900, "protein": 156, "breakfast": 430, "lunch": 680, "dinner": 610, "snack": 180, "breakfastProtein": 35, "lunchProtein": 49, "dinnerProtein": 54, "snackProtein": 18, "isWeekend": false }
+    ],
+    "weekdayVsWeekend": {
+      "weekdayAvgCalories": 1870,
+      "weekendAvgCalories": 1960,
+      "deltaCalories": 90,
+      "weekdayAvgProtein": 152,
+      "weekendAvgProtein": 153
+    },
     "macroAverages": {
       "proteinGrams": 152,
       "carbsGrams": 178,
