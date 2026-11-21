@@ -1,20 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
-import { 
-  ResponsiveContainer, 
-  ComposedChart, 
-  Line, 
-  Scatter, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  CartesianGrid, 
-  ReferenceLine 
+import React, { useMemo, useState } from 'react';
+import {
+  CartesianGrid,
+  Line,
+  ComposedChart,
+  ReferenceLine,
+  XAxis,
+  YAxis,
 } from 'recharts';
-import { Scale, TrendingDown, TrendingUp, Minus, SlidersHorizontal, Info } from 'lucide-react';
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+import { Scale, SlidersHorizontal, Info, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WeightHistoryResponse } from '@/services/api';
+import { WeightInsightsSheet } from './WeightInsightsSheet';
 
 interface WeightTrendChartProps {
   data: WeightHistoryResponse | null;
@@ -22,7 +26,32 @@ interface WeightTrendChartProps {
   onOpenHistory?: () => void;
   selectedDays?: number;
   onDaysChange?: (days: number) => void;
+  onRefresh?: () => void;
+  className?: string;
 }
+
+const chartConfig = {
+  rawWeight: {
+    label: 'Scale Weight',
+    color: '#8b5cf6',
+  },
+  trendWeight: {
+    label: 'Trend Weight',
+    color: '#c4b5fd',
+  },
+  goalWeight: {
+    label: 'Goal Target',
+    color: '#3b82f6',
+  },
+} satisfies ChartConfig;
+
+const TIME_RANGES = [
+  { label: '1W', days: 7 },
+  { label: '1M', days: 30 },
+  { label: '3M', days: 90 },
+  { label: '6M', days: 180 },
+  { label: 'All', days: 365 },
+];
 
 export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
   data,
@@ -30,242 +59,376 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
   onOpenHistory,
   selectedDays = 30,
   onDaysChange,
+  onRefresh,
+  className = '',
 }) => {
-  const [showTooltipInfo, setShowTooltipInfo] = useState(false);
-
+  const [isInsightsOpen, setIsInsightsOpen] = useState(false);
   const logs = data?.logs || [];
-  const chartData = logs.map((l) => ({
-    date: l.date,
-    displayDate: new Date(l.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    rawWeight: l.isExcluded ? null : l.rawWeightKg,
-    trendWeight: l.trendWeightKg,
-    isExcluded: l.isExcluded,
-    note: l.note,
-  }));
 
-  const allWeights = logs
-    .flatMap((l) => [l.rawWeightKg, l.trendWeightKg])
-    .filter((w): w is number => typeof w === 'number' && !isNaN(w) && w > 0);
+  // Filter or transform time-series data for chart with client-side slicing
+  const chartData = useMemo(() => {
+    // Slicing to the selectedDays window for instantaneous, buttery 60fps morphing
+    const targetLogs =
+      selectedDays && logs.length > selectedDays
+        ? logs.slice(-selectedDays)
+        : logs;
 
-  const minWeight = allWeights.length > 0 ? Math.floor(Math.min(...allWeights) - 1) : 65;
-  const maxWeight = allWeights.length > 0 ? Math.ceil(Math.max(...allWeights) + 1) : 80;
+    return targetLogs.map((l) => {
+      const dateObj = new Date(l.date);
+      const displayDate = isNaN(dateObj.getTime())
+        ? l.date
+        : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-  const velocity = data?.velocityKgPerWeek ?? 0;
-  const velocityColor = velocity < 0 ? 'text-emerald-500' : velocity > 0 ? 'text-blue-500' : 'text-muted-foreground';
-  const VelocityIcon = velocity < 0 ? TrendingDown : velocity > 0 ? TrendingUp : Minus;
+      return {
+        date: l.date,
+        displayDate,
+        rawWeight: l.isExcluded ? null : l.rawWeightKg,
+        trendWeight: l.trendWeightKg,
+        isExcluded: l.isExcluded,
+        note: l.note,
+      };
+    });
+  }, [logs, selectedDays]);
+
+  // Compute domain bounds for Y-Axis and header KPIs
+  const { minWeight, maxWeight, avgWeight, diffKg, dateRangeStr } = useMemo(() => {
+    const validWeights: number[] = [];
+
+    chartData.forEach((d) => {
+      if (typeof d.rawWeight === 'number' && d.rawWeight > 0) validWeights.push(d.rawWeight);
+      if (typeof d.trendWeight === 'number' && d.trendWeight > 0) validWeights.push(d.trendWeight);
+    });
+
+    if (targetWeightKg && targetWeightKg > 0) {
+      validWeights.push(targetWeightKg);
+    }
+
+    if (validWeights.length === 0) {
+      return {
+        minWeight: 65,
+        maxWeight: 80,
+        avgWeight: 75.0,
+        diffKg: 0,
+        dateRangeStr: 'Calibrating data',
+      };
+    }
+
+    const min = Math.min(...validWeights);
+    const max = Math.max(...validWeights);
+    const trendValues = chartData
+      .map((d) => d.trendWeight)
+      .filter((w): w is number => typeof w === 'number' && w > 0);
+
+    const avg = trendValues.length > 0
+      ? Math.round((trendValues.reduce((a, b) => a + b, 0) / trendValues.length) * 10) / 10
+      : Math.round(validWeights[0] * 10) / 10;
+
+    // Difference over selected window
+    const firstVal = trendValues[0] ?? avg;
+    const lastVal = trendValues[trendValues.length - 1] ?? avg;
+    const diff = Math.round((lastVal - firstVal) * 10) / 10;
+
+    const firstDate = chartData[0]?.date ? new Date(chartData[0].date) : new Date();
+    const lastDate = chartData[chartData.length - 1]?.date ? new Date(chartData[chartData.length - 1].date) : new Date();
+    const dateRangeStr = `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
+    return {
+      minWeight: Math.floor(min - 1),
+      maxWeight: Math.ceil(max + 1),
+      avgWeight: avg,
+      diffKg: diff,
+      dateRangeStr,
+    };
+  }, [chartData, targetWeightKg]);
+
+  const hasData = chartData.some((d) => d.trendWeight !== null || d.rawWeight !== null);
 
   return (
-    <div className="w-full bg-card border border-border rounded-3xl p-5 shadow-sm space-y-4">
-      {/* Chart Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
-            <Scale className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-foreground">Weight Trend vs. Scale Reality</h3>
-              <button 
-                type="button" 
-                onClick={() => setShowTooltipInfo(!showTooltipInfo)} 
-                className="text-muted-foreground hover:text-foreground"
-                aria-label="Toggle info"
-              >
-                <Info className="w-3.5 h-3.5" />
-              </button>
+    <>
+      <div className={`w-full bg-card border border-border rounded-3xl p-5 shadow-sm flex flex-col justify-between space-y-3.5 ${className}`}>
+        {/* ROW 1: Card Title & Insights & Data Action Button */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center shrink-0">
+              <Scale className="w-5 h-5" />
             </div>
-            <p className="text-xs text-muted-foreground">
-              Dots indicate daily scale weigh-ins; the green curve shows your underlying weight trend, with daily fluctuations filtered out.
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-foreground">Weight Trend</h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-violet-500/10 text-violet-400 border-violet-500/30">
+                  Smoothed Signal
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground/90">
+                Filtered thermodynamic trend vs raw scale volatility.
+              </p>
+            </div>
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsInsightsOpen(true)}
+            className="rounded-2xl gap-1.5 text-xs font-semibold h-9 px-3 border-border/80 hover:bg-muted/80 shadow-2xs shrink-0"
+            title="Open Weight Insights & Data"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 text-violet-400" />
+            <span className="hidden sm:inline font-medium">Insights &amp; Data</span>
+          </Button>
+        </div>
+
+        {/* ROW 2: MacroFactor KPIs (Average, Difference, Date Range) */}
+        <div className="flex flex-wrap items-end justify-between gap-3 pt-1 border-t border-border/40">
+          <div className="flex items-baseline gap-6">
+            {/* Average KPI */}
+            <div>
+              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
+                Average
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl sm:text-3xl font-black text-foreground tracking-tight font-mono">
+                  {avgWeight}
+                </span>
+                <span className="text-xs font-semibold text-slate-400">
+                  kg
+                </span>
+              </div>
+            </div>
+
+            {/* Difference KPI */}
+            <div>
+              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
+                Difference
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className={`text-2xl sm:text-3xl font-black tracking-tight font-mono ${diffKg <= 0 ? 'text-emerald-400' : 'text-blue-400'}`}>
+                  {diffKg > 0 ? `+${diffKg}` : diffKg}
+                </span>
+                <span className="text-xs font-semibold text-slate-400">
+                  kg
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Date Range Subtitle */}
+          <span className="text-xs font-medium text-slate-300 dark:text-slate-400 pb-1">
+            {dateRangeStr}
+          </span>
+        </div>
+
+        {/* ROW 3: Dual Curve Chart Canvas (Scale Weight vs Trend Weight) */}
+        {!hasData ? (
+          <div className="p-8 text-center rounded-2xl bg-muted/20 border border-dashed border-border space-y-2 my-auto">
+            <p className="text-xs font-medium text-foreground">
+              Calibrating Weight Trend
             </p>
-          </div>
-        </div>
-
-        {/* Time Window Buttons & History Drawer Button */}
-        <div className="flex items-center gap-1.5 self-end sm:self-center">
-          <div className="flex items-center bg-muted/60 p-0.5 rounded-xl border border-border">
-            {[14, 30, 60, 90].map((d) => (
-              <button
-                key={d}
-                onClick={() => onDaysChange?.(d)}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
-                  selectedDays === d
-                    ? 'bg-card text-foreground shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {d}d
-              </button>
-            ))}
-          </div>
-
-          {onOpenHistory && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onOpenHistory}
-              className="h-8 rounded-xl gap-1 text-xs"
-            >
-              <SlidersHorizontal className="w-3 h-3" />
-              <span>Logs</span>
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {showTooltipInfo && (
-        <div className="p-3 rounded-2xl bg-muted/40 border border-border text-xs text-muted-foreground leading-relaxed animate-in fade-in duration-150">
-          Scale weight naturally fluctuates by 1–3 kg due to sodium intake, hydration, and glycogen binding (1g carb binds 3–4g water). GramGains filters out this noise using Holt’s Double Exponential Smoothing to reveal your underlying weight trend.
-        </div>
-      )}
-
-      {/* KPI Metrics Summary Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-        <div className="p-3 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block">Latest Scale</span>
-          <span className="text-lg font-bold text-foreground">
-            {data?.latestRawKg ? `${data.latestRawKg} kg` : '—'}
-          </span>
-        </div>
-
-        <div className="p-3 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block">Smoothed Trend</span>
-          <span className="text-lg font-bold text-primary">
-            {data?.latestTrendKg ? `${data.latestTrendKg} kg` : '—'}
-          </span>
-        </div>
-
-        <div className="p-3 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block">Current Velocity</span>
-          <div className="flex items-center gap-1">
-            <VelocityIcon className={`w-4 h-4 ${velocityColor}`} />
-            <span className={`text-lg font-bold ${velocityColor}`}>
-              {velocity > 0 ? `+${velocity}` : velocity} <span className="text-xs font-normal">kg/wk</span>
-            </span>
-          </div>
-        </div>
-
-        <div className="p-3 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block">Goal Weight</span>
-          <span className="text-lg font-bold text-foreground">
-            {targetWeightKg ? `${targetWeightKg} kg` : 'Maintenance'}
-          </span>
-        </div>
-      </div>
-
-      {/* Chart Visual */}
-      <div className="h-64 sm:h-72 w-full pt-2">
-        {chartData.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-xs gap-2">
-            <Scale className="w-8 h-8 opacity-40" />
-            <span>No weight records found in this window. Log your morning weight to activate the trend curve!</span>
+            <p className="text-[11px] text-muted-foreground max-w-sm mx-auto">
+              Log your morning scale readings to activate Holt exponential smoothing and separate true fat loss from fluid fluctuations.
+            </p>
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.15} vertical={false} />
-              <XAxis 
-                dataKey="displayDate" 
-                tickLine={false} 
-                axisLine={false} 
-                tick={{ fontSize: 11, fill: 'currentColor', opacity: 0.6 }} 
-              />
-              <YAxis 
-                domain={[minWeight, maxWeight]} 
-                tickLine={false} 
-                axisLine={false} 
-                tick={{ fontSize: 11, fill: 'currentColor', opacity: 0.6 }} 
-                unit="kg"
-              />
-              <Tooltip content={<CustomTooltip />} />
-
-              {/* Target Goal Weight Reference Line */}
-              {targetWeightKg && targetWeightKg >= minWeight && targetWeightKg <= maxWeight && (
-                <ReferenceLine 
-                  y={targetWeightKg} 
-                  stroke="#3b82f6" 
-                  strokeDasharray="4 4" 
-                  label={{ value: `Goal: ${targetWeightKg}kg`, position: 'right', fill: '#3b82f6', fontSize: 10 }} 
+          <div className="w-full flex-1 min-h-[220px] pt-1">
+            <ChartContainer 
+              config={chartConfig} 
+              className="w-full h-[220px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+            >
+              <ComposedChart
+                data={chartData}
+                margin={{ top: 8, right: 6, left: -20, bottom: 2 }}
+              >
+                {/* Horizontal Dashed Gridlines with clear contrast */}
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="rgba(255, 255, 255, 0.12)"
                 />
-              )}
 
-              {/* Raw Scale Weight Dots */}
-              <Scatter 
-                dataKey="rawWeight" 
-                fill="#94a3b8" 
-                shape="circle" 
-                name="Scale Reading"
-              />
+                {/* X-Axis Date Ticks */}
+                <XAxis
+                  dataKey="displayDate"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={6}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                  minTickGap={24}
+                />
 
-              {/* Smoothed Trend Weight Line */}
-              <Line
-                type="monotone"
-                dataKey="trendWeight"
-                stroke="#16a34a"
-                strokeWidth={2.5}
-                dot={false}
-                name="Smoothed Trend"
-                activeDot={{ r: 5, fill: '#16a34a' }}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
+                {/* Y-Axis Right-Aligned */}
+                <YAxis
+                  orientation="right"
+                  domain={[minWeight, maxWeight]}
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                  tickFormatter={(val) => `${val}`}
+                />
+
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      indicator="dot"
+                      className="bg-card/95 border-border shadow-xl backdrop-blur-md"
+                      labelFormatter={(value, payload) => {
+                        const item = payload?.[0]?.payload;
+                        return item?.date || value;
+                      }}
+                      formatter={(val, name) => {
+                        const label =
+                          name === 'rawWeight'
+                            ? 'Scale Weight'
+                            : name === 'trendWeight'
+                            ? 'Trend Weight'
+                            : name;
+                        return (
+                          <div className="flex items-center justify-between gap-3 w-full">
+                            <span className="text-muted-foreground text-xs">{label}:</span>
+                            <span className="font-bold text-foreground font-mono text-xs">
+                              {val !== null ? `${val} kg` : '—'}
+                            </span>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
+                />
+
+                {/* Goal Reference Line */}
+                {targetWeightKg && targetWeightKg >= minWeight && targetWeightKg <= maxWeight && (
+                  <ReferenceLine
+                    y={targetWeightKg}
+                    stroke="#3b82f6"
+                    strokeDasharray="4 4"
+                    strokeWidth={1.5}
+                    label={{
+                      value: `Goal: ${targetWeightKg}kg`,
+                      position: 'insideTopLeft',
+                      fill: '#60a5fa',
+                      fontSize: 10,
+                      offset: 8,
+                    }}
+                  />
+                )}
+
+                {/* Raw Scale Weight: Reactive Violet Curve with Dots */}
+                <Line
+                  type="linear"
+                  dataKey="rawWeight"
+                  name="rawWeight"
+                  stroke="#8b5cf6"
+                  strokeWidth={1.75}
+                  connectNulls={false}
+                  dot={{
+                    r: 2.5,
+                    fill: '#8b5cf6',
+                    stroke: 'hsl(var(--background))',
+                    strokeWidth: 1.5,
+                  }}
+                  activeDot={{
+                    r: 5,
+                    fill: '#8b5cf6',
+                    stroke: '#ffffff',
+                    strokeWidth: 2,
+                  }}
+                  isAnimationActive={true}
+                  animationDuration={600}
+                  animationEasing="ease-in-out"
+                />
+
+                {/* Smoothed Trend Weight: Thick Glowing Lavender Curve */}
+                <Line
+                  type="monotone"
+                  dataKey="trendWeight"
+                  name="trendWeight"
+                  stroke="#c4b5fd"
+                  strokeWidth={3}
+                  connectNulls={true}
+                  dot={false}
+                  activeDot={{
+                    r: 6,
+                    fill: '#c4b5fd',
+                    stroke: '#ffffff',
+                    strokeWidth: 2,
+                  }}
+                  isAnimationActive={true}
+                  animationDuration={600}
+                  animationEasing="ease-in-out"
+                />
+              </ComposedChart>
+            </ChartContainer>
+          </div>
         )}
+
+        {/* ROW 4: Range Pill Selector Controls */}
+        <div className="flex items-center justify-between pt-1">
+          <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-full border border-border/80">
+            {TIME_RANGES.map(({ label, days }) => {
+              const isActive = selectedDays === days;
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => onDaysChange?.(days)}
+                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                    isActive
+                      ? 'bg-foreground text-background shadow-xs'
+                      : 'text-slate-400 hover:text-foreground hover:bg-muted/40'
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          <span className="text-xs font-medium text-slate-400 hidden sm:inline">
+            Daily Scale &amp; Smoothed Midpoint
+          </span>
+        </div>
+
+        {/* ROW 5: MacroFactor Legend: Scale Weight, Trend Weight, Goal Target */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-border/40 text-xs text-slate-300 dark:text-slate-400">
+          <div className="flex items-center gap-4">
+            {/* Scale Weight Swatch */}
+            <div className="flex items-center gap-1.5">
+              <span className="flex items-center">
+                <span className="w-2.5 h-0.5 bg-[#8b5cf6]" />
+                <span className="w-2 h-2 rounded-full bg-[#8b5cf6]" />
+                <span className="w-2.5 h-0.5 bg-[#8b5cf6]" />
+              </span>
+              <span className="font-semibold text-foreground">Scale Weight</span>
+            </div>
+
+            {/* Trend Weight Swatch */}
+            <div className="flex items-center gap-1.5">
+              <span className="w-3.5 h-1 rounded-full bg-[#c4b5fd] inline-block shrink-0 shadow-[0_0_8px_rgba(196,181,253,0.5)]" />
+              <span className="font-semibold text-foreground">Trend Weight</span>
+            </div>
+
+            {/* Goal Target Swatch */}
+            {targetWeightKg && (
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-0.5 border-t border-dashed border-[#3b82f6] inline-block shrink-0" />
+                <span className="text-blue-400 font-medium">Goal ({targetWeightKg}kg)</span>
+              </div>
+            )}
+          </div>
+
+          <span className="text-[11px] text-slate-400 italic">
+            Double Exponential Smoothing (Holt)
+          </span>
+        </div>
       </div>
 
-      {/* Legend & Outlier Note */}
-      <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1 border-t border-border/50">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block" />
-            <span>Raw Scale Reading</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-0.5 bg-emerald-600 inline-block" />
-            <span>Smoothed Trend Weight</span>
-          </div>
-        </div>
-        <span>Double Exponential Smoothing (Holt)</span>
-      </div>
-    </div>
+      {/* Slide-Over Insights & Data Sheet */}
+      <WeightInsightsSheet
+        open={isInsightsOpen}
+        onOpenChange={setIsInsightsOpen}
+        data={data}
+        targetWeightKg={targetWeightKg}
+        onRefresh={onRefresh}
+      />
+    </>
   );
-};
-
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    const diff = data.rawWeight !== null && data.trendWeight !== null 
-      ? Math.round((data.rawWeight - data.trendWeight) * 10) / 10 
-      : null;
-
-    return (
-      <div className="p-3 bg-card/95 backdrop-blur-md border border-border rounded-xl shadow-lg text-xs space-y-1 text-foreground">
-        <p className="font-semibold text-muted-foreground border-b border-border/60 pb-1">
-          {new Date(data.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
-        </p>
-        <div className="space-y-0.5 pt-0.5">
-          {data.rawWeight !== null && (
-            <p className="flex justify-between gap-4">
-              <span className="text-muted-foreground">Scale Weight:</span>
-              <strong className="text-foreground">{data.rawWeight} kg</strong>
-            </p>
-          )}
-          <p className="flex justify-between gap-4">
-            <span className="text-emerald-600 font-medium">Smoothed Trend:</span>
-            <strong className="text-emerald-600">{data.trendWeight} kg</strong>
-          </p>
-          {diff !== null && (
-            <p className="flex justify-between gap-4 text-[10px] text-muted-foreground">
-              <span>Scale Deviation:</span>
-              <span>{diff > 0 ? `+${diff}` : diff} kg</span>
-            </p>
-          )}
-          {data.note && (
-            <p className="text-[10px] italic text-muted-foreground pt-1 border-t border-border/40">
-              &quot;{data.note}&quot;
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
-  return null;
 };
