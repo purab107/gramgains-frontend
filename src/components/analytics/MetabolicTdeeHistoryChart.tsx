@@ -233,14 +233,14 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
             </p>
           </div>
         ) : (
-          <div className="w-full flex-1 min-h-[190px] pt-1">
+          <div className="w-full flex-1 min-h-[260px] pt-1">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[195px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[260px] sm:h-[280px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
-                margin={{ top: 8, right: 6, left: -22, bottom: 2 }}
+                margin={{ top: 12, right: 6, left: -20, bottom: 4 }}
               >
                 {/* Horizontal Dashed Gridlines with clear contrast */}
                 <CartesianGrid
@@ -254,9 +254,9 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   dataKey="displayDate"
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={6}
-                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={24}
+                  tickMargin={8}
+                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
+                  minTickGap={20}
                 />
 
                 {/* Y-Axis Right-Aligned: High visibility slate-300 */}
@@ -265,8 +265,8 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   domain={[minTdee, maxTdee]}
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={8}
-                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                  tickMargin={10}
+                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
                   tickFormatter={(val) => `${val}`}
                 />
 
@@ -304,7 +304,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   type="monotone"
                   dataKey="fluxRange"
                   stroke="rgba(255, 107, 74, 0.35)"
-                  strokeWidth={1}
+                  strokeWidth={1.5}
                   fill="rgba(255, 107, 74, 0.20)"
                   isAnimationActive={true}
                   animationDuration={600}
@@ -317,16 +317,16 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   dataKey="effectiveTdee"
                   name="effectiveTdee"
                   stroke="#ff6b4a"
-                  strokeWidth={2.75}
+                  strokeWidth={3.5}
                   dot={false}
                   isAnimationActive={true}
                   animationDuration={600}
                   animationEasing="ease-in-out"
                   activeDot={{
-                    r: 5,
+                    r: 7.5,
                     fill: '#ff6b4a',
                     stroke: '#ffffff',
-                    strokeWidth: 2,
+                    strokeWidth: 2.5,
                   }}
                 />
               </ComposedChart>

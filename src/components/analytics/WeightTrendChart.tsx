@@ -115,6 +115,9 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
 
     const min = Math.min(...validWeights);
     const max = Math.max(...validWeights);
+    const spread = max - min;
+    const padding = spread === 0 ? 2 : Math.max(1.2, Math.round(spread * 0.2 * 10) / 10);
+
     const trendValues = chartData
       .map((d) => d.trendWeight)
       .filter((w): w is number => typeof w === 'number' && w > 0);
@@ -133,8 +136,8 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
     const dateRangeStr = `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
 
     return {
-      minWeight: Math.floor(min - 1),
-      maxWeight: Math.ceil(max + 1),
+      minWeight: Math.floor(min - padding),
+      maxWeight: Math.ceil(max + padding),
       avgWeight: avg,
       diffKg: diff,
       dateRangeStr,
@@ -228,14 +231,14 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
             </p>
           </div>
         ) : (
-          <div className="w-full flex-1 min-h-[220px] pt-1">
+          <div className="w-full flex-1 min-h-[300px] pt-1">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[220px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[300px] sm:h-[340px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
-                margin={{ top: 8, right: 6, left: -20, bottom: 2 }}
+                margin={{ top: 16, right: 6, left: -20, bottom: 6 }}
               >
                 {/* Horizontal Dashed Gridlines with clear contrast */}
                 <CartesianGrid
@@ -249,9 +252,9 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   dataKey="displayDate"
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={6}
-                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={24}
+                  tickMargin={10}
+                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
+                  minTickGap={20}
                 />
 
                 {/* Y-Axis Right-Aligned */}
@@ -260,8 +263,8 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   domain={[minWeight, maxWeight]}
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={8}
-                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                  tickMargin={10}
+                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
                   tickFormatter={(val) => `${val}`}
                 />
 
@@ -300,36 +303,36 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                     y={targetWeightKg}
                     stroke="#3b82f6"
                     strokeDasharray="4 4"
-                    strokeWidth={1.5}
+                    strokeWidth={1.75}
                     label={{
                       value: `Goal: ${targetWeightKg}kg`,
                       position: 'insideTopLeft',
                       fill: '#60a5fa',
-                      fontSize: 10,
+                      fontSize: 11,
                       offset: 8,
                     }}
                   />
                 )}
 
-                {/* Raw Scale Weight: Reactive Violet Curve with Dots */}
+                {/* Raw Scale Weight: Reactive Violet Curve with Big, High-Contrast Plot Dots */}
                 <Line
                   type="linear"
                   dataKey="rawWeight"
                   name="rawWeight"
                   stroke="#8b5cf6"
-                  strokeWidth={1.75}
+                  strokeWidth={2.5}
                   connectNulls={false}
                   dot={{
-                    r: 2.5,
-                    fill: '#8b5cf6',
-                    stroke: 'hsl(var(--background))',
-                    strokeWidth: 1.5,
-                  }}
-                  activeDot={{
-                    r: 5,
+                    r: 5.5,
                     fill: '#8b5cf6',
                     stroke: '#ffffff',
                     strokeWidth: 2,
+                  }}
+                  activeDot={{
+                    r: 8.5,
+                    fill: '#a855f7',
+                    stroke: '#ffffff',
+                    strokeWidth: 2.5,
                   }}
                   isAnimationActive={true}
                   animationDuration={600}
@@ -342,14 +345,14 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   dataKey="trendWeight"
                   name="trendWeight"
                   stroke="#c4b5fd"
-                  strokeWidth={3}
+                  strokeWidth={4}
                   connectNulls={true}
                   dot={false}
                   activeDot={{
-                    r: 6,
+                    r: 8.5,
                     fill: '#c4b5fd',
                     stroke: '#ffffff',
-                    strokeWidth: 2,
+                    strokeWidth: 2.5,
                   }}
                   isAnimationActive={true}
                   animationDuration={600}
