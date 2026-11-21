@@ -254,7 +254,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   axisLine={false}
                   tickMargin={8}
                   tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={20}
+                  minTickGap={selectedDays <= 7 ? 14 : selectedDays <= 30 ? 22 : 32}
                 />
 
                 {/* Y-Axis Right-Aligned */}
@@ -314,25 +314,36 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   />
                 )}
 
-                {/* Raw Scale Weight: Reactive Violet Curve with Big, High-Contrast Plot Dots */}
+                {/* Raw Scale Weight: Reactive Violet Curve with Dynamic Density-Aware Dots (No White Halo) */}
                 <Line
                   type="linear"
                   dataKey="rawWeight"
                   name="rawWeight"
                   stroke="#8b5cf6"
-                  strokeWidth={2.5}
+                  strokeWidth={selectedDays > 60 ? 1.75 : 2.25}
                   connectNulls={false}
-                  dot={{
-                    r: 5.5,
-                    fill: '#8b5cf6',
-                    stroke: '#ffffff',
-                    strokeWidth: 2,
-                  }}
+                  dot={
+                    selectedDays <= 7
+                      ? {
+                          r: 4,
+                          fill: '#8b5cf6',
+                          stroke: 'hsl(var(--card))',
+                          strokeWidth: 1.5,
+                        }
+                      : selectedDays <= 30
+                      ? {
+                          r: 2.75,
+                          fill: '#8b5cf6',
+                          stroke: 'hsl(var(--card))',
+                          strokeWidth: 1,
+                        }
+                      : false
+                  }
                   activeDot={{
-                    r: 8.5,
+                    r: 6.5,
                     fill: '#a855f7',
-                    stroke: '#ffffff',
-                    strokeWidth: 2.5,
+                    stroke: 'hsl(var(--card))',
+                    strokeWidth: 2,
                   }}
                   isAnimationActive={true}
                   animationDuration={600}
@@ -345,14 +356,14 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   dataKey="trendWeight"
                   name="trendWeight"
                   stroke="#c4b5fd"
-                  strokeWidth={4}
+                  strokeWidth={selectedDays > 60 ? 3 : 3.5}
                   connectNulls={true}
                   dot={false}
                   activeDot={{
-                    r: 8.5,
+                    r: 6.5,
                     fill: '#c4b5fd',
-                    stroke: '#ffffff',
-                    strokeWidth: 2.5,
+                    stroke: 'hsl(var(--card))',
+                    strokeWidth: 2,
                   }}
                   isAnimationActive={true}
                   animationDuration={600}

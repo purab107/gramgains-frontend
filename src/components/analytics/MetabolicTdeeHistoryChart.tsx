@@ -256,7 +256,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   axisLine={false}
                   tickMargin={8}
                   tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={20}
+                  minTickGap={selectedDays <= 7 ? 14 : selectedDays <= 30 ? 22 : 32}
                 />
 
                 {/* Y-Axis Right-Aligned: High visibility slate-300 */}
@@ -323,10 +323,10 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   animationDuration={600}
                   animationEasing="ease-in-out"
                   activeDot={{
-                    r: 7.5,
+                    r: 6.5,
                     fill: '#ff6b4a',
-                    stroke: '#ffffff',
-                    strokeWidth: 2.5,
+                    stroke: 'hsl(var(--card))',
+                    strokeWidth: 2,
                   }}
                 />
               </ComposedChart>
