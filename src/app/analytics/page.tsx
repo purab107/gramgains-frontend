@@ -18,7 +18,8 @@ import { WeightTrendChart } from '@/components/analytics/WeightTrendChart';
 import { MetabolicEngineCard } from '@/components/analytics/MetabolicEngineCard';
 import { MetabolicTdeeHistoryChart } from '@/components/analytics/MetabolicTdeeHistoryChart';
 import { BodyProgressCard } from '@/components/analytics/BodyProgressCard';
-import { AdherenceAndChronoCards } from '@/components/analytics/AdherenceAndChronoCards';
+import { AdherenceEnergyBalanceCard } from '@/components/analytics/AdherenceEnergyBalanceCard';
+import { MealDistributionCard } from '@/components/analytics/MealDistributionCard';
 import { WeightHistoryDrawer } from '@/components/weight/WeightHistoryDrawer';
 import { WeeklyCheckInModal } from '@/components/adaptive/WeeklyCheckInModal';
 import { WeeklyCheckInBanner } from '@/components/adaptive/WeeklyCheckInBanner';
@@ -203,11 +204,11 @@ function AnalyticsDashboard() {
           {/* CARD 3: Body Circumference & Progress Section */}
           <BodyProgressCard />
 
-          {/* CARDS 3 & 4: Adherence, Energy Balance, and Chrono-Nutrition */}
-          <AdherenceAndChronoCards
-            overview={overview}
-            patterns={patterns}
-          />
+          {/* SECTION 4: Adherence & Energy Balance (Left) & Meal Distribution Stacked Chart (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
+            <AdherenceEnergyBalanceCard overview={overview} patterns={patterns} />
+            <MealDistributionCard patterns={patterns} />
+          </div>
         </main>
       </div>
 
