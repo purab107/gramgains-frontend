@@ -177,9 +177,19 @@ function AnalyticsDashboard() {
             />
           )}
 
-          {/* 2-COLUMN SECTION: Adaptive Metabolic Engine (Left) & Expenditure Trend (Right) */}
+          {/* SECTION 1: Full-Width Adaptive Metabolic Engine Card */}
+          <MetabolicEngineCard status={adaptiveStatus} className="w-full" />
+
+          {/* SECTION 2: 2-COLUMN SECTION: Weight Trend (Left) & Expenditure Trend (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
-            <MetabolicEngineCard status={adaptiveStatus} />
+            <WeightTrendChart
+              data={weightHistory}
+              targetWeightKg={userProfile?.targetWeightKg}
+              selectedDays={selectedDays}
+              onDaysChange={setSelectedDays}
+              onOpenHistory={() => setIsHistoryDrawerOpen(true)}
+              onRefresh={loadAllAnalytics}
+            />
             <MetabolicTdeeHistoryChart
               trends={trends}
               baselineTdee={adaptiveStatus?.expenditure?.formulaBaselineTdee}
@@ -191,17 +201,7 @@ function AnalyticsDashboard() {
             />
           </div>
 
-          {/* CARD 2: Dual Curve Weight Trend Chart (MacroFactor Style) */}
-          <WeightTrendChart
-            data={weightHistory}
-            targetWeightKg={userProfile?.targetWeightKg}
-            selectedDays={selectedDays}
-            onDaysChange={setSelectedDays}
-            onOpenHistory={() => setIsHistoryDrawerOpen(true)}
-            onRefresh={loadAllAnalytics}
-          />
-
-          {/* CARD 3: Body Circumference & Progress Section */}
+          {/* SECTION 3: Body Circumference & Progress Section */}
           <BodyProgressCard />
 
           {/* SECTION 4: Adherence & Energy Balance (Left) & Meal Distribution Stacked Chart (Right) */}
