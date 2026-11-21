@@ -178,14 +178,14 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
 
       {/* ROW 3: Visual Canvas (Stacked Bar Chart for Calories OR MPS Stepped Progress for Protein) */}
       {viewMode === 'calories' ? (
-        <div className="w-full flex-1 min-h-[195px] pt-1">
+        <div className="w-full flex-1 min-h-[260px] pt-1">
           <ChartContainer
             config={chartConfig}
-            className="w-full h-[195px] aspect-auto [&_.recharts-bar-rectangle]:transition-all [&_.recharts-bar-rectangle]:duration-500 [&_.recharts-bar-rectangle]:ease-in-out"
+            className="w-full h-[260px] sm:h-[280px] aspect-auto [&_.recharts-bar-rectangle]:transition-all [&_.recharts-bar-rectangle]:duration-500 [&_.recharts-bar-rectangle]:ease-in-out"
           >
             <BarChart
               data={chartData}
-              margin={{ top: 8, right: 6, left: -22, bottom: 2 }}
+              margin={{ top: 12, right: 6, left: -20, bottom: 4 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -196,15 +196,15 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
                 dataKey="displayDate"
                 tickLine={false}
                 axisLine={false}
-                tickMargin={6}
-                tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                tickMargin={8}
+                tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
               />
               <YAxis
                 orientation="right"
                 tickLine={false}
                 axisLine={false}
-                tickMargin={8}
-                tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                tickMargin={10}
+                tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
                 tickFormatter={(val) => `${val}`}
               />
               <ChartTooltip
