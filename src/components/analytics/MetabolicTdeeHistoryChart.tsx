@@ -233,14 +233,14 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
             </p>
           </div>
         ) : (
-          <div className="w-full flex-1 min-h-[260px] pt-1">
+          <div className="w-full flex-1 min-h-[290px] pt-1">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[260px] sm:h-[280px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[290px] sm:h-[310px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
-                margin={{ top: 12, right: 6, left: -20, bottom: 4 }}
+                margin={{ top: 14, right: 6, left: -20, bottom: 4 }}
               >
                 {/* Horizontal Dashed Gridlines with clear contrast */}
                 <CartesianGrid

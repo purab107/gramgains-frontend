@@ -231,14 +231,14 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
             </p>
           </div>
         ) : (
-          <div className="w-full flex-1 min-h-[300px] pt-1">
+          <div className="w-full flex-1 min-h-[290px] pt-1">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[300px] sm:h-[340px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[290px] sm:h-[310px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
-                margin={{ top: 16, right: 6, left: -20, bottom: 6 }}
+                margin={{ top: 14, right: 6, left: -20, bottom: 4 }}
               >
                 {/* Horizontal Dashed Gridlines with clear contrast */}
                 <CartesianGrid
