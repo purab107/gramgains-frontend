@@ -77,10 +77,10 @@ function AnalyticsDashboard() {
       const [prof, statusData, weightData, overviewData, patternsData, trendsData] = await Promise.all([
         ApiService.getProfile().catch(() => null),
         ApiService.getAdaptiveStatus().catch(() => null),
-        ApiService.getWeightLogs(selectedDays).catch(() => null),
+        ApiService.getWeightLogs(Math.max(365, selectedDays)).catch(() => null),
         ApiService.getAnalyticsOverview(selectedDays).catch(() => null),
         ApiService.getAnalyticsPatterns(14).catch(() => null),
-        ApiService.getAnalyticsTrends(Math.max(90, tdeeDays)).catch(() => null),
+        ApiService.getAnalyticsTrends(Math.max(365, tdeeDays)).catch(() => null),
       ]);
 
       setUserProfile(prof);
