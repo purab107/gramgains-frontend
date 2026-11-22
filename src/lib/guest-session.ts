@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getLocalDateString } from './date-utils';
 import type { 
   UserProfile, 
   DailyTrackerResponse, 
@@ -367,7 +368,7 @@ export class GuestStorageService {
   }
 
   static getHeatmap(days: number = 90): HeatmapResponse {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     const dayData = this.getDailyLogs(today);
 
     return {
