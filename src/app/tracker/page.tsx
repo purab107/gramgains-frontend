@@ -186,7 +186,7 @@ function TrackerPage() {
             </div>
 
             {/* Date Navigation Bar */}
-            <div className="flex items-center gap-1.5 bg-muted/50 border border-border p-1 rounded-xl">
+            <div className="flex items-center gap-1 bg-muted/50 border border-border p-1 rounded-xl">
               <Button
                 onClick={() => changeDateBy(-1)}
                 variant="ghost"
@@ -197,7 +197,7 @@ function TrackerPage() {
                 <ChevronLeft className="w-4 h-4" />
               </Button>
 
-              <div className="relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-bold text-foreground bg-card rounded-lg border border-border shadow-2xs">
+              <div className="relative flex items-center gap-1.5 px-2 py-1 text-xs font-mono font-bold text-foreground bg-card rounded-lg border border-border shadow-2xs h-8">
                 <Calendar className="w-3.5 h-3.5 text-primary" />
                 <span>{selectedDate}</span>
                 <input
@@ -223,10 +223,11 @@ function TrackerPage() {
                   onClick={handleJumpToday}
                   variant="outline"
                   size="sm"
-                  className="h-8 px-2.5 text-xs font-bold rounded-lg border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 ml-1"
+                  className="h-8 w-8 p-0 rounded-lg border-primary/30 bg-primary/10 text-primary hover:bg-primary/20"
+                  title="Jump to Today"
+                  aria-label="Jump to Today"
                 >
-                  <RotateCcw className="w-3 h-3 mr-1" />
-                  Today
+                  <RotateCcw className="w-3.5 h-3.5" />
                 </Button>
               )}
             </div>
