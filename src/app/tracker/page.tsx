@@ -30,7 +30,8 @@ import { isDevSkip } from '@/lib/dev-skip';
 import { 
   getLocalDateString, 
   addDaysToDateString, 
-  formatDisplayDate 
+  formatDisplayDate,
+  formatDMY,
 } from '@/lib/date-utils';
 
 function TrackerPage() {
@@ -179,25 +180,27 @@ function TrackerPage() {
                 {formatDisplayDate(selectedDate)}
               </h2>
               <span className="text-xs font-normal text-muted-foreground font-mono">
-                ({selectedDate})
+                ({formatDMY(selectedDate)})
               </span>
             </div>
 
             {/* Date Navigation Bar */}
-            <div className="flex items-center gap-1 bg-muted/50 border border-border p-1 rounded-xl">
+            <div className="inline-flex items-center gap-1 bg-muted/40 border border-border/80 p-1 rounded-xl shadow-xs">
               <Button
                 onClick={() => changeDateBy(-1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs"
+                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all"
                 title="Previous Day"
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
 
-              <div className="relative flex items-center gap-1.5 px-2 py-1 text-xs font-mono font-bold text-foreground bg-card rounded-lg border border-border shadow-2xs h-8">
-                <Calendar className="w-3.5 h-3.5 text-primary" />
-                <span>{selectedDate}</span>
+              <div className="relative flex items-center justify-center gap-2 px-3 h-8 bg-card rounded-lg border border-border shadow-xs cursor-pointer select-none">
+                <Calendar className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="text-xs font-mono font-bold tracking-wider text-foreground">
+                  {formatDMY(selectedDate)}
+                </span>
                 <input
                   type="date"
                   value={selectedDate}
@@ -216,7 +219,7 @@ function TrackerPage() {
                 variant="ghost"
                 size="sm"
                 disabled={isToday}
-                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs disabled:opacity-30 disabled:pointer-events-none"
+                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none"
                 title={isToday ? 'Cannot navigate to future dates' : 'Next Day'}
               >
                 <ChevronRight className="w-4 h-4" />

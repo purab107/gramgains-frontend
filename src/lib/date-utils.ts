@@ -53,3 +53,10 @@ export function formatHeaderDate(dateStr: string): string {
     year: 'numeric',
   });
 }
+
+export function formatDMY(dateStr: string, withSpaces: boolean = true): string {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-');
+  if (!year || !month || !day) return dateStr;
+  return withSpaces ? `${day} - ${month} - ${year}` : `${day}-${month}-${year}`;
+}
