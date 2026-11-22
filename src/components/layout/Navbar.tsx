@@ -13,6 +13,7 @@ import { UserNav } from '@/components/auth/UserNav';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useIsGuest } from '@/lib/guest-session';
+import { getLocalDateString, formatHeaderDate } from '@/lib/date-utils';
 
 interface NavbarProps {
   selectedDate?: string;
@@ -29,7 +30,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  selectedDate = new Date().toISOString().split('T')[0],
+  selectedDate = getLocalDateString(),
   onDateChange,
   userProfile,
   onOpenLogModal,
@@ -71,19 +72,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       headerSubtitle = headerSubtitle || 'Fuel your goals, one meal at a time.';
     }
   }
-
-  const formatHeaderDate = (dateStr: string) => {
-    if (!dateStr) return '';
-    const [year, month, day] = dateStr.split('-').map(Number);
-    if (!year || !month || !day) return dateStr;
-    const d = new Date(year, month - 1, day);
-    return d.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
 
   return (
     <header className="w-full bg-transparent px-4 lg:px-8 py-4 flex items-center justify-between">
