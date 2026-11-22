@@ -28,34 +28,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
-
-function formatDisplayDate(dateStr: string) {
-  try {
-    const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-
-    if (dateStr === today) return 'Today';
-    if (dateStr === yesterday) return 'Yesterday';
-    if (dateStr === tomorrow) return 'Tomorrow';
-
-    const [y, m, d] = dateStr.split('-');
-    const dateObj = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
-    return dateObj.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    });
-  } catch {
-    return dateStr;
-  }
-}
+import { 
+  getLocalDateString, 
+  addDaysToDateString, 
+  formatDisplayDate 
+} from '@/lib/date-utils';
 
 function TrackerPage() {
   const devSkip = useDevSkip();
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(() => getLocalDateString());
   const [trackerData, setTrackerData] = useState<DailyTrackerResponse | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -111,13 +92,11 @@ function TrackerPage() {
   }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
   const changeDateBy = (days: number) => {
-    const current = new Date(selectedDate);
-    current.setDate(current.getDate() + days);
-    setSelectedDate(current.toISOString().split('T')[0]);
+    setSelectedDate(addDaysToDateString(selectedDate, days));
   };
 
   const handleJumpToday = () => {
-    setSelectedDate(new Date().toISOString().split('T')[0]);
+    setSelectedDate(getLocalDateString());
   };
 
   const summary = trackerData?.summary || {
@@ -156,7 +135,7 @@ function TrackerPage() {
   const waterTotalMl = trackerData?.water?.totalMl || 0;
   const waterLogs = trackerData?.water?.logs || [];
 
-  const isToday = selectedDate === new Date().toISOString().split('T')[0];
+  const isToday = selectedDate === getLocalDateString();
 
   const dashSummary: DashboardSummaryResponse = {
     date: selectedDate,
