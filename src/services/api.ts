@@ -1,5 +1,6 @@
 import { isGuestSession, GuestStorageService } from '@/lib/guest-session';
 import { isDevSkip, getMockData } from '@/lib/dev-skip';
+import { getLocalDateString } from '@/lib/date-utils';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -584,7 +585,7 @@ export class ApiService {
       // Silent no-op in dev skip mode
       return {
         id,
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         mealType: payload.mealType as any || 'SNACK',
         foodId: 'dev-food-placeholder',
         food: {
@@ -901,7 +902,7 @@ export class ApiService {
       // Silent no-op in dev skip mode
       return {
         id,
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         rawWeightKg: 80,
         trendWeightKg: 80,
         isExcluded: false,

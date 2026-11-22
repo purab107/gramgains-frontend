@@ -1,3 +1,5 @@
+import { getLocalDateString } from './date-utils';
+
 export interface DevSkipStage {
   id: number;
   slug: string;
@@ -297,7 +299,7 @@ export const SCENARIO_DATA = {
   dashboard: {
     empty: {
       summary: {
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         calories: { target: 2000, consumed: 0, remaining: 2000, percentageDone: 0 },
         macros: {
           protein: { consumed: 0, target: 160, unit: 'g' },
@@ -317,7 +319,7 @@ export const SCENARIO_DATA = {
     },
     breakfast: {
       summary: {
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         calories: { target: 2000, consumed: 460, remaining: 1540, percentageDone: 23 },
         macros: {
           protein: { consumed: 35, target: 160, unit: 'g' },
@@ -332,12 +334,12 @@ export const SCENARIO_DATA = {
         daysCount: 90,
         targetCalories: 2000,
         accountCreatedAt: '2026-09-01T00:00:00.000Z',
-        heatmap: [{ date: new Date().toISOString().split('T')[0], count: 1, totalCalories: 460, level: 1 }],
+        heatmap: [{ date: getLocalDateString(), count: 1, totalCalories: 460, level: 1 }],
       },
     },
     midday: {
       summary: {
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         calories: { target: 2000, consumed: 1180, remaining: 820, percentageDone: 59 },
         macros: {
           protein: { consumed: 85, target: 160, unit: 'g' },
@@ -352,12 +354,12 @@ export const SCENARIO_DATA = {
         daysCount: 90,
         targetCalories: 2000,
         accountCreatedAt: '2026-09-01T00:00:00.000Z',
-        heatmap: [{ date: new Date().toISOString().split('T')[0], count: 2, totalCalories: 1180, level: 2 }],
+        heatmap: [{ date: getLocalDateString(), count: 2, totalCalories: 1180, level: 2 }],
       },
     },
     complete: {
       summary: {
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         calories: { target: 2000, consumed: 1980, remaining: 20, percentageDone: 99 },
         macros: {
           protein: { consumed: 164, target: 160, unit: 'g' },
@@ -373,7 +375,7 @@ export const SCENARIO_DATA = {
         targetCalories: 2000,
         accountCreatedAt: '2026-08-01T00:00:00.000Z',
         heatmap: [
-          { date: new Date().toISOString().split('T')[0], count: 4, totalCalories: 1980, level: 4 },
+          { date: getLocalDateString(), count: 4, totalCalories: 1980, level: 4 },
           { date: '2026-10-01', count: 3, totalCalories: 1920, level: 4 },
           { date: '2026-09-30', count: 4, totalCalories: 2010, level: 4 },
           { date: '2026-09-29', count: 3, totalCalories: 1890, level: 3 },
@@ -382,7 +384,7 @@ export const SCENARIO_DATA = {
     },
     overbudget: {
       summary: {
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         calories: { target: 2000, consumed: 2550, remaining: -550, percentageDone: 128 },
         macros: {
           protein: { consumed: 175, target: 160, unit: 'g' },
@@ -397,7 +399,7 @@ export const SCENARIO_DATA = {
         daysCount: 90,
         targetCalories: 2000,
         accountCreatedAt: '2026-08-01T00:00:00.000Z',
-        heatmap: [{ date: new Date().toISOString().split('T')[0], count: 5, totalCalories: 2550, level: 4 }],
+        heatmap: [{ date: getLocalDateString(), count: 5, totalCalories: 2550, level: 4 }],
       },
     },
   },
@@ -405,17 +407,17 @@ export const SCENARIO_DATA = {
   // --- DAILY TRACKER LOGS ---
   tracker: {
     empty: {
-      date: new Date().toISOString().split('T')[0],
+      date: getLocalDateString(),
       summary: { calories: 0, protein: 0, carbohydrates: 0, fat: 0, fiber: 0 },
       logs: [],
     },
     breakfast: {
-      date: new Date().toISOString().split('T')[0],
+      date: getLocalDateString(),
       summary: { calories: 460, protein: 35, carbohydrates: 52, fat: 12, fiber: 9 },
       logs: [
         {
           id: 'dev-log-b1',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'BREAKFAST',
           foodId: 'food-oats',
           food: {
@@ -445,7 +447,7 @@ export const SCENARIO_DATA = {
         },
         {
           id: 'dev-log-b2',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'BREAKFAST',
           foodId: 'food-eggs',
           food: {
@@ -476,12 +478,12 @@ export const SCENARIO_DATA = {
       ],
     },
     midday: {
-      date: new Date().toISOString().split('T')[0],
+      date: getLocalDateString(),
       summary: { calories: 1180, protein: 85, carbohydrates: 125, fat: 36, fiber: 16 },
       logs: [
         {
           id: 'dev-log-b1',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'BREAKFAST',
           foodId: 'food-oats',
           food: {
@@ -510,7 +512,7 @@ export const SCENARIO_DATA = {
         },
         {
           id: 'dev-log-l1',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'LUNCH',
           foodId: 'food-chicken-rice',
           food: {
@@ -539,7 +541,7 @@ export const SCENARIO_DATA = {
         },
         {
           id: 'dev-log-s1',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'SNACK',
           foodId: 'food-apple',
           food: {
@@ -569,12 +571,12 @@ export const SCENARIO_DATA = {
       ],
     },
     complete: {
-      date: new Date().toISOString().split('T')[0],
+      date: getLocalDateString(),
       summary: { calories: 1980, protein: 164, carbohydrates: 195, fat: 58, fiber: 31 },
       logs: [
         {
           id: 'dev-log-b1',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'BREAKFAST',
           foodId: 'food-oats',
           food: {
@@ -603,7 +605,7 @@ export const SCENARIO_DATA = {
         },
         {
           id: 'dev-log-l1',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'LUNCH',
           foodId: 'food-chicken-rice',
           food: {
@@ -632,7 +634,7 @@ export const SCENARIO_DATA = {
         },
         {
           id: 'dev-log-d1',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'DINNER',
           foodId: 'food-salmon-quinoa',
           food: {
@@ -661,7 +663,7 @@ export const SCENARIO_DATA = {
         },
         {
           id: 'dev-log-s2',
-          date: new Date().toISOString().split('T')[0],
+          date: getLocalDateString(),
           mealType: 'SNACK',
           foodId: 'food-casein-berries',
           food: {
@@ -788,7 +790,7 @@ export const SCENARIO_DATA = {
     },
     checkIn: {
       id: 'checkin-dev-001',
-      date: new Date().toISOString().split('T')[0],
+      date: getLocalDateString(),
       currentCalories: 2000,
       recommendedCalories: 2080,
       adjustmentKcal: +80,
