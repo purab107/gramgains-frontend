@@ -22,7 +22,6 @@ import {
   Calendar, 
   ChevronLeft, 
   ChevronRight, 
-  RotateCcw,
   Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -91,12 +90,13 @@ function TrackerPage() {
     loadData();
   }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
-  const changeDateBy = (days: number) => {
-    setSelectedDate(addDaysToDateString(selectedDate, days));
-  };
+  const todayStr = getLocalDateString();
+  const isToday = selectedDate >= todayStr;
 
-  const handleJumpToday = () => {
-    setSelectedDate(getLocalDateString());
+  const changeDateBy = (days: number) => {
+    const nextDate = addDaysToDateString(selectedDate, days);
+    if (nextDate > todayStr) return;
+    setSelectedDate(nextDate);
   };
 
   const summary = trackerData?.summary || {
@@ -134,8 +134,6 @@ function TrackerPage() {
 
   const waterTotalMl = trackerData?.water?.totalMl || 0;
   const waterLogs = trackerData?.water?.logs || [];
-
-  const isToday = selectedDate === getLocalDateString();
 
   const dashSummary: DashboardSummaryResponse = {
     date: selectedDate,
@@ -203,7 +201,12 @@ function TrackerPage() {
                 <input
                   type="date"
                   value={selectedDate}
-                  onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
+                  max={todayStr}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (!val) return;
+                    setSelectedDate(val > todayStr ? todayStr : val);
+                  }}
                   className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                 />
               </div>
@@ -212,24 +215,12 @@ function TrackerPage() {
                 onClick={() => changeDateBy(1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs"
-                title="Next Day"
+                disabled={isToday}
+                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs disabled:opacity-30 disabled:pointer-events-none"
+                title={isToday ? 'Cannot navigate to future dates' : 'Next Day'}
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
-
-              {!isToday && (
-                <Button
-                  onClick={handleJumpToday}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 rounded-lg border-primary/30 bg-primary/10 text-primary hover:bg-primary/20"
-                  title="Jump to Today"
-                  aria-label="Jump to Today"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                </Button>
-              )}
             </div>
           </div>
 

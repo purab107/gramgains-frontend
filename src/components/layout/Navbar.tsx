@@ -116,7 +116,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <input
               type="date"
               value={selectedDate}
-              onChange={(e) => onDateChange(e.target.value)}
+              max={getLocalDateString()}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) return;
+                const today = getLocalDateString();
+                onDateChange(val > today ? today : val);
+              }}
               className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
             />
           </label>
