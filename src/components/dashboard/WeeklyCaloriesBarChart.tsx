@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ApiService, HeatmapItem } from '@/services/api';
+import { getLocalDateString } from '@/lib/date-utils';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   ChartContainer,
@@ -56,7 +57,7 @@ export const WeeklyCaloriesBarChart: React.FC<WeeklyCaloriesBarChartProps> = ({
         const res = await ApiService.getHeatmap(initialDays);
         setTargetCalories(res.targetCalories || 2000);
 
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getLocalDateString();
 
         const formatted: ChartDayData[] = (res.heatmap || []).map((item: HeatmapItem) => {
           // Parse date in YYYY-MM-DD
