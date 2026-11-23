@@ -24,7 +24,8 @@ import { WeightHistoryDrawer } from '@/components/weight/WeightHistoryDrawer';
 import { WeeklyCheckInModal } from '@/components/adaptive/WeeklyCheckInModal';
 import { WeeklyCheckInBanner } from '@/components/adaptive/WeeklyCheckInBanner';
 import { DailyWeightModal } from '@/components/weight/DailyWeightModal';
-import { Scale, Sparkles, RefreshCw } from 'lucide-react';
+import { AnalyticsAdvancedModeModal } from '@/components/analytics/AnalyticsAdvancedModeModal';
+import { Scale, Sparkles, RefreshCw, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
@@ -45,6 +46,7 @@ function AnalyticsDashboard() {
   const [checkIn, setCheckIn] = useState<AdaptiveCheckInResponse | null>(null);
 
   // Modal / Drawer states
+  const [isAdvancedModeOpen, setIsAdvancedModeOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
   const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
@@ -148,6 +150,17 @@ function AnalyticsDashboard() {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setIsAdvancedModeOpen(true)}
+                className="rounded-xl gap-1.5 text-xs font-semibold border-violet-500/30 text-violet-400 bg-violet-500/10 hover:bg-violet-500/20 shadow-2xs"
+                title="Open Advanced Mode (6M, 1Y, Lifetime)"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>Advanced Mode</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setIsWeightModalOpen(true)}
                 className="rounded-xl gap-1.5 text-xs font-semibold"
               >
@@ -232,6 +245,16 @@ function AnalyticsDashboard() {
         onClose={() => setIsWeightModalOpen(false)}
         onLogged={handleWeightLogged}
         initialWeight={adaptiveStatus?.weightTrend?.latestRawKg || userProfile?.weightKg}
+      />
+
+      {/* Full-Screen YouTube-Style Advanced Analytics Workbench */}
+      <AnalyticsAdvancedModeModal
+        isOpen={isAdvancedModeOpen}
+        onClose={() => setIsAdvancedModeOpen(false)}
+        weightHistory={weightHistory}
+        trends={trends}
+        adaptiveStatus={adaptiveStatus}
+        userProfile={userProfile}
       />
     </div>
   );
