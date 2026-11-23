@@ -208,7 +208,7 @@ export const DEV_SKIP_STAGES: DevSkipStage[] = [
     slug: 'calculator',
     name: '9. Macro & TDEE Calculator',
     subtitle: 'Mifflin-St Jeor metabolic calculator',
-    route: '/calculator',
+    route: '/profile?tab=calculator',
     actionButtonLabel: 'Simulate Adaptive Check-In',
     prevStageId: 8,
     nextStageId: 10,
