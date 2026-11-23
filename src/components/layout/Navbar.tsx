@@ -58,8 +58,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       headerTitle = headerTitle || 'Metabolic Analytics';
       headerSubtitle = headerSubtitle || 'Real-world energy expenditure, smoothed weight trends, and actionable insights.';
     } else if (pathname === '/profile') {
-      headerTitle = headerTitle || 'Profile & Metabolic Goals';
-      headerSubtitle = headerSubtitle || 'Adjust your target rate of change, macro distribution, and check-in schedules.';
+      headerTitle = headerTitle || 'Profile & Settings Hub';
+      headerSubtitle = headerSubtitle || 'Manage your personal biometrics, macro calculations, and app configurations.';
     } else if (pathname === '/saved-meals') {
       headerTitle = headerTitle || 'Saved Meals';
       headerSubtitle = headerSubtitle || 'Manage your custom recipes and saved meal preps.';

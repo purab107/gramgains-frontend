@@ -7,8 +7,6 @@ import {
   Home, 
   SquarePen, 
   Bookmark, 
-  Calculator, 
-  Settings, 
   LogOut,
   Flame,
   UserX,
@@ -68,9 +66,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
       icon: Bookmark,
     },
     {
-      label: 'Calculator',
-      href: '/calculator',
-      icon: Calculator,
+      label: 'Profile',
+      href: '/profile',
+      icon: User,
     },
   ];
 
@@ -114,22 +112,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
           </nav>
         </div>
 
-        {/* Bottom Navigation Items (Profile & Logout/Guest) */}
+        {/* Bottom Actions (Logout/Guest) */}
         <div className="px-3.5 pb-6 pt-2 space-y-1.5 border-t border-border">
-          {!isGuest && (
-            <Link
-              href="/profile"
-              className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
-                pathname === '/profile'
-                  ? 'bg-accent text-accent-foreground font-semibold'
-                  : 'text-muted-foreground hover:text-accent-foreground hover:bg-accent/50'
-              }`}
-            >
-              <User className="w-5 h-5 shrink-0 text-muted-foreground" />
-              <span>Profile &amp; Settings</span>
-            </Link>
-          )}
-
           {isGuest ? (
             <button
               onClick={handleExitGuest}
