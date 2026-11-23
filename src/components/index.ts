@@ -47,3 +47,7 @@ export * from './ui/tooltip';
 export * from './ui/sheet';
 export * from './ui/input';
 
+// Profile components
+export * from './profile';
+
+
