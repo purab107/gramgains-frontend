@@ -96,7 +96,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
   }, [series, confidenceLevel, selectedDays]);
 
   // Compute domain bounds for Y-Axis and header KPIs
-  const { minTdee, maxTdee, avgEffective, diffKcal, dateRangeStr } = useMemo(() => {
+  const { minTdee, maxTdee, avgEffective, diffKcal, dateRangeStr, compactDateRangeStr } = useMemo(() => {
     const validValues: number[] = [];
 
     chartData.forEach((d) => {
@@ -114,6 +114,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
         avgEffective: Math.round(baselineTdee),
         diffKcal: 0,
         dateRangeStr: 'Calibrating data',
+        compactDateRangeStr: 'Calibrating',
       };
     }
 
@@ -136,6 +137,11 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
     const firstDate = chartData[0]?.date ? new Date(chartData[0].date) : new Date();
     const lastDate = chartData[chartData.length - 1]?.date ? new Date(chartData[chartData.length - 1].date) : new Date();
     const dateRangeStr = `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} – ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+    const isSameYear = firstDate.getFullYear() === lastDate.getFullYear();
+    const isCurrentYear = lastDate.getFullYear() === new Date().getFullYear();
+    const compactDateRangeStr = isSameYear && isCurrentYear
+      ? `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+      : dateRangeStr;
 
     return {
       minTdee: Math.max(800, Math.floor((min - 60) / 100) * 100),
@@ -143,6 +149,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
       avgEffective: avg,
       diffKcal: diff,
       dateRangeStr,
+      compactDateRangeStr,
     };
   }, [chartData, baselineTdee]);
 
@@ -150,21 +157,21 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
 
   return (
     <>
-      <div className={`bg-card border border-border rounded-3xl p-4 sm:p-5 shadow-sm flex flex-col justify-start gap-3 ${className}`}>
+      <div className={`bg-card border border-border rounded-3xl p-3.5 sm:p-5 shadow-sm flex flex-col justify-start gap-3 ${className}`}>
         {/* ROW 1: Card Title & Insights Action Button */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#ff6b4a]/10 border border-[#ff6b4a]/20 text-[#ff6b4a] flex items-center justify-center shrink-0">
-              <Activity className="w-5 h-5" />
+        <div className="flex items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#ff6b4a]/10 border border-[#ff6b4a]/20 text-[#ff6b4a] flex items-center justify-center shrink-0">
+              <Activity className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-foreground">Expenditure Trend</h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-orange-500/10 text-[#ff6b4a] border-[#ff6b4a]/30">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h3 className="text-sm sm:text-base font-bold text-foreground truncate">Expenditure Trend</h3>
+                <span className="text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full border bg-orange-500/10 text-[#ff6b4a] border-[#ff6b4a]/30 shrink-0">
                   Adaptive TDEE
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground/90">
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 truncate sm:whitespace-normal">
                 Thermodynamic burn solved from intake and weight velocity.
               </p>
             </div>
@@ -174,7 +181,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
             variant="outline"
             size="sm"
             onClick={() => setIsInsightsOpen(true)}
-            className="rounded-2xl gap-1.5 text-xs font-semibold h-9 px-3 border-border/80 hover:bg-muted/80 shadow-2xs shrink-0"
+            className="rounded-xl sm:rounded-2xl gap-1.5 text-xs font-semibold h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3 border-border/80 hover:bg-muted/80 shadow-2xs shrink-0 flex items-center justify-center"
             title="Open Expenditure Insights & Data"
           >
             <SlidersHorizontal className="w-3.5 h-3.5 text-[#ff6b4a]" />
@@ -182,19 +189,19 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
           </Button>
         </div>
 
-        {/* ROW 2: Compact MacroFactor KPIs (Average, Difference, Date Range) */}
-        <div className="flex flex-wrap items-end justify-between gap-3 pt-2 border-t border-border/40">
-          <div className="flex items-baseline gap-6">
+        {/* ROW 2: Compact MacroFactor KPIs (Average, Difference, Window) */}
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/40">
+          <div className="flex items-baseline gap-4 sm:gap-6">
             {/* Average KPI */}
             <div>
               <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
                 Average
               </span>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-foreground tracking-tight font-mono">
+                <span className="text-xl sm:text-2xl font-black text-foreground tracking-tight font-mono">
                   {avgEffective}
                 </span>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400">
                   kcal
                 </span>
               </div>
@@ -206,20 +213,26 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                 Difference
               </span>
               <div className="flex items-baseline gap-1">
-                <span className={`text-2xl font-black tracking-tight font-mono ${diffKcal >= 0 ? 'text-emerald-400' : 'text-[#ff6b4a]'}`}>
+                <span className={`text-xl sm:text-2xl font-black tracking-tight font-mono ${diffKcal >= 0 ? 'text-emerald-400' : 'text-[#ff6b4a]'}`}>
                   {diffKcal > 0 ? `+${diffKcal}` : diffKcal}
                 </span>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400">
                   kcal
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Date Range Subtitle */}
-          <span className="text-[11px] font-medium text-slate-400 pb-1">
-            {dateRangeStr}
-          </span>
+          {/* Active Date Window Subtitle */}
+          <div className="text-right shrink-0">
+            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
+              Window
+            </span>
+            <span className="text-[11px] sm:text-xs font-medium text-slate-300 font-mono tracking-tight">
+              <span className="sm:hidden">{compactDateRangeStr}</span>
+              <span className="hidden sm:inline">{dateRangeStr}</span>
+            </span>
+          </div>
         </div>
 
         {/* ROW 3: MacroFactor Chart Canvas (Optimized for Dark Theme Visibility) */}
@@ -233,14 +246,14 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
             </p>
           </div>
         ) : (
-          <div className="w-full h-[200px] sm:h-[210px]">
+          <div className="w-full h-[185px] sm:h-[210px]">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[200px] sm:h-[210px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[185px] sm:h-[210px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
-                margin={{ top: 8, right: 4, left: -20, bottom: 0 }}
+                margin={{ top: 8, right: 0, left: -8, bottom: 0 }}
               >
                 {/* Horizontal Dashed Gridlines with clear contrast */}
                 <CartesianGrid
@@ -255,8 +268,8 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={selectedDays <= 7 ? 14 : selectedDays <= 30 ? 22 : 32}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                  minTickGap={selectedDays <= 7 ? 12 : selectedDays <= 30 ? 20 : 30}
                 />
 
                 {/* Y-Axis Right-Aligned: High visibility slate-300 */}
@@ -265,8 +278,9 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   domain={[minTdee, maxTdee]}
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={10}
-                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
+                  width={38}
+                  tickMargin={4}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
                   tickFormatter={(val) => `${val}`}
                 />
 
@@ -336,7 +350,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
 
         {/* ROW 4: Range Pill Selector Controls */}
         <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-full border border-border/80">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-muted/50 p-1 rounded-full border border-border/80">
             {TIME_RANGES.map(({ label, days }) => {
               const isActive = selectedDays === days;
               return (
@@ -344,7 +358,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   key={label}
                   type="button"
                   onClick={() => onDaysChange?.(days)}
-                  className={`px-2.5 py-0.5 text-xs font-bold rounded-full transition-all focus:outline-hidden focus-visible:ring-0 ${
+                  className={`px-2 sm:px-2.5 py-0.5 text-[11px] sm:text-xs font-bold rounded-full transition-all focus:outline-hidden focus-visible:ring-0 ${
                     isActive
                       ? 'bg-foreground text-background shadow-xs'
                       : 'text-slate-400 hover:text-foreground hover:bg-muted/40'
@@ -356,43 +370,45 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
             })}
           </div>
 
-          <span className="text-xs font-medium text-slate-400 hidden sm:inline">
-            Daily TDEE
+          <span className="text-[11px] sm:text-xs font-medium text-slate-400">
+            <span className="hidden sm:inline">Daily TDEE</span>
+            <span className="sm:hidden text-slate-400">Adaptive Burn</span>
           </span>
         </div>
 
         {/* ROW 5: MacroFactor Legend: Flux Range, Updating, Holding */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/40 text-xs text-slate-300 dark:text-slate-400">
-          <div className="flex items-center gap-3.5">
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/40 text-xs text-slate-300 dark:text-slate-400">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 flex-wrap">
             {/* Flux Range Icon */}
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-xs bg-[rgba(255,107,74,0.3)] border border-[#ff6b4a] inline-block shrink-0" />
-              <span className="font-semibold text-foreground text-[11px]">Flux Range</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-2.5 h-2.5 rounded-xs bg-[rgba(255,107,74,0.3)] border border-[#ff6b4a] inline-block shrink-0" />
+              <span className="font-semibold text-foreground text-[10px] sm:text-[11px]">Flux Range</span>
             </div>
 
             {/* Updating Icon */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="flex items-center">
-                <span className="w-2 h-0.5 bg-[#ff6b4a]" />
-                <span className="w-2 h-2 rounded-full border-2 border-[#ff6b4a] bg-background" />
-                <span className="w-2 h-0.5 bg-[#ff6b4a]" />
+                <span className="w-1.5 sm:w-2 h-0.5 bg-[#ff6b4a]" />
+                <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full border-2 border-[#ff6b4a] bg-background" />
+                <span className="w-1.5 sm:w-2 h-0.5 bg-[#ff6b4a]" />
               </span>
-              <span className="font-semibold text-foreground text-[11px]">Updating</span>
+              <span className="font-semibold text-foreground text-[10px] sm:text-[11px]">Updating</span>
             </div>
 
             {/* Holding Icon */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="flex items-center">
-                <span className="w-2 h-0.5 border-t border-dashed border-slate-400" />
-                <span className="w-2 h-2 border border-slate-400 bg-background" />
-                <span className="w-2 h-0.5 border-t border-dashed border-slate-400" />
+                <span className="w-1.5 sm:w-2 h-0.5 border-t border-dashed border-slate-400" />
+                <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 border border-slate-400 bg-background" />
+                <span className="w-1.5 sm:w-2 h-0.5 border-t border-dashed border-slate-400" />
               </span>
-              <span className="font-medium text-slate-400 text-[11px]">Holding</span>
+              <span className="font-medium text-slate-400 text-[10px] sm:text-[11px]">Holding</span>
             </div>
           </div>
 
-          <span className="text-[10px] text-slate-400 italic">
-            Thermodynamically smoothed
+          <span className="text-[10px] text-slate-400 italic shrink-0 whitespace-nowrap">
+            <span className="sm:hidden">Dynamic</span>
+            <span className="hidden sm:inline">Thermodynamically smoothed</span>
           </span>
         </div>
       </div>

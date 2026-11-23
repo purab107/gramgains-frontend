@@ -91,7 +91,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
   }, [logs, selectedDays]);
 
   // Compute domain bounds for Y-Axis and header KPIs
-  const { minWeight, maxWeight, avgWeight, diffKg, dateRangeStr } = useMemo(() => {
+  const { minWeight, maxWeight, avgWeight, diffKg, dateRangeStr, compactDateRangeStr } = useMemo(() => {
     const validWeights: number[] = [];
 
     chartData.forEach((d) => {
@@ -110,6 +110,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
         avgWeight: 75.0,
         diffKg: 0,
         dateRangeStr: 'Calibrating data',
+        compactDateRangeStr: 'Calibrating',
       };
     }
 
@@ -134,6 +135,11 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
     const firstDate = chartData[0]?.date ? new Date(chartData[0].date) : new Date();
     const lastDate = chartData[chartData.length - 1]?.date ? new Date(chartData[chartData.length - 1].date) : new Date();
     const dateRangeStr = `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+    const isSameYear = firstDate.getFullYear() === lastDate.getFullYear();
+    const isCurrentYear = lastDate.getFullYear() === new Date().getFullYear();
+    const compactDateRangeStr = isSameYear && isCurrentYear
+      ? `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+      : dateRangeStr;
 
     return {
       minWeight: Math.floor(min - padding),
@@ -141,6 +147,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
       avgWeight: avg,
       diffKg: diff,
       dateRangeStr,
+      compactDateRangeStr,
     };
   }, [chartData, targetWeightKg]);
 
@@ -148,21 +155,21 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
 
   return (
     <>
-      <div className={`w-full bg-card border border-border rounded-3xl p-4 sm:p-5 shadow-sm flex flex-col justify-start gap-3 ${className}`}>
+      <div className={`w-full bg-card border border-border rounded-3xl p-3.5 sm:p-5 shadow-sm flex flex-col justify-start gap-3 ${className}`}>
         {/* ROW 1: Card Title & Insights & Data Action Button */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center shrink-0">
-              <Scale className="w-5 h-5" />
+        <div className="flex items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center shrink-0">
+              <Scale className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-foreground">Weight Trend</h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-violet-500/10 text-violet-400 border-violet-500/30">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h3 className="text-sm sm:text-base font-bold text-foreground truncate">Weight Trend</h3>
+                <span className="text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full border bg-violet-500/10 text-violet-400 border-violet-500/30 shrink-0">
                   Smoothed Signal
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground/90">
+              <p className="text-[11px] sm:text-xs text-muted-foreground/90 truncate sm:whitespace-normal">
                 Filtered thermodynamic trend vs raw scale volatility.
               </p>
             </div>
@@ -172,7 +179,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
             variant="outline"
             size="sm"
             onClick={() => setIsInsightsOpen(true)}
-            className="rounded-2xl gap-1.5 text-xs font-semibold h-9 px-3 border-border/80 hover:bg-muted/80 shadow-2xs shrink-0"
+            className="rounded-xl sm:rounded-2xl gap-1.5 text-xs font-semibold h-8 w-8 p-0 sm:h-9 sm:w-auto sm:px-3 border-border/80 hover:bg-muted/80 shadow-2xs shrink-0 flex items-center justify-center"
             title="Open Weight Insights & Data"
           >
             <SlidersHorizontal className="w-3.5 h-3.5 text-violet-400" />
@@ -180,19 +187,19 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
           </Button>
         </div>
 
-        {/* ROW 2: MacroFactor KPIs (Average, Difference, Date Range) */}
-        <div className="flex flex-wrap items-end justify-between gap-3 pt-2 border-t border-border/40">
-          <div className="flex items-baseline gap-6">
+        {/* ROW 2: MacroFactor KPIs (Average, Difference, Window) */}
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/40">
+          <div className="flex items-baseline gap-4 sm:gap-6">
             {/* Average KPI */}
             <div>
               <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
                 Average
               </span>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-foreground tracking-tight font-mono">
+                <span className="text-xl sm:text-2xl font-black text-foreground tracking-tight font-mono">
                   {avgWeight}
                 </span>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400">
                   kg
                 </span>
               </div>
@@ -204,20 +211,26 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                 Difference
               </span>
               <div className="flex items-baseline gap-1">
-                <span className={`text-2xl font-black tracking-tight font-mono ${diffKg <= 0 ? 'text-emerald-400' : 'text-blue-400'}`}>
+                <span className={`text-xl sm:text-2xl font-black tracking-tight font-mono ${diffKg <= 0 ? 'text-emerald-400' : 'text-blue-400'}`}>
                   {diffKg > 0 ? `+${diffKg}` : diffKg}
                 </span>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400">
                   kg
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Date Range Subtitle */}
-          <span className="text-[11px] font-medium text-slate-400 pb-1">
-            {dateRangeStr}
-          </span>
+          {/* Active Date Window Subtitle */}
+          <div className="text-right shrink-0">
+            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
+              Window
+            </span>
+            <span className="text-[11px] sm:text-xs font-medium text-slate-300 font-mono tracking-tight">
+              <span className="sm:hidden">{compactDateRangeStr}</span>
+              <span className="hidden sm:inline">{dateRangeStr}</span>
+            </span>
+          </div>
         </div>
 
         {/* ROW 3: Dual Curve Chart Canvas (Scale Weight vs Trend Weight) */}
@@ -231,14 +244,14 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
             </p>
           </div>
         ) : (
-          <div className="w-full h-[200px] sm:h-[210px]">
+          <div className="w-full h-[185px] sm:h-[210px]">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[200px] sm:h-[210px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[185px] sm:h-[210px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
-                margin={{ top: 8, right: 4, left: -20, bottom: 0 }}
+                margin={{ top: 8, right: 0, left: -8, bottom: 0 }}
               >
                 {/* Horizontal Dashed Gridlines with clear contrast */}
                 <CartesianGrid
@@ -253,8 +266,8 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={selectedDays <= 7 ? 14 : selectedDays <= 30 ? 22 : 32}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
+                  minTickGap={selectedDays <= 7 ? 12 : selectedDays <= 30 ? 20 : 30}
                 />
 
                 {/* Y-Axis Right-Aligned */}
@@ -263,8 +276,9 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   domain={[minWeight, maxWeight]}
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={10}
-                  tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
+                  width={32}
+                  tickMargin={4}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
                   tickFormatter={(val) => `${val}`}
                 />
 
@@ -376,7 +390,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
 
         {/* ROW 4: Range Pill Selector Controls */}
         <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-full border border-border/80">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-muted/50 p-1 rounded-full border border-border/80">
             {TIME_RANGES.map(({ label, days }) => {
               const isActive = selectedDays === days;
               return (
@@ -384,7 +398,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   key={label}
                   type="button"
                   onClick={() => onDaysChange?.(days)}
-                  className={`px-2.5 py-0.5 text-xs font-bold rounded-full transition-all focus:outline-hidden focus-visible:ring-0 ${
+                  className={`px-2 sm:px-2.5 py-0.5 text-[11px] sm:text-xs font-bold rounded-full transition-all focus:outline-hidden focus-visible:ring-0 ${
                     isActive
                       ? 'bg-foreground text-background shadow-xs'
                       : 'text-slate-400 hover:text-foreground hover:bg-muted/40'
@@ -396,41 +410,43 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
             })}
           </div>
 
-          <span className="text-xs font-medium text-slate-400 hidden sm:inline">
-            Daily Scale &amp; Smoothed Midpoint
+          <span className="text-[11px] sm:text-xs font-medium text-slate-400">
+            <span className="hidden sm:inline">Daily Scale &amp; Smoothed Midpoint</span>
+            <span className="sm:hidden text-slate-400">Scale &amp; Midpoint</span>
           </span>
         </div>
 
         {/* ROW 5: MacroFactor Legend: Scale Weight, Trend Weight, Goal Target */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/40 text-xs text-slate-300 dark:text-slate-400">
-          <div className="flex items-center gap-3.5">
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/40 text-xs text-slate-300 dark:text-slate-400">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 flex-wrap">
             {/* Scale Weight Swatch */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="flex items-center">
-                <span className="w-2 h-0.5 bg-[#8b5cf6]" />
-                <span className="w-2 h-2 rounded-full bg-[#8b5cf6]" />
-                <span className="w-2 h-0.5 bg-[#8b5cf6]" />
+                <span className="w-1.5 sm:w-2 h-0.5 bg-[#8b5cf6]" />
+                <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-[#8b5cf6]" />
+                <span className="w-1.5 sm:w-2 h-0.5 bg-[#8b5cf6]" />
               </span>
-              <span className="font-semibold text-foreground text-[11px]">Scale Weight</span>
+              <span className="font-semibold text-foreground text-[10px] sm:text-[11px]">Scale Weight</span>
             </div>
 
             {/* Trend Weight Swatch */}
-            <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-1 rounded-full bg-[#c4b5fd] inline-block shrink-0 shadow-[0_0_8px_rgba(196,181,253,0.5)]" />
-              <span className="font-semibold text-foreground text-[11px]">Trend Weight</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-3 sm:w-3.5 h-1 rounded-full bg-[#c4b5fd] inline-block shrink-0 shadow-[0_0_8px_rgba(196,181,253,0.5)]" />
+              <span className="font-semibold text-foreground text-[10px] sm:text-[11px]">Trend Weight</span>
             </div>
 
             {/* Goal Target Swatch */}
             {targetWeightKg && (
-              <div className="flex items-center gap-1.5">
-                <span className="w-3.5 h-0.5 border-t border-dashed border-[#3b82f6] inline-block shrink-0" />
-                <span className="text-blue-400 font-medium text-[11px]">Goal ({targetWeightKg}kg)</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="w-3 sm:w-3.5 h-0.5 border-t border-dashed border-[#3b82f6] inline-block shrink-0" />
+                <span className="text-blue-400 font-medium text-[10px] sm:text-[11px]">Goal ({targetWeightKg}kg)</span>
               </div>
             )}
           </div>
 
-          <span className="text-[10px] text-slate-400 italic">
-            Double Exponential Smoothing (Holt)
+          <span className="text-[10px] text-slate-400 italic shrink-0 whitespace-nowrap">
+            <span className="sm:hidden">Holt Smoothing</span>
+            <span className="hidden sm:inline">Double Exponential Smoothing (Holt)</span>
           </span>
         </div>
       </div>
