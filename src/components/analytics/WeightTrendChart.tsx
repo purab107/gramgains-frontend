@@ -47,10 +47,9 @@ const chartConfig = {
 
 const TIME_RANGES = [
   { label: '1W', days: 7 },
+  { label: '2W', days: 14 },
   { label: '1M', days: 30 },
   { label: '3M', days: 90 },
-  { label: '6M', days: 180 },
-  { label: 'All', days: 365 },
 ];
 
 export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
@@ -267,7 +266,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   axisLine={false}
                   tickMargin={8}
                   tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={selectedDays <= 7 ? 12 : selectedDays <= 30 ? 20 : 30}
+                  minTickGap={selectedDays <= 7 ? 14 : selectedDays <= 14 ? 18 : 26}
                 />
 
                 {/* Y-Axis Right-Aligned */}
@@ -276,10 +275,14 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   domain={[minWeight, maxWeight]}
                   tickLine={false}
                   axisLine={false}
-                  width={32}
-                  tickMargin={4}
+                  width={38}
+                  tickMargin={6}
+                  tickCount={4}
                   tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
-                  tickFormatter={(val) => `${val}`}
+                  tickFormatter={(val) => {
+                    const num = Number(val);
+                    return Number.isInteger(num) ? `${num}` : num.toFixed(1);
+                  }}
                 />
 
                 <ChartTooltip
@@ -334,19 +337,26 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   dataKey="rawWeight"
                   name="rawWeight"
                   stroke="#8b5cf6"
-                  strokeWidth={selectedDays > 60 ? 1.75 : 2.25}
+                  strokeWidth={selectedDays >= 90 ? 1.5 : 2}
                   connectNulls={false}
                   dot={
                     selectedDays <= 7
                       ? {
-                          r: 4,
+                          r: 3.5,
                           fill: '#8b5cf6',
                           stroke: 'hsl(var(--card))',
                           strokeWidth: 1.5,
                         }
+                      : selectedDays <= 14
+                      ? {
+                          r: 2.5,
+                          fill: '#8b5cf6',
+                          stroke: 'hsl(var(--card))',
+                          strokeWidth: 1,
+                        }
                       : selectedDays <= 30
                       ? {
-                          r: 2.75,
+                          r: 2,
                           fill: '#8b5cf6',
                           stroke: 'hsl(var(--card))',
                           strokeWidth: 1,
@@ -354,7 +364,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                       : false
                   }
                   activeDot={{
-                    r: 6.5,
+                    r: 6,
                     fill: '#a855f7',
                     stroke: 'hsl(var(--card))',
                     strokeWidth: 2,
@@ -370,11 +380,11 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                   dataKey="trendWeight"
                   name="trendWeight"
                   stroke="#c4b5fd"
-                  strokeWidth={selectedDays > 60 ? 3 : 3.5}
+                  strokeWidth={3}
                   connectNulls={true}
                   dot={false}
                   activeDot={{
-                    r: 6.5,
+                    r: 6,
                     fill: '#c4b5fd',
                     stroke: 'hsl(var(--card))',
                     strokeWidth: 2,

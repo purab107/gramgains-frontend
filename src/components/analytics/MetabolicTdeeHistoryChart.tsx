@@ -44,10 +44,9 @@ const chartConfig = {
 
 const TIME_RANGES = [
   { label: '1W', days: 7 },
+  { label: '2W', days: 14 },
   { label: '1M', days: 30 },
   { label: '3M', days: 90 },
-  { label: '6M', days: 180 },
-  { label: 'All', days: 365 },
 ];
 
 export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps> = ({
@@ -269,7 +268,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   axisLine={false}
                   tickMargin={8}
                   tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
-                  minTickGap={selectedDays <= 7 ? 12 : selectedDays <= 30 ? 20 : 30}
+                  minTickGap={selectedDays <= 7 ? 14 : selectedDays <= 14 ? 18 : 26}
                 />
 
                 {/* Y-Axis Right-Aligned: High visibility slate-300 */}
@@ -278,10 +277,10 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   domain={[minTdee, maxTdee]}
                   tickLine={false}
                   axisLine={false}
-                  width={38}
-                  tickMargin={4}
+                  width={42}
+                  tickMargin={6}
                   tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 500 }}
-                  tickFormatter={(val) => `${val}`}
+                  tickFormatter={(val) => `${Math.round(val)}`}
                 />
 
                 <ChartTooltip
