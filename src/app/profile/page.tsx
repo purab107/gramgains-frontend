@@ -150,7 +150,7 @@ function ProfileHubInner() {
               </div>
 
               {/* Segmented Tab Navigation Bar */}
-              <div className="flex items-center gap-1.5 p-1.5 bg-muted/40 border border-border rounded-2xl overflow-x-auto scrollbar-none">
+              <div className="flex items-center gap-1.5 p-1.5 bg-muted/40 border border-border rounded-2xl overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 {tabs.map((tab) => {
                   const isActive = activeTab === tab.key;
                   const Icon = tab.icon;
