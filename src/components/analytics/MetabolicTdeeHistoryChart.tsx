@@ -248,7 +248,7 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
           <div className="w-full h-[185px] sm:h-[210px]">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[185px] sm:h-[210px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[185px] sm:h-[210px] aspect-auto [&_.recharts-wrapper]:[transform:translateZ(0)] [&_.recharts-wrapper]:will-change-transform [&_.recharts-surface]:will-change-transform [&_.recharts-curve]:will-change-transform [&_.recharts-area]:will-change-transform [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
@@ -320,8 +320,8 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   strokeWidth={1.5}
                   fill="rgba(255, 107, 74, 0.20)"
                   isAnimationActive={true}
-                  animationDuration={600}
-                  animationEasing="ease-in-out"
+                  animationDuration={650}
+                  animationEasing="spring"
                 />
 
                 {/* Smooth Coral Expenditure Line: 60fps Morphing Animation */}
@@ -333,8 +333,8 @@ export const MetabolicTdeeHistoryChart: React.FC<MetabolicTdeeHistoryChartProps>
                   strokeWidth={3.5}
                   dot={false}
                   isAnimationActive={true}
-                  animationDuration={600}
-                  animationEasing="ease-in-out"
+                  animationDuration={650}
+                  animationEasing="spring"
                   activeDot={{
                     r: 6.5,
                     fill: '#ff6b4a',

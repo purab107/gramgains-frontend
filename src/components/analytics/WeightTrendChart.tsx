@@ -246,7 +246,7 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
           <div className="w-full h-[185px] sm:h-[210px]">
             <ChartContainer 
               config={chartConfig} 
-              className="w-full h-[185px] sm:h-[210px] aspect-auto [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_.recharts-curve]:ease-in-out [&_path]:will-change-transform"
+              className="w-full h-[185px] sm:h-[210px] aspect-auto [&_.recharts-wrapper]:[transform:translateZ(0)] [&_.recharts-wrapper]:will-change-transform [&_.recharts-surface]:will-change-transform [&_.recharts-curve]:will-change-transform [&_.recharts-curve]:transition-all [&_.recharts-curve]:duration-500 [&_path]:will-change-transform"
             >
               <ComposedChart
                 data={chartData}
@@ -370,8 +370,8 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                     strokeWidth: 2,
                   }}
                   isAnimationActive={true}
-                  animationDuration={600}
-                  animationEasing="ease-in-out"
+                  animationDuration={650}
+                  animationEasing="spring"
                 />
 
                 {/* Smoothed Trend Weight: Thick Glowing Lavender Curve */}
@@ -390,8 +390,8 @@ export const WeightTrendChart: React.FC<WeightTrendChartProps> = ({
                     strokeWidth: 2,
                   }}
                   isAnimationActive={true}
-                  animationDuration={600}
-                  animationEasing="ease-in-out"
+                  animationDuration={650}
+                  animationEasing="spring"
                 />
               </ComposedChart>
             </ChartContainer>
