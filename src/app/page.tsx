@@ -33,9 +33,9 @@ import {
   Scale,
   Sparkles,
   X,
-  Flame,
   Loader2,
 } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
 import { isGuestSession } from '@/lib/guest-session';
@@ -320,9 +320,7 @@ function DashboardHomePage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
         <div className="flex flex-col items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground animate-pulse shadow-lg">
-            <Flame className="h-6 w-6" />
-          </div>
+          <BrandLogo size="lg" className="animate-pulse" priority />
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
             <span>Loading GramGains...</span>
