@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { signIn, signUp, useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
-import { Flame, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { startGuestSession, endGuestSession } from '@/lib/guest-session';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
@@ -141,12 +142,7 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-gradient-to-br from-primary/20 via-background to-background border-r border-border p-12">
         <div className="max-w-md space-y-8">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
-              <Flame className="h-6 w-6" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-foreground">GramGains</span>
-          </div>
+          <BrandLogo size="lg" showWordmark priority />
 
           {/* Headline */}
           <div className="space-y-3">
@@ -176,11 +172,8 @@ export default function LoginPage() {
       <div className="flex flex-1 flex-col items-center justify-center p-6">
         <div className="w-full max-w-md space-y-6">
           {/* Mobile Logo */}
-          <div className="flex items-center gap-2 lg:hidden mb-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Flame className="h-5 w-5" />
-            </div>
-            <span className="text-xl font-bold text-foreground">GramGains</span>
+          <div className="lg:hidden mb-2">
+            <BrandLogo size="sm" showWordmark priority />
           </div>
 
           {/* Header */}
