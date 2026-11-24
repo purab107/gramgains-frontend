@@ -174,32 +174,33 @@ function TrackerPage() {
         <main className="flex-1 p-4 pb-24 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           
           {/* Top Control Bar: Date Navigation & Actions */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-extrabold text-foreground tracking-tight">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-baseline gap-1.5 sm:gap-2 min-w-0">
+              <h2 className="text-lg sm:text-xl font-extrabold text-foreground tracking-tight whitespace-nowrap truncate">
                 {formatDisplayDate(selectedDate)}
               </h2>
-              <span className="text-xs font-normal text-muted-foreground font-mono">
-                ({formatDMY(selectedDate)})
+              <span className="text-[11px] sm:text-xs font-normal text-muted-foreground font-mono whitespace-nowrap hidden min-[440px]:inline">
+                ({formatDMY(selectedDate, false)})
               </span>
             </div>
 
             {/* Date Navigation Bar */}
-            <div className="inline-flex items-center gap-1 bg-muted/40 border border-border/80 p-1 rounded-xl shadow-xs">
+            <div className="inline-flex items-center gap-0.5 sm:gap-1 bg-muted/40 border border-border/80 p-0.5 sm:p-1 rounded-xl shadow-xs shrink-0">
               <Button
                 onClick={() => changeDateBy(-1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all shrink-0"
                 title="Previous Day"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Button>
 
-              <div className="relative flex items-center justify-center gap-2 px-3 h-8 bg-card rounded-lg border border-border shadow-xs cursor-pointer select-none">
+              <div className="relative flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 h-7 sm:h-8 bg-card rounded-lg border border-border shadow-xs cursor-pointer select-none shrink-0">
                 <Calendar className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span className="text-xs font-mono font-bold tracking-wider text-foreground">
-                  {formatDMY(selectedDate)}
+                <span className="text-[11px] sm:text-xs font-mono font-bold tracking-tight sm:tracking-wider text-foreground whitespace-nowrap">
+                  <span className="hidden sm:inline">{formatDMY(selectedDate, true)}</span>
+                  <span className="inline sm:hidden">{formatDMY(selectedDate, false)}</span>
                 </span>
                 <input
                   type="date"
@@ -219,10 +220,10 @@ function TrackerPage() {
                 variant="ghost"
                 size="sm"
                 disabled={isToday}
-                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none shrink-0"
                 title={isToday ? 'Cannot navigate to future dates' : 'Next Day'}
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Button>
             </div>
           </div>
