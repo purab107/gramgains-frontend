@@ -108,9 +108,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Date Display / Picker */}
         {onDateChange ? (
-          <label className="relative flex items-center gap-1.5 sm:gap-2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors bg-muted/40 hover:bg-muted/70 px-2 sm:px-2.5 py-1.5 rounded-xl border border-border/60 text-xs sm:text-sm">
+          <label className="relative flex items-center gap-1.5 sm:gap-2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors bg-muted/40 hover:bg-muted/70 px-2 sm:px-2.5 py-1.5 rounded-xl border border-border/60 text-xs sm:text-sm shrink-0">
             <Calendar className="w-4 h-4 text-primary shrink-0" />
-            <span className="font-medium text-foreground hidden min-[520px]:inline">
+            <span className="font-medium text-foreground hidden min-[520px]:inline whitespace-nowrap">
               {formatHeaderDate(selectedDate)}
             </span>
             <input
@@ -127,9 +127,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
           </label>
         ) : (
-          <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground shrink-0">
             <Calendar className="w-4 h-4 text-muted-foreground shrink-0" />
-            <span className="text-xs sm:text-sm font-normal text-muted-foreground hidden min-[520px]:inline">
+            <span className="text-xs sm:text-sm font-normal text-muted-foreground hidden min-[520px]:inline whitespace-nowrap">
               {formatHeaderDate(selectedDate)}
             </span>
           </div>
