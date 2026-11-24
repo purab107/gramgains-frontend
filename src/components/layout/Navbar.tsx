@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { 
-  Flame, 
   Calendar, 
   Bell, 
   Scale, 
   UserX 
 } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { UserNav } from '@/components/auth/UserNav';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -78,11 +78,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Brand & Desktop Main Header Title */}
       <div className="flex items-center gap-3">
         {/* Mobile brand */}
-        <div className="flex items-center gap-2.5 md:hidden">
-          <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
-            <Flame className="w-4 h-4" />
-          </div>
-          <span className="font-bold text-base text-foreground tracking-tight">GramGains</span>
+        <div className="flex items-center md:hidden">
+          <BrandLogo size="sm" showWordmark href="/" priority />
         </div>
 
         {/* Main Header Title & Subtitle for Desktop */}

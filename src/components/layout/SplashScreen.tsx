@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Flame, Sparkles, Activity } from 'lucide-react';
+import { Sparkles, Activity } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { logLoadingStart, logLoadingEnd, logEvent } from '@/lib/onboarding-logger';
 
 interface SplashScreenProps {
@@ -39,8 +40,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
     >
       <div className="flex flex-col items-center">
         {/* Brand Icon */}
-        <div className="w-16 h-16 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg mb-4">
-          <Flame className="w-8 h-8" />
+        <div className="mb-4">
+          <BrandLogo size="xl" priority />
         </div>
 
         {/* Brand Title */}
