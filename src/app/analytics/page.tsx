@@ -138,44 +138,40 @@ function AnalyticsDashboard() {
         />
 
         <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
-          {/* Top Actions: Quick Log Weight & Refresh */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Intelligence Dashboard
-              </span>
-            </div>
+          {/* Top Actions: Quick Log Weight (Left) & Advanced Mode / Refresh (Right) */}
+          <div className="flex items-center justify-between gap-2.5">
+            {/* Left side: Log Weight button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsWeightModalOpen(true)}
+              className="h-8 rounded-xl gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors shadow-2xs"
+            >
+              <Scale className="w-3.5 h-3.5 shrink-0" />
+              <span>Log Weight</span>
+            </Button>
 
+            {/* Right side: Advanced Mode & Refresh buttons */}
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAdvancedModeOpen(true)}
-                className="rounded-xl gap-1.5 text-xs font-semibold border-violet-500/30 text-violet-400 bg-violet-500/10 hover:bg-violet-500/20 shadow-2xs"
+                className="h-8 rounded-xl gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors shadow-2xs"
                 title="Open Advanced Mode (6M, 1Y, Lifetime)"
               >
-                <Maximize2 className="w-3.5 h-3.5" />
+                <Maximize2 className="w-3.5 h-3.5 shrink-0" />
                 <span>Advanced Mode</span>
               </Button>
 
               <Button
                 variant="outline"
-                size="sm"
-                onClick={() => setIsWeightModalOpen(true)}
-                className="rounded-xl gap-1.5 text-xs font-semibold"
-              >
-                <Scale className="w-3.5 h-3.5" />
-                <span>Log Scale Weight</span>
-              </Button>
-
-              <Button
-                variant="ghost"
                 size="icon"
                 onClick={loadAllAnalytics}
-                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
+                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors shadow-2xs shrink-0"
                 title="Refresh analytics"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${loading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
           </div>
