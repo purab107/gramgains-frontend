@@ -205,6 +205,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
                 tickFormatter={(val) => `${val}`}
               />
               <ChartTooltip
+                cursor={false}
                 content={
                   <ChartTooltipContent
                     indicator="dot"
