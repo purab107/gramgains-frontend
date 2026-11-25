@@ -15,8 +15,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { Utensils, Dumbbell } from 'lucide-react';
+import { Utensils, Dumbbell, SlidersHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { AnalyticsPatternsResponse } from '@/services/api';
+import { MealInsightsSheet } from './MealInsightsSheet';
 
 interface MealDistributionCardProps {
   patterns: AnalyticsPatternsResponse | null;
@@ -47,6 +49,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
   className = '',
 }) => {
   const [viewMode, setViewMode] = useState<'calories' | 'protein'>('calories');
+  const [isInsightsOpen, setIsInsightsOpen] = useState(false);
 
   const dailyMealSeries = patterns?.dailyMealSeries || [];
   const mealDistribution = patterns?.mealDistribution;
@@ -88,7 +91,8 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
   }, [dailyMealSeries, mealDistribution]);
 
   return (
-    <div className={`bg-card border border-border rounded-3xl p-4 sm:p-5 shadow-sm flex flex-col justify-between space-y-4 ${className}`}>
+    <>
+      <div className={`bg-card border border-border rounded-3xl p-4 sm:p-5 shadow-sm flex flex-col justify-between space-y-4 ${className}`}>
       {/* ROW 1: Header with Mode Switcher (Calories vs Protein) */}
       <div className="flex items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
@@ -182,7 +186,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
           >
             <BarChart
               data={chartData}
-              margin={{ top: 12, right: 6, left: -20, bottom: 4 }}
+              margin={{ top: 12, right: 0, left: -24, bottom: 4 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -200,7 +204,8 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
                 orientation="right"
                 tickLine={false}
                 axisLine={false}
-                tickMargin={10}
+                width={36}
+                tickMargin={4}
                 tick={{ fontSize: 11, fill: '#94a3b8', fontWeight: 500 }}
                 tickFormatter={(val) => `${val}`}
               />
@@ -319,7 +324,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
         </div>
       )}
 
-      {/* ROW 4: Legend */}
+      {/* ROW 4: Legend & Insights Button */}
       <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2.5 border-t border-border/40 text-xs text-muted-foreground">
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-1.5">
@@ -340,10 +345,25 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
           </div>
         </div>
 
-        <span className="text-[11px] text-muted-foreground italic">
-          Balanced daily meal distribution
-        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsInsightsOpen(true)}
+          className="h-7 rounded-xl gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors shadow-2xs px-2.5 shrink-0"
+          title="Open Meal Insights & Chrono Timing"
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span>Insights &amp; Data</span>
+        </Button>
       </div>
     </div>
-  );
+
+    {/* Slide-over Insights & Timing Sheet */}
+    <MealInsightsSheet
+      open={isInsightsOpen}
+      onOpenChange={setIsInsightsOpen}
+      patterns={patterns}
+    />
+  </>
+);
 };
