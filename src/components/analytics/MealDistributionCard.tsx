@@ -26,19 +26,19 @@ interface MealDistributionCardProps {
 const chartConfig = {
   breakfast: {
     label: 'Breakfast',
-    color: '#f59e0b',
+    color: '#0f766e',
   },
   lunch: {
     label: 'Lunch',
-    color: '#10b981',
+    color: '#0A9B82',
   },
   dinner: {
     label: 'Dinner',
-    color: '#6366f1',
+    color: '#2dd4bf',
   },
   snack: {
     label: 'Snacks',
-    color: '#fb7185',
+    color: '#94a3b8',
   },
 } satisfies ChartConfig;
 
@@ -135,8 +135,8 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
       {/* ROW 2: Overall Caloric Split Percentage Tiles */}
       {mealDistribution && (
         <div className="grid grid-cols-4 gap-2 pt-1 border-t border-border/40 text-center text-xs">
-          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#f59e0b]/10 border border-[#f59e0b]/20 min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-semibold text-[#f59e0b] uppercase tracking-wider block mb-0.5 truncate">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#0f766e]/15 border border-[#0f766e]/30 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-[#14b8a6] uppercase tracking-wider block mb-0.5 truncate">
               Breakfast
             </span>
             <span className="text-base sm:text-lg font-black font-mono text-foreground">
@@ -144,8 +144,8 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
             </span>
           </div>
 
-          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#10b981]/10 border border-[#10b981]/20 min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-semibold text-[#10b981] uppercase tracking-wider block mb-0.5 truncate">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#0A9B82]/15 border border-[#0A9B82]/30 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-[#0A9B82] uppercase tracking-wider block mb-0.5 truncate">
               Lunch
             </span>
             <span className="text-base sm:text-lg font-black font-mono text-foreground">
@@ -153,8 +153,8 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
             </span>
           </div>
 
-          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#6366f1]/10 border border-[#6366f1]/20 min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-semibold text-[#6366f1] uppercase tracking-wider block mb-0.5 truncate">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#2dd4bf]/15 border border-[#2dd4bf]/30 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-[#2dd4bf] uppercase tracking-wider block mb-0.5 truncate">
               Dinner
             </span>
             <span className="text-base sm:text-lg font-black font-mono text-foreground">
@@ -162,8 +162,8 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
             </span>
           </div>
 
-          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#fb7185]/10 border border-[#fb7185]/20 min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-semibold text-[#fb7185] uppercase tracking-wider block mb-0.5 truncate">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-slate-500/15 border border-slate-500/30 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5 truncate">
               Snacks
             </span>
             <span className="text-base sm:text-lg font-black font-mono text-foreground">
@@ -229,7 +229,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
                 dataKey="breakfast"
                 name="breakfast"
                 stackId="meals"
-                fill="#f59e0b"
+                fill="#0f766e"
                 isAnimationActive={true}
                 animationDuration={600}
                 animationEasing="ease-in-out"
@@ -238,7 +238,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
                 dataKey="lunch"
                 name="lunch"
                 stackId="meals"
-                fill="#10b981"
+                fill="#0A9B82"
                 isAnimationActive={true}
                 animationDuration={600}
                 animationEasing="ease-in-out"
@@ -247,7 +247,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
                 dataKey="dinner"
                 name="dinner"
                 stackId="meals"
-                fill="#6366f1"
+                fill="#2dd4bf"
                 isAnimationActive={true}
                 animationDuration={600}
                 animationEasing="ease-in-out"
@@ -256,7 +256,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
                 dataKey="snack"
                 name="snack"
                 stackId="meals"
-                fill="#fb7185"
+                fill="#94a3b8"
                 radius={[4, 4, 0, 0]}
                 isAnimationActive={true}
                 animationDuration={600}
@@ -280,10 +280,10 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
 
           {/* Meal Progress Rows */}
           {[
-            { label: 'Breakfast', grams: proteinDistribution.breakfastGrams, color: 'bg-[#f59e0b]' },
-            { label: 'Lunch', grams: proteinDistribution.lunchGrams, color: 'bg-[#10b981]' },
-            { label: 'Dinner', grams: proteinDistribution.dinnerGrams, color: 'bg-[#6366f1]' },
-            { label: 'Snacks', grams: proteinDistribution.snackGrams, color: 'bg-[#fb7185]' },
+            { label: 'Breakfast', grams: proteinDistribution.breakfastGrams, color: 'bg-[#0f766e]' },
+            { label: 'Lunch', grams: proteinDistribution.lunchGrams, color: 'bg-[#0A9B82]' },
+            { label: 'Dinner', grams: proteinDistribution.dinnerGrams, color: 'bg-[#2dd4bf]' },
+            { label: 'Snacks', grams: proteinDistribution.snackGrams, color: 'bg-[#94a3b8]' },
           ].map((meal) => {
             const pctOfTarget = Math.round((meal.grams / 30) * 100);
             const metThreshold = meal.grams >= 30;
@@ -322,19 +322,19 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2.5 border-t border-border/40 text-xs text-muted-foreground">
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b] inline-block shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0f766e] inline-block shrink-0" />
             <span className="font-medium text-foreground">Breakfast</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] inline-block shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0A9B82] inline-block shrink-0" />
             <span className="font-medium text-foreground">Lunch</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#6366f1] inline-block shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#2dd4bf] inline-block shrink-0" />
             <span className="font-medium text-foreground">Dinner</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#fb7185] inline-block shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#94a3b8] inline-block shrink-0" />
             <span className="font-medium text-foreground">Snacks</span>
           </div>
         </div>
