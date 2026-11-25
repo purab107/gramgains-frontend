@@ -5,12 +5,8 @@ import {
   Ruler, 
   TrendingDown, 
   TrendingUp, 
-  Minus, 
-  Sparkles, 
-  Plus, 
-  Calendar 
+  Minus 
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface BodyMeasurementEntry {
   part: string;
@@ -29,54 +25,53 @@ const DEFAULT_MEASUREMENTS: BodyMeasurementEntry[] = [
 ];
 
 export const BodyProgressCard: React.FC<{ className?: string }> = ({ className = '' }) => {
-  const [measurements, setMeasurements] = useState<BodyMeasurementEntry[]>(DEFAULT_MEASUREMENTS);
+  const [measurements] = useState<BodyMeasurementEntry[]>(DEFAULT_MEASUREMENTS);
 
   return (
-    <div className={`w-full bg-card border border-border rounded-3xl p-5 shadow-sm space-y-4 ${className}`}>
+    <div className={`w-full bg-card border border-border rounded-3xl p-4 sm:p-5 shadow-sm space-y-4 ${className}`}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+      <div className="flex items-start sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
             <Ruler className="w-5 h-5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-foreground">Body Measurements &amp; Progress</h3>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-indigo-500/10 text-indigo-400 border-indigo-500/30">
-                Composition Tracker
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground/90">
-              Circumference measurements separate adipose tissue loss from muscle hypertrophy and fluid shifts.
+          <div className="min-w-0">
+            <h3 className="text-sm sm:text-base font-bold text-foreground truncate">
+              Body Measurements
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Track size changes alongside scale weight.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 self-end sm:self-center">
-          <span className="text-xs text-slate-400 font-medium">Last Measured: <strong>Nov 15</strong></span>
+        <div className="shrink-0">
+          <span className="text-xs text-muted-foreground font-medium bg-muted/40 border border-border/60 px-2.5 py-1 rounded-xl whitespace-nowrap inline-flex items-center gap-1">
+            Last: <strong className="text-foreground font-semibold">Nov 15</strong>
+          </span>
         </div>
       </div>
 
       {/* Grid of Circumference Metric Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-1">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 pt-1">
         {measurements.map((m) => {
           const delta = Math.round((m.currentCm - m.previousCm) * 10) / 10;
           const isDecrease = delta < 0;
           const isIncrease = delta > 0;
           const TrendIcon = delta === 0 ? Minus : isDecrease ? TrendingDown : TrendingUp;
-          const deltaColor = delta === 0 ? 'text-slate-400' : isDecrease ? 'text-emerald-400' : 'text-blue-400';
+          const deltaColor = delta === 0 ? 'text-muted-foreground' : isDecrease ? 'text-emerald-400' : 'text-blue-400';
 
           return (
-            <div key={m.part} className="p-3.5 rounded-2xl bg-muted/30 border border-border/80 flex flex-col justify-between space-y-2">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block truncate">
+            <div key={m.part} className="p-3 sm:p-3.5 rounded-2xl bg-muted/30 border border-border/80 flex flex-col justify-between space-y-2">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block truncate">
                 {m.part}
               </span>
 
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black font-mono text-foreground">
+                <span className="text-xl sm:text-2xl font-black font-mono text-foreground">
                   {m.currentCm}
                 </span>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-xs font-semibold text-muted-foreground">
                   cm
                 </span>
               </div>
@@ -94,9 +89,9 @@ export const BodyProgressCard: React.FC<{ className?: string }> = ({ className =
       </div>
 
       {/* Educational Footer */}
-      <div className="p-3 rounded-2xl bg-muted/20 border border-border/60 text-xs text-slate-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+      <div className="p-3 rounded-2xl bg-muted/20 border border-border/60 text-xs text-muted-foreground flex items-center gap-2">
         <p className="leading-relaxed">
-          💡 <strong className="text-slate-200">Physiological Insight:</strong> During fat loss with resistance training, waist circumference often drops while scale weight stays flat due to muscle glycogen replenishment and tissue recomposition.
+          💡 <strong className="text-foreground">Tip:</strong> Waist size often drops before scale weight when building muscle and losing fat.
         </p>
       </div>
     </div>
