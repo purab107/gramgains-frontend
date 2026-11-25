@@ -15,7 +15,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { Utensils, Clock, Flame, ShieldCheck, Dumbbell } from 'lucide-react';
+import { Utensils, Dumbbell } from 'lucide-react';
 import { AnalyticsPatternsResponse } from '@/services/api';
 
 interface MealDistributionCardProps {
@@ -88,35 +88,32 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
   }, [dailyMealSeries, mealDistribution]);
 
   return (
-    <div className={`bg-card border border-border rounded-3xl p-5 shadow-sm flex flex-col justify-between space-y-4 ${className}`}>
-      {/* ROW 1: Header with Mode Switcher (Calories vs Protein MPS) */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+    <div className={`bg-card border border-border rounded-3xl p-4 sm:p-5 shadow-sm flex flex-col justify-between space-y-4 ${className}`}>
+      {/* ROW 1: Header with Mode Switcher (Calories vs Protein) */}
+      <div className="flex items-start sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
             <Utensils className="w-5 h-5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-foreground">Meal Distribution</h3>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-400 border-amber-500/30">
-                Chrono-Nutrition
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground/90">
-              Caloric spread and protein thresholds across breakfast, lunch, dinner &amp; snacks.
+          <div className="min-w-0">
+            <h3 className="text-sm sm:text-base font-bold text-foreground truncate">
+              Meal Breakdown
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Calories and protein across your meals.
             </p>
           </div>
         </div>
 
-        {/* View Mode Toggle: Calories vs Protein MPS */}
-        <div className="flex items-center bg-muted/60 p-0.5 rounded-xl border border-border">
+        {/* View Mode Toggle: Calories vs Protein */}
+        <div className="flex items-center bg-muted/50 p-1 rounded-xl border border-border/60 shrink-0">
           <button
             type="button"
             onClick={() => setViewMode('calories')}
             className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
               viewMode === 'calories'
                 ? 'bg-card text-foreground shadow-xs'
-                : 'text-slate-400 hover:text-foreground'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             Calories
@@ -127,10 +124,10 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
             className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
               viewMode === 'protein'
                 ? 'bg-card text-foreground shadow-xs'
-                : 'text-slate-400 hover:text-foreground'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Protein (MPS)
+            Protein
           </button>
         </div>
       </div>
@@ -138,38 +135,38 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
       {/* ROW 2: Overall Caloric Split Percentage Tiles */}
       {mealDistribution && (
         <div className="grid grid-cols-4 gap-2 pt-1 border-t border-border/40 text-center text-xs">
-          <div className="p-2.5 rounded-2xl bg-[#f59e0b]/10 border border-[#f59e0b]/20">
-            <span className="text-[10px] font-semibold text-[#f59e0b] uppercase tracking-wider block mb-0.5">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#f59e0b]/10 border border-[#f59e0b]/20 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-[#f59e0b] uppercase tracking-wider block mb-0.5 truncate">
               Breakfast
             </span>
-            <span className="text-lg font-black font-mono text-foreground">
+            <span className="text-base sm:text-lg font-black font-mono text-foreground">
               {mealDistribution.breakfastPercent}%
             </span>
           </div>
 
-          <div className="p-2.5 rounded-2xl bg-[#10b981]/10 border border-[#10b981]/20">
-            <span className="text-[10px] font-semibold text-[#10b981] uppercase tracking-wider block mb-0.5">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#10b981]/10 border border-[#10b981]/20 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-[#10b981] uppercase tracking-wider block mb-0.5 truncate">
               Lunch
             </span>
-            <span className="text-lg font-black font-mono text-foreground">
+            <span className="text-base sm:text-lg font-black font-mono text-foreground">
               {mealDistribution.lunchPercent}%
             </span>
           </div>
 
-          <div className="p-2.5 rounded-2xl bg-[#6366f1]/10 border border-[#6366f1]/20">
-            <span className="text-[10px] font-semibold text-[#6366f1] uppercase tracking-wider block mb-0.5">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#6366f1]/10 border border-[#6366f1]/20 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-[#6366f1] uppercase tracking-wider block mb-0.5 truncate">
               Dinner
             </span>
-            <span className="text-lg font-black font-mono text-foreground">
+            <span className="text-base sm:text-lg font-black font-mono text-foreground">
               {mealDistribution.dinnerPercent}%
             </span>
           </div>
 
-          <div className="p-2.5 rounded-2xl bg-[#fb7185]/10 border border-[#fb7185]/20">
-            <span className="text-[10px] font-semibold text-[#fb7185] uppercase tracking-wider block mb-0.5">
+          <div className="p-2 sm:p-2.5 rounded-2xl bg-[#fb7185]/10 border border-[#fb7185]/20 min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-semibold text-[#fb7185] uppercase tracking-wider block mb-0.5 truncate">
               Snacks
             </span>
-            <span className="text-lg font-black font-mono text-foreground">
+            <span className="text-base sm:text-lg font-black font-mono text-foreground">
               {mealDistribution.snackPercent}%
             </span>
           </div>
@@ -269,14 +266,14 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
           </ChartContainer>
         </div>
       ) : (
-        /* Protein MPS Threshold Mode */
+        /* Protein Threshold Mode */
         <div className="w-full flex-1 min-h-[195px] flex flex-col justify-center space-y-3 p-2">
           <div className="flex items-center justify-between text-xs pb-1 border-b border-border/40">
             <span className="font-semibold text-foreground flex items-center gap-1.5">
               <Dumbbell className="w-3.5 h-3.5 text-primary" />
-              Muscle Protein Synthesis (MPS) Threshold: <strong>~30g / meal</strong>
+              Target: <strong>~30g protein / meal</strong>
             </span>
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-muted-foreground">
               Total Avg: <strong className="text-foreground">{proteinDistribution.totalGrams}g</strong>
             </span>
           </div>
@@ -294,15 +291,15 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
             return (
               <div key={meal.label} className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-slate-300">{meal.label}</span>
+                  <span className="font-medium text-muted-foreground">{meal.label}</span>
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-foreground">{meal.grams}g</span>
-                    <span className={`text-[10px] font-semibold px-1.5 py-0.2 rounded border ${
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
                       metThreshold
                         ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                        : 'bg-muted text-slate-400 border-border'
+                        : 'bg-muted text-muted-foreground border-border'
                     }`}>
-                      {metThreshold ? 'MPS Hit' : `${pctOfTarget}% target`}
+                      {metThreshold ? 'Target Hit' : `${pctOfTarget}% target`}
                     </span>
                   </div>
                 </div>
@@ -322,8 +319,8 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
       )}
 
       {/* ROW 4: Legend */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-border/40 text-xs text-slate-300 dark:text-slate-400">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2.5 border-t border-border/40 text-xs text-muted-foreground">
+        <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b] inline-block shrink-0" />
             <span className="font-medium text-foreground">Breakfast</span>
@@ -342,7 +339,7 @@ export const MealDistributionCard: React.FC<MealDistributionCardProps> = ({
           </div>
         </div>
 
-        <span className="text-[11px] text-slate-400 italic">
+        <span className="text-[11px] text-muted-foreground italic">
           Balanced daily meal distribution
         </span>
       </div>
