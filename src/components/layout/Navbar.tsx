@@ -3,16 +3,17 @@
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { 
-  Flame, 
   Calendar, 
   Bell, 
   Scale, 
   UserX 
 } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { UserNav } from '@/components/auth/UserNav';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useIsGuest } from '@/lib/guest-session';
+import { getLocalDateString, formatHeaderDate } from '@/lib/date-utils';
 
 interface NavbarProps {
   selectedDate?: string;
@@ -29,7 +30,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  selectedDate = new Date().toISOString().split('T')[0],
+  selectedDate = getLocalDateString(),
   onDateChange,
   userProfile,
   onOpenLogModal,
@@ -57,8 +58,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       headerTitle = headerTitle || 'Metabolic Analytics';
       headerSubtitle = headerSubtitle || 'Real-world energy expenditure, smoothed weight trends, and actionable insights.';
     } else if (pathname === '/profile') {
-      headerTitle = headerTitle || 'Profile & Metabolic Goals';
-      headerSubtitle = headerSubtitle || 'Adjust your target rate of change, macro distribution, and check-in schedules.';
+      headerTitle = headerTitle || 'Profile & Settings Hub';
+      headerSubtitle = headerSubtitle || 'Manage your personal biometrics, macro calculations, and app configurations.';
     } else if (pathname === '/saved-meals') {
       headerTitle = headerTitle || 'Saved Meals';
       headerSubtitle = headerSubtitle || 'Manage your custom recipes and saved meal preps.';
@@ -72,29 +73,13 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   }
 
-  const formatHeaderDate = (dateStr: string) => {
-    if (!dateStr) return '';
-    const [year, month, day] = dateStr.split('-').map(Number);
-    if (!year || !month || !day) return dateStr;
-    const d = new Date(year, month - 1, day);
-    return d.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   return (
     <header className="w-full bg-transparent px-4 lg:px-8 py-4 flex items-center justify-between">
       {/* Mobile Brand & Desktop Main Header Title */}
       <div className="flex items-center gap-3">
         {/* Mobile brand */}
-        <div className="flex items-center gap-2.5 md:hidden">
-          <div className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
-            <Flame className="w-4 h-4" />
-          </div>
-          <span className="font-bold text-base text-foreground tracking-tight">GramGains</span>
+        <div className="flex items-center md:hidden">
+          <BrandLogo size="sm" showWordmark href="/" priority />
         </div>
 
         {/* Main Header Title & Subtitle for Desktop */}
@@ -120,22 +105,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Date Display / Picker */}
         {onDateChange ? (
-          <label className="relative flex items-center gap-1.5 sm:gap-2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors bg-muted/40 hover:bg-muted/70 px-2 sm:px-2.5 py-1.5 rounded-xl border border-border/60 text-xs sm:text-sm">
+          <label className="relative flex items-center gap-1.5 sm:gap-2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors bg-muted/40 hover:bg-muted/70 px-2 sm:px-2.5 py-1.5 rounded-xl border border-border/60 text-xs sm:text-sm shrink-0">
             <Calendar className="w-4 h-4 text-primary shrink-0" />
-            <span className="font-medium text-foreground hidden min-[520px]:inline">
+            <span className="font-medium text-foreground hidden min-[520px]:inline whitespace-nowrap">
               {formatHeaderDate(selectedDate)}
             </span>
             <input
               type="date"
               value={selectedDate}
-              onChange={(e) => onDateChange(e.target.value)}
+              max={getLocalDateString()}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) return;
+                const today = getLocalDateString();
+                onDateChange(val > today ? today : val);
+              }}
               className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
             />
           </label>
         ) : (
-          <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground shrink-0">
             <Calendar className="w-4 h-4 text-muted-foreground shrink-0" />
-            <span className="text-xs sm:text-sm font-normal text-muted-foreground hidden min-[520px]:inline">
+            <span className="text-xs sm:text-sm font-normal text-muted-foreground hidden min-[520px]:inline whitespace-nowrap">
               {formatHeaderDate(selectedDate)}
             </span>
           </div>

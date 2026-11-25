@@ -35,6 +35,7 @@ import {
 import { MACRO_COLORS } from '@/lib/constants';
 import { getFoodIcon } from '@/lib/food-utils';
 import { QuantitySelector, ServingSelection } from './QuantitySelector';
+import { formatPortionString } from '@/lib/portion-calculator';
 
 export interface SaveMealSheetProps {
   open: boolean;
@@ -805,7 +806,7 @@ export function SaveMealSheet({
                           </button>
                           <div className="flex items-center gap-1 font-mono">
                             <span className="px-1 text-center font-bold text-xs text-foreground min-w-[2.5rem]">
-                              {displayQty} {displayUnit}
+                              {formatPortionString(displayQty, displayUnit)}
                             </span>
                           </div>
                           <button

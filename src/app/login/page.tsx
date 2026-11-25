@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { signIn, signUp, useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
-import { Flame, Mail, Lock, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, Sparkles, UserX } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { startGuestSession, endGuestSession } from '@/lib/guest-session';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -140,12 +142,7 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-gradient-to-br from-primary/20 via-background to-background border-r border-border p-12">
         <div className="max-w-md space-y-8">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
-              <Flame className="h-6 w-6" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-foreground">GramGains</span>
-          </div>
+          <BrandLogo size="lg" showWordmark priority />
 
           {/* Headline */}
           <div className="space-y-3">
@@ -175,11 +172,8 @@ export default function LoginPage() {
       <div className="flex flex-1 flex-col items-center justify-center p-6">
         <div className="w-full max-w-md space-y-6">
           {/* Mobile Logo */}
-          <div className="flex items-center gap-2 lg:hidden mb-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Flame className="h-5 w-5" />
-            </div>
-            <span className="text-xl font-bold text-foreground">GramGains</span>
+          <div className="lg:hidden mb-2">
+            <BrandLogo size="sm" showWordmark priority />
           </div>
 
           {/* Header */}
@@ -254,14 +248,26 @@ export default function LoginPage() {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   minLength={8}
                   placeholder="Min. 8 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-4 text-sm text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                  className="w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-10 text-sm text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none rounded p-0.5"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
               </div>
             </div>
 

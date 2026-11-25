@@ -5,7 +5,8 @@ import {
   ApiService, 
   DailyTrackerResponse, 
   UserProfile,
-  DashboardSummaryResponse 
+  DashboardSummaryResponse,
+  MealLogItem
 } from '@/services/api';
 import { 
   Sidebar,
@@ -21,48 +22,37 @@ import {
   Calendar, 
   ChevronLeft, 
   ChevronRight, 
-  RotateCcw,
   Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
-
-function formatDisplayDate(dateStr: string) {
-  try {
-    const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-
-    if (dateStr === today) return 'Today';
-    if (dateStr === yesterday) return 'Yesterday';
-    if (dateStr === tomorrow) return 'Tomorrow';
-
-    const [y, m, d] = dateStr.split('-');
-    const dateObj = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
-    return dateObj.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    });
-  } catch {
-    return dateStr;
-  }
-}
+import { 
+  getLocalDateString, 
+  addDaysToDateString, 
+  formatDisplayDate,
+  formatDMY,
+} from '@/lib/date-utils';
 
 function TrackerPage() {
   const devSkip = useDevSkip();
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(() => getLocalDateString());
   const [trackerData, setTrackerData] = useState<DailyTrackerResponse | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAddFoodOpen, setIsAddFoodOpen] = useState(false);
   const [activeMealType, setActiveMealType] = useState<MealTypeKey>('BREAKFAST');
+  const [editingLog, setEditingLog] = useState<MealLogItem | null>(null);
 
   const handleOpenAddFood = (type: MealTypeKey) => {
+    setEditingLog(null);
     setActiveMealType(type);
+    setIsAddFoodOpen(true);
+  };
+
+  const handleEditMeal = (log: MealLogItem) => {
+    setEditingLog(log);
+    setActiveMealType(log.mealType);
     setIsAddFoodOpen(true);
   };
 
@@ -101,14 +91,13 @@ function TrackerPage() {
     loadData();
   }, [devSkip.activeStageId, devSkip.activeOverrides]);
 
-  const changeDateBy = (days: number) => {
-    const current = new Date(selectedDate);
-    current.setDate(current.getDate() + days);
-    setSelectedDate(current.toISOString().split('T')[0]);
-  };
+  const todayStr = getLocalDateString();
+  const isToday = selectedDate >= todayStr;
 
-  const handleJumpToday = () => {
-    setSelectedDate(new Date().toISOString().split('T')[0]);
+  const changeDateBy = (days: number) => {
+    const nextDate = addDaysToDateString(selectedDate, days);
+    if (nextDate > todayStr) return;
+    setSelectedDate(nextDate);
   };
 
   const summary = trackerData?.summary || {
@@ -146,8 +135,6 @@ function TrackerPage() {
 
   const waterTotalMl = trackerData?.water?.totalMl || 0;
   const waterLogs = trackerData?.water?.logs || [];
-
-  const isToday = selectedDate === new Date().toISOString().split('T')[0];
 
   const dashSummary: DashboardSummaryResponse = {
     date: selectedDate,
@@ -187,35 +174,43 @@ function TrackerPage() {
         <main className="flex-1 p-4 pb-24 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
           
           {/* Top Control Bar: Date Navigation & Actions */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-extrabold text-foreground tracking-tight">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-baseline gap-1.5 sm:gap-2 min-w-0">
+              <h2 className="text-lg sm:text-xl font-extrabold text-foreground tracking-tight whitespace-nowrap truncate">
                 {formatDisplayDate(selectedDate)}
               </h2>
-              <span className="text-xs font-normal text-muted-foreground font-mono">
-                ({selectedDate})
+              <span className="text-[11px] sm:text-xs font-normal text-muted-foreground font-mono whitespace-nowrap hidden min-[440px]:inline">
+                ({formatDMY(selectedDate, false)})
               </span>
             </div>
 
             {/* Date Navigation Bar */}
-            <div className="flex items-center gap-1.5 bg-muted/50 border border-border p-1 rounded-xl">
+            <div className="inline-flex items-center gap-0.5 sm:gap-1 bg-muted/40 border border-border/80 p-0.5 sm:p-1 rounded-xl shadow-xs shrink-0">
               <Button
                 onClick={() => changeDateBy(-1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all shrink-0"
                 title="Previous Day"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Button>
 
-              <div className="relative flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-bold text-foreground bg-card rounded-lg border border-border shadow-2xs">
-                <Calendar className="w-3.5 h-3.5 text-primary" />
-                <span>{selectedDate}</span>
+              <div className="relative flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 h-7 sm:h-8 bg-card rounded-lg border border-border shadow-xs cursor-pointer select-none shrink-0">
+                <Calendar className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="text-[11px] sm:text-xs font-mono font-bold tracking-tight sm:tracking-wider text-foreground whitespace-nowrap">
+                  <span className="hidden sm:inline">{formatDMY(selectedDate, true)}</span>
+                  <span className="inline sm:hidden">{formatDMY(selectedDate, false)}</span>
+                </span>
                 <input
                   type="date"
                   value={selectedDate}
-                  onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
+                  max={todayStr}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (!val) return;
+                    setSelectedDate(val > todayStr ? todayStr : val);
+                  }}
                   className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                 />
               </div>
@@ -224,23 +219,12 @@ function TrackerPage() {
                 onClick={() => changeDateBy(1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground border border-transparent hover:border-border hover:shadow-2xs"
-                title="Next Day"
+                disabled={isToday}
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-lg hover:bg-card text-muted-foreground hover:text-foreground active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none shrink-0"
+                title={isToday ? 'Cannot navigate to future dates' : 'Next Day'}
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </Button>
-
-              {!isToday && (
-                <Button
-                  onClick={handleJumpToday}
-                  variant="outline"
-                  size="sm"
-                  className="h-8 px-2.5 text-xs font-bold rounded-lg border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 ml-1"
-                >
-                  <RotateCcw className="w-3 h-3 mr-1" />
-                  Today
-                </Button>
-              )}
             </div>
           </div>
 
@@ -266,6 +250,7 @@ function TrackerPage() {
               mealType="BREAKFAST"
               logs={morningLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
 
@@ -273,6 +258,7 @@ function TrackerPage() {
               mealType="LUNCH"
               logs={afternoonLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
 
@@ -280,6 +266,7 @@ function TrackerPage() {
               mealType="SNACK"
               logs={eveningLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
 
@@ -287,6 +274,7 @@ function TrackerPage() {
               mealType="DINNER"
               logs={dinnerLogs}
               onAddMealClick={handleOpenAddFood}
+              onEditMealClick={handleEditMeal}
               onLogDeleted={loadData}
             />
           </div>
@@ -303,11 +291,15 @@ function TrackerPage() {
           {/* Right-Side Search & Add Food Panel */}
           <AddFoodSheet
             open={isAddFoodOpen}
-            onOpenChange={setIsAddFoodOpen}
+            onOpenChange={(open) => {
+              setIsAddFoodOpen(open);
+              if (!open) setEditingLog(null);
+            }}
             selectedDate={selectedDate}
             mealType={activeMealType}
             onMealTypeChange={setActiveMealType}
             onFoodLogged={loadData}
+            editingLog={editingLog}
           />
 
 

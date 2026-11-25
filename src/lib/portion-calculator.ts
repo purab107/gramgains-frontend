@@ -522,6 +522,96 @@ export interface MealLogPayload {
 }
 
 /**
+ * Universal Unit Normalizer & Formatter Types
+ */
+export interface ParsedUnitInfo {
+  unit: string;
+  cleanUnitName: string;
+  leadingQuantity?: number;
+}
+
+/**
+ * Universal Serving Unit Parser
+ * Strips embedded leading quantities, fractions, and parenthetical weights from database unit labels.
+ * E.g., "1 medium roti" -> { unit: "medium roti", cleanUnitName: "Medium roti", leadingQuantity: 1 }
+ *       "1 katori (150g)" -> { unit: "katori", cleanUnitName: "Katori", leadingQuantity: 1 }
+ *       "1/2 cup" -> { unit: "cup", cleanUnitName: "Cup", leadingQuantity: 0.5 }
+ *       "100g" -> { unit: "g", cleanUnitName: "G", leadingQuantity: 100 }
+ */
+export function parseServingUnitLabel(rawLabel?: string): ParsedUnitInfo {
+  if (!rawLabel || typeof rawLabel !== 'string') {
+    return { unit: 'g', cleanUnitName: 'Grams', leadingQuantity: 1 };
+  }
+
+  let str = rawLabel.trim();
+  // Strip trailing weight in parentheses e.g. "1 katori (150g)" -> "1 katori"
+  str = str.replace(/\s*\(\s*\d+(?:\.\d+)?\s*(?:g|ml|oz|kcal)?\s*\)/i, '').trim();
+
+  // Match leading fraction (e.g. 1/2) or integer/decimal (e.g. 1, 1.5, 100) followed by unit text
+  const match = str.match(/^(\d+\/\d+|\d+(?:\.\d+)?)\s*(.*)$/);
+  let leadingQty: number | undefined;
+  let unit = str;
+
+  if (match) {
+    const numPart = match[1];
+    const rest = match[2].trim();
+    if (rest.length > 0) {
+      if (numPart.includes('/')) {
+        const [num, den] = numPart.split('/').map(Number);
+        leadingQty = den && !isNaN(den) && !isNaN(num) ? num / den : 1;
+      } else {
+        const parsed = parseFloat(numPart);
+        if (!isNaN(parsed)) leadingQty = parsed;
+      }
+      unit = rest;
+    }
+  }
+
+  const cleanUnitName = unit.charAt(0).toUpperCase() + unit.slice(1);
+  return { unit, cleanUnitName, leadingQuantity: leadingQty };
+}
+
+/**
+ * Pluralizes a unit string safely if quantity > 1.
+ */
+export function pluralizeUnit(unit: string, qty: number): string {
+  if (qty <= 1 || !unit) return unit;
+  const lower = unit.trim().toLowerCase();
+
+  const METRIC_UNITS = new Set([
+    'g', 'grams', 'gram', 'kg', 'ml', 'l', 'liter', 'litre',
+    'oz', 'fl oz', 'floz', 'kcal', 'cal'
+  ]);
+  if (METRIC_UNITS.has(lower)) return unit;
+  if (lower.endsWith('s')) return unit;
+  if (unit.includes('+') || unit.includes('&')) return unit;
+
+  if (
+    lower.endsWith('ch') ||
+    lower.endsWith('sh') ||
+    lower.endsWith('x') ||
+    lower.endsWith('z') ||
+    lower.endsWith('ss')
+  ) {
+    return `${unit}es`;
+  }
+  return `${unit}s`;
+}
+
+/**
+ * Universal portion string formatter for buttons, summaries, and toasts.
+ * E.g., formatPortionString(4, "1 medium roti") -> "4 medium rotis"
+ *       formatPortionString(1, "medium roti") -> "1 medium roti"
+ *       formatPortionString(120, "g") -> "120 g"
+ */
+export function formatPortionString(qty: number, unit?: string): string {
+  if (!unit) return String(qty);
+  const parsed = parseServingUnitLabel(unit);
+  const pluralUnit = pluralizeUnit(parsed.unit, qty);
+  return `${qty} ${pluralUnit}`;
+}
+
+/**
  * Creates API payload for logging food, enforcing that the logged mass
  * strictly originates from canonicalWeightGrams rather than displayQuantity * unitWeight.
  */

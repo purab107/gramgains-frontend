@@ -39,6 +39,7 @@ export * from './onboarding/OnboardingNutritionPlanStep';
 // Primitive UI components
 export * from './ui/avatar';
 export * from './ui/badge';
+export * from './ui/BrandLogo';
 export * from './ui/button';
 export * from './ui/card';
 export * from './ui/progress';
@@ -46,4 +47,8 @@ export * from './ui/separator';
 export * from './ui/tooltip';
 export * from './ui/sheet';
 export * from './ui/input';
+
+// Profile components
+export * from './profile';
+
 

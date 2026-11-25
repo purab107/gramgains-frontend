@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { MealLogItem, ApiService } from '@/services/api';
-import { Trash2, Plus, Sunrise, Sun, Moon, Sunset } from 'lucide-react';
+import { Trash2, Plus, Pencil, Sunrise, Sun, Moon, Sunset } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { MACRO_COLORS } from '@/lib/constants';
 
@@ -10,6 +10,7 @@ interface DailyTimelineProps {
   logs: MealLogItem[];
   onLogDeleted: () => void;
   onAddMeal?: (mealType?: string) => void;
+  onEditMeal?: (item: MealLogItem) => void;
 }
 
 const MEAL_TYPES = [
@@ -19,7 +20,7 @@ const MEAL_TYPES = [
   { key: 'SNACK',     label: 'Snacks & Extras', Icon: Sunset  },
 ];
 
-export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted, onAddMeal }) => {
+export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted, onAddMeal, onEditMeal }) => {
   const handleDelete = async (id: string) => {
     try {
       await ApiService.deleteLog(id);
@@ -122,6 +123,17 @@ export const DailyTimeline: React.FC<DailyTimelineProps> = ({ logs, onLogDeleted
                               kcal
                             </span>
                           </span>
+                          {onEditMeal && (
+                            <button
+                              type="button"
+                              onClick={() => onEditMeal(log)}
+                              title="Edit log"
+                              aria-label={`Edit ${log.food.name}`}
+                              className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-colors"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                           <button
                             onClick={() => handleDelete(log.id)}
                             title="Delete log"

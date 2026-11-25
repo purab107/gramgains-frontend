@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getLocalDateString } from './date-utils';
 import type { 
   UserProfile, 
   DailyTrackerResponse, 
@@ -236,7 +237,14 @@ export class GuestStorageService {
 
   static updateLog(
     id: string,
-    payload: { servings?: number; customWeightGrams?: number; mealType?: string; unitLabel?: string }
+    payload: {
+      servings?: number;
+      customWeightGrams?: number;
+      mealType?: string;
+      unitLabel?: string;
+      displayQuantity?: number | null;
+      displayUnit?: string;
+    }
   ): MealLogItem {
     const logs = this.getStoredLogs();
     const index = logs.findIndex((l) => l.id === id);
@@ -258,6 +266,8 @@ export class GuestStorageService {
       servings,
       weightGrams,
       unitLabel: payload.unitLabel !== undefined ? payload.unitLabel : current.unitLabel,
+      displayQuantity: payload.displayQuantity !== undefined ? payload.displayQuantity : current.displayQuantity,
+      displayUnit: payload.displayUnit !== undefined ? payload.displayUnit : current.displayUnit,
       calories: food ? Math.round(food.calories * multiplier) : current.calories,
       protein: food ? Math.round(food.protein * multiplier * 10) / 10 : current.protein,
       carbohydrates: food ? Math.round(food.carbohydrates * multiplier * 10) / 10 : current.carbohydrates,
@@ -358,7 +368,7 @@ export class GuestStorageService {
   }
 
   static getHeatmap(days: number = 90): HeatmapResponse {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     const dayData = this.getDailyLogs(today);
 
     return {

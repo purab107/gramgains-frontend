@@ -17,6 +17,7 @@ import {
 import { MACRO_COLORS } from '@/lib/constants';
 
 import { QuantitySelector, ServingSelection } from './QuantitySelector';
+import { formatPortionString } from '@/lib/portion-calculator';
 
 interface MealLoggerModalProps {
   date: string;
@@ -442,7 +443,7 @@ export const MealLoggerModal: React.FC<MealLoggerModalProps> = ({
                     {loading
                       ? 'Adding to Meal...'
                       : servingSelection
-                      ? `Add ${servingSelection.displayQuantity} ${servingSelection.displayUnit}`
+                      ? `Add ${formatPortionString(servingSelection.displayQuantity, servingSelection.displayUnit)}`
                       : 'Add to Meal'}
                   </span>
                 </button>

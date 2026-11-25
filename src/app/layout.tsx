@@ -11,6 +11,17 @@ const inter = Inter({subsets:['latin'],variable:'--font-sans',display:'swap'});
 export const metadata: Metadata = {
   title: 'GramGains - Modular Calorie & Macro Tracker',
   description: 'Track daily nutrition with IFCT 2017 & INDB datasets',
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '48x48', type: 'image/png' },
+      { url: '/images/logo-bg-remove.png', sizes: '1024x1024', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
+  manifest: '/manifest.webmanifest',
 };
 
 export default function RootLayout({

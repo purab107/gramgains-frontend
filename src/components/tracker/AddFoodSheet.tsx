@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   FoodItem, 
   SavedMeal, 
+  MealLogItem,
   ApiService 
 } from '@/services/api';
 import { 
@@ -41,7 +42,7 @@ import { MealTypeKey } from './MealSectionCard';
 import { MACRO_COLORS } from '@/lib/constants';
 import { getServingSubtitle, getPrimaryServingInfo } from '@/lib/food-utils';
 import { QuantitySelector, ServingSelection, adaptFood } from '../meals/QuantitySelector';
-import { createQuickAddPayload } from '@/lib/portion-calculator';
+import { createQuickAddPayload, formatPortionString, parseServingUnitLabel } from '@/lib/portion-calculator';
 
 export interface AddFoodSheetProps {
   open: boolean;
@@ -51,6 +52,7 @@ export interface AddFoodSheetProps {
   onMealTypeChange?: (mealType: MealTypeKey) => void;
   onFoodLogged?: () => void;
   onAddFoodClick?: (item: FoodItem | SavedMeal, type: 'food' | 'saved_meal') => void;
+  editingLog?: MealLogItem | null;
 }
 
 type FilterTab = 'all' | 'history' | 'saved_meals';
@@ -97,6 +99,7 @@ export function AddFoodSheet({
   onMealTypeChange,
   onFoodLogged,
   onAddFoodClick,
+  editingLog,
 }: AddFoodSheetProps) {
   // Navigation State
   const [sheetView, setSheetView] = useState<SheetView>('search');
@@ -142,6 +145,60 @@ export function AddFoodSheet({
       setCurrentMeal(mealType);
     }
   }, [mealType]);
+
+  // Handle editingLog initialization
+  useEffect(() => {
+    if (open && editingLog) {
+      setSelectedFood(editingLog.food);
+      setCurrentMeal(editingLog.mealType);
+      setSheetView('add_food');
+      setMealPickerOpen(false);
+      try {
+        const { GuestStorageService } = require('@/lib/guest-session');
+        GuestStorageService.cacheFood(editingLog.food);
+      } catch {}
+    }
+  }, [open, editingLog]);
+
+  // Resolve initial serving and quantity when editing a log
+  const { initialServingId, initialQuantity } = useMemo(() => {
+    if (!editingLog || !selectedFood) {
+      return { initialServingId: undefined, initialQuantity: undefined };
+    }
+
+    const unit = (editingLog.displayUnit || editingLog.unitLabel || '').toLowerCase();
+    const cleanUnit = parseServingUnitLabel(unit).unit.toLowerCase();
+    const servings = selectedFood.servings || [];
+
+    // 1. Try to find matching serving by unitLabel or normalized unit name
+    const matchedServing = servings.find((s) => {
+      const sUnit = (s.unitLabel || '').toLowerCase();
+      return sUnit === unit || parseServingUnitLabel(sUnit).unit.toLowerCase() === cleanUnit;
+    });
+
+    // 2. If unit is grams / g, or matched serving is weight/g
+    let servingId: string | undefined = undefined;
+    if (unit === 'g' || unit === 'grams' || unit === 'gram') {
+      const gServing = servings.find(
+        (s) => (s.unitLabel || '').toLowerCase() === 'g' || (s.unitLabel || '').toLowerCase() === 'grams'
+      );
+      servingId = gServing ? gServing.id : `${selectedFood.id}-scale-grams`;
+    } else if (matchedServing) {
+      servingId = matchedServing.id;
+    }
+
+    // 3. Resolve initial quantity
+    let qty: number | undefined = undefined;
+    if (typeof editingLog.displayQuantity === 'number' && editingLog.displayQuantity > 0) {
+      qty = editingLog.displayQuantity;
+    } else if (unit === 'g' || unit === 'grams' || !unit) {
+      qty = editingLog.weightGrams;
+    } else if (typeof editingLog.servings === 'number' && editingLog.servings > 0) {
+      qty = editingLog.servings;
+    }
+
+    return { initialServingId: servingId, initialQuantity: qty };
+  }, [editingLog, selectedFood]);
 
   // Reset view when sheet opens or closes
   useEffect(() => {
@@ -467,29 +524,47 @@ export function AddFoodSheet({
       const displayUnit = servingSelection?.displayUnit || selectedFood.servingUnit || 'g';
       const weightGrams = servingSelection?.resolvedWeightGrams || calculated.totalWeight;
 
-      await ApiService.logMeal({
-        date: selectedDate,
-        mealType: currentMeal,
-        foodId: selectedFood.id,
-        servings: 1,
-        customWeightGrams: weightGrams > 0 ? weightGrams : undefined,
-        displayQuantity,
-        displayUnit,
-        unitLabel: displayUnit,
-      });
+      if (editingLog) {
+        await ApiService.updateLog(editingLog.id, {
+          mealType: currentMeal,
+          servings: 1,
+          customWeightGrams: weightGrams > 0 ? weightGrams : undefined,
+          displayQuantity,
+          displayUnit,
+          unitLabel: displayUnit,
+        });
 
-      setSuccessToast(`Added ${selectedFood.name} to ${MEAL_DETAILS[currentMeal].label}!`);
+        setSuccessToast(`Updated ${selectedFood.name} in ${MEAL_DETAILS[currentMeal].label}!`);
+      } else {
+        await ApiService.logMeal({
+          date: selectedDate,
+          mealType: currentMeal,
+          foodId: selectedFood.id,
+          servings: 1,
+          customWeightGrams: weightGrams > 0 ? weightGrams : undefined,
+          displayQuantity,
+          displayUnit,
+          unitLabel: displayUnit,
+        });
+
+        setSuccessToast(`Added ${selectedFood.name} to ${MEAL_DETAILS[currentMeal].label}!`);
+      }
+
       onFoodLogged?.();
 
       setTimeout(() => {
         setSuccessToast(null);
-        setSheetView('search');
-        setSelectedFood(null);
-        setServingSelection(null);
-      }, 1000);
+        if (editingLog) {
+          onOpenChange(false);
+        } else {
+          setSheetView('search');
+          setSelectedFood(null);
+          setServingSelection(null);
+        }
+      }, 900);
     } catch (err) {
-      console.error('Failed to log meal:', err);
-      alert('Failed to log food item. Please try again.');
+      console.error('Failed to log/update meal:', err);
+      alert(editingLog ? 'Failed to update food item. Please try again.' : 'Failed to log food item. Please try again.');
     } finally {
       setIsLogging(false);
     }
@@ -855,15 +930,21 @@ export function AddFoodSheet({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    onClick={() => setSheetView('search')}
+                    onClick={() => {
+                      if (editingLog) {
+                        onOpenChange(false);
+                      } else {
+                        setSheetView('search');
+                      }
+                    }}
                     className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors -ml-1"
-                    title="Back to search"
+                    title={editingLog ? 'Close' : 'Back to search'}
                   >
                     <ArrowLeft className="w-4 h-4" />
-                    <span className="sr-only">Back</span>
+                    <span className="sr-only">{editingLog ? 'Close' : 'Back'}</span>
                   </Button>
                   <SheetTitle className="text-base sm:text-lg font-extrabold text-foreground tracking-tight leading-none">
-                    Add Food
+                    {editingLog ? 'Edit Food Item' : 'Add Food'}
                   </SheetTitle>
                 </div>
               </SheetHeader>
@@ -953,7 +1034,10 @@ export function AddFoodSheet({
                   {/* Row 2: Serving Unit & Quantity Selector */}
                   <div className="p-3.5 sm:p-4">
                     <QuantitySelector
+                      key={editingLog ? `edit-${editingLog.id}` : `add-${selectedFood.id}`}
                       food={selectedFood}
+                      initialServingId={initialServingId}
+                      initialQuantity={initialQuantity}
                       onChange={setServingSelection}
                     />
                   </div>
@@ -1127,14 +1211,25 @@ export function AddFoodSheet({
                   {isLogging ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Logging to {activeMealInfo.label}...</span>
+                      <span>{editingLog ? `Updating ${activeMealInfo.label}...` : `Logging to ${activeMealInfo.label}...`}</span>
                     </>
                   ) : (
                     <>
-                      <Plus className="w-4 h-4" />
-                      <span>
-                        Add {servingSelection ? `${servingSelection.displayQuantity} ${servingSelection.displayUnit}` : ''} to {activeMealInfo.label}
-                      </span>
+                      {editingLog ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          <span>
+                            Update {servingSelection ? formatPortionString(servingSelection.displayQuantity, servingSelection.displayUnit) : ''} in {activeMealInfo.label}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          <span>
+                            Add {servingSelection ? formatPortionString(servingSelection.displayQuantity, servingSelection.displayUnit) : ''} to {activeMealInfo.label}
+                          </span>
+                        </>
+                      )}
                     </>
                   )}
                 </Button>

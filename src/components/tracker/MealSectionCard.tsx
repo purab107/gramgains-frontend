@@ -12,10 +12,12 @@ import {
   Moon, 
   Plus, 
   Trash2, 
+  Pencil,
   Loader2, 
   Clock 
 } from 'lucide-react';
 import { MACRO_COLORS } from '@/lib/constants';
+import { formatPortionString } from '@/lib/portion-calculator';
 
 export type MealTypeKey = 'BREAKFAST' | 'LUNCH' | 'SNACK' | 'DINNER';
 
@@ -73,6 +75,7 @@ interface MealSectionCardProps {
   logs: MealLogItem[];
   onAddMealClick: (mealType: MealTypeKey) => void;
   onLogDeleted: () => void;
+  onEditMealClick?: (item: MealLogItem) => void;
 }
 
 export function MealSectionCard({
@@ -80,6 +83,7 @@ export function MealSectionCard({
   logs,
   onAddMealClick,
   onLogDeleted,
+  onEditMealClick,
 }: MealSectionCardProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -151,9 +155,11 @@ export function MealSectionCard({
           <div className="flex flex-col gap-2">
             {logs.map((item) => {
               const isDeleting = deletingId === item.id;
-              const displayServing = !item.unitLabel || item.unitLabel.toLowerCase() === 'g' || item.unitLabel.toLowerCase() === 'grams'
+              const rawUnit = item.displayUnit || item.unitLabel || '';
+              const isGram = !rawUnit || rawUnit.toLowerCase() === 'g' || rawUnit.toLowerCase() === 'grams';
+              const displayServing = isGram
                 ? `${Math.round(item.weightGrams)}g`
-                : `${item.unitLabel} (${Math.round(item.weightGrams)}g)`;
+                : `${formatPortionString(item.displayQuantity || 1, rawUnit)} (${Math.round(item.weightGrams)}g)`;
 
               return (
                 <div
@@ -185,6 +191,18 @@ export function MealSectionCard({
                           kcal
                         </span>
                       </span>
+                      {onEditMealClick && (
+                        <button
+                          type="button"
+                          onClick={() => onEditMealClick(item)}
+                          disabled={isDeleting}
+                          title="Edit food entry"
+                          aria-label={`Edit ${item.food?.name || 'entry'}`}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                       <button
                         onClick={() => handleDelete(item.id)}
                         disabled={isDeleting}

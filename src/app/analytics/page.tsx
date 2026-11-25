@@ -8,19 +8,24 @@ import {
   WeightHistoryResponse, 
   AnalyticsOverviewResponse, 
   AnalyticsPatternsResponse, 
-  AdaptiveCheckInResponse 
+  AdaptiveCheckInResponse,
+  AnalyticsTrendsResponse 
 } from '@/services/api';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Navbar } from '@/components/layout/Navbar';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { WeightTrendChart } from '@/components/analytics/WeightTrendChart';
 import { MetabolicEngineCard } from '@/components/analytics/MetabolicEngineCard';
-import { AdherenceAndChronoCards } from '@/components/analytics/AdherenceAndChronoCards';
+import { MetabolicTdeeHistoryChart } from '@/components/analytics/MetabolicTdeeHistoryChart';
+import { BodyProgressCard } from '@/components/analytics/BodyProgressCard';
+import { AdherenceEnergyBalanceCard } from '@/components/analytics/AdherenceEnergyBalanceCard';
+import { MealDistributionCard } from '@/components/analytics/MealDistributionCard';
 import { WeightHistoryDrawer } from '@/components/weight/WeightHistoryDrawer';
 import { WeeklyCheckInModal } from '@/components/adaptive/WeeklyCheckInModal';
 import { WeeklyCheckInBanner } from '@/components/adaptive/WeeklyCheckInBanner';
 import { DailyWeightModal } from '@/components/weight/DailyWeightModal';
-import { Scale, Sparkles, RefreshCw } from 'lucide-react';
+import { AnalyticsAdvancedModeModal } from '@/components/analytics/AnalyticsAdvancedModeModal';
+import { Scale, Sparkles, RefreshCw, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
@@ -29,6 +34,7 @@ function AnalyticsDashboard() {
   const devSkip = useDevSkip();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedDays, setSelectedDays] = useState<number>(30);
+  const [tdeeDays, setTdeeDays] = useState<number>(30);
   const [loading, setLoading] = useState(true);
 
   // Data states
@@ -36,9 +42,11 @@ function AnalyticsDashboard() {
   const [weightHistory, setWeightHistory] = useState<WeightHistoryResponse | null>(null);
   const [overview, setOverview] = useState<AnalyticsOverviewResponse | null>(null);
   const [patterns, setPatterns] = useState<AnalyticsPatternsResponse | null>(null);
+  const [trends, setTrends] = useState<AnalyticsTrendsResponse | null>(null);
   const [checkIn, setCheckIn] = useState<AdaptiveCheckInResponse | null>(null);
 
   // Modal / Drawer states
+  const [isAdvancedModeOpen, setIsAdvancedModeOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
   const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
@@ -68,12 +76,13 @@ function AnalyticsDashboard() {
   const loadAllAnalytics = async () => {
     try {
       setLoading(true);
-      const [prof, statusData, weightData, overviewData, patternsData] = await Promise.all([
+      const [prof, statusData, weightData, overviewData, patternsData, trendsData] = await Promise.all([
         ApiService.getProfile().catch(() => null),
         ApiService.getAdaptiveStatus().catch(() => null),
-        ApiService.getWeightLogs(selectedDays).catch(() => null),
+        ApiService.getWeightLogs(Math.max(365, selectedDays)).catch(() => null),
         ApiService.getAnalyticsOverview(selectedDays).catch(() => null),
         ApiService.getAnalyticsPatterns(14).catch(() => null),
+        ApiService.getAnalyticsTrends(Math.max(365, tdeeDays)).catch(() => null),
       ]);
 
       setUserProfile(prof);
@@ -81,6 +90,7 @@ function AnalyticsDashboard() {
       setWeightHistory(weightData);
       setOverview(overviewData);
       setPatterns(patternsData);
+      setTrends(trendsData);
 
       // Check for pending check-in
       if (statusData?.targets?.isCheckInAvailable) {
@@ -91,6 +101,18 @@ function AnalyticsDashboard() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTdeeDaysChange = async (days: number) => {
+    setTdeeDays(days);
+    try {
+      const trendsData = await ApiService.getAnalyticsTrends(days).catch(() => null);
+      if (trendsData) {
+        setTrends(trendsData);
+      }
+    } catch (err) {
+      console.error('Failed to update TDEE trends:', err);
     }
   };
 
@@ -116,33 +138,40 @@ function AnalyticsDashboard() {
         />
 
         <main className="flex-1 p-4 pb-24 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
-          {/* Top Actions: Quick Log Weight & Refresh */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Intelligence Dashboard
-              </span>
-            </div>
+          {/* Top Actions: Quick Log Weight (Left) & Advanced Mode / Refresh (Right) */}
+          <div className="flex items-center justify-between gap-2.5">
+            {/* Left side: Log Weight button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsWeightModalOpen(true)}
+              className="h-8 rounded-xl gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors shadow-2xs"
+            >
+              <Scale className="w-3.5 h-3.5 shrink-0" />
+              <span>Log Weight</span>
+            </Button>
 
+            {/* Right side: Advanced Mode & Refresh buttons */}
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsWeightModalOpen(true)}
-                className="rounded-xl gap-1.5 text-xs font-semibold"
+                onClick={() => setIsAdvancedModeOpen(true)}
+                className="h-8 rounded-xl gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors shadow-2xs"
+                title="Open Advanced Mode (6M, 1Y, Lifetime)"
               >
-                <Scale className="w-3.5 h-3.5" />
-                <span>Log Scale Weight</span>
+                <Maximize2 className="w-3.5 h-3.5 shrink-0" />
+                <span>Advanced Mode</span>
               </Button>
 
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
                 onClick={loadAllAnalytics}
-                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
+                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground border-border/60 bg-muted/30 hover:bg-muted/60 transition-colors shadow-2xs shrink-0"
                 title="Refresh analytics"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${loading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
           </div>
@@ -157,23 +186,38 @@ function AnalyticsDashboard() {
             />
           )}
 
-          {/* CARD 1: Adaptive Metabolic Engine Status */}
-          <MetabolicEngineCard status={adaptiveStatus} />
+          {/* SECTION 1: Full-Width Adaptive Metabolic Engine Card */}
+          <MetabolicEngineCard status={adaptiveStatus} className="w-full" />
 
-          {/* CARD 2: Dual Curve Weight Trend Chart (Recharts) */}
-          <WeightTrendChart
-            data={weightHistory}
-            targetWeightKg={userProfile?.targetWeightKg}
-            selectedDays={selectedDays}
-            onDaysChange={setSelectedDays}
-            onOpenHistory={() => setIsHistoryDrawerOpen(true)}
-          />
+          {/* SECTION 2: 2-COLUMN SECTION: Weight Trend (Left) & Expenditure Trend (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
+            <WeightTrendChart
+              data={weightHistory}
+              targetWeightKg={userProfile?.targetWeightKg}
+              selectedDays={selectedDays}
+              onDaysChange={setSelectedDays}
+              onOpenHistory={() => setIsHistoryDrawerOpen(true)}
+              onRefresh={loadAllAnalytics}
+            />
+            <MetabolicTdeeHistoryChart
+              trends={trends}
+              baselineTdee={adaptiveStatus?.expenditure?.formulaBaselineTdee}
+              currentObservedTdee={adaptiveStatus?.expenditure?.observedTdee}
+              confidenceLevel={adaptiveStatus?.confidence?.level}
+              confidenceScore={adaptiveStatus?.confidence?.score}
+              selectedDays={tdeeDays}
+              onDaysChange={handleTdeeDaysChange}
+            />
+          </div>
 
-          {/* CARDS 3 & 4: Adherence, Energy Balance, and Chrono-Nutrition */}
-          <AdherenceAndChronoCards
-            overview={overview}
-            patterns={patterns}
-          />
+          {/* SECTION 3: Body Circumference & Progress Section */}
+          <BodyProgressCard />
+
+          {/* SECTION 4: Adherence & Energy Balance (Left) & Meal Distribution Stacked Chart (Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
+            <AdherenceEnergyBalanceCard overview={overview} patterns={patterns} />
+            <MealDistributionCard patterns={patterns} />
+          </div>
         </main>
       </div>
 
@@ -197,6 +241,16 @@ function AnalyticsDashboard() {
         onClose={() => setIsWeightModalOpen(false)}
         onLogged={handleWeightLogged}
         initialWeight={adaptiveStatus?.weightTrend?.latestRawKg || userProfile?.weightKg}
+      />
+
+      {/* Full-Screen YouTube-Style Advanced Analytics Workbench */}
+      <AnalyticsAdvancedModeModal
+        isOpen={isAdvancedModeOpen}
+        onClose={() => setIsAdvancedModeOpen(false)}
+        weightHistory={weightHistory}
+        trends={trends}
+        adaptiveStatus={adaptiveStatus}
+        userProfile={userProfile}
       />
     </div>
   );

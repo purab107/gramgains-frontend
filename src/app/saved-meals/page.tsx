@@ -29,14 +29,13 @@ import {
 } from 'lucide-react';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
+import { getLocalDateString } from '@/lib/date-utils';
 
 function SavedMealsPage() {
   const devSkip = useDevSkip();
   const [savedMeals, setSavedMeals] = useState<SavedMeal[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(() => getLocalDateString());
   const [loading, setLoading] = useState(true);
   const [filterQuery, setFilterQuery] = useState('');
 

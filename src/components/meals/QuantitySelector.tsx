@@ -14,6 +14,8 @@ import {
   calculatePhysicalMass,
   calculateNutrientsFromMass,
   resolveDensity,
+  parseServingUnitLabel,
+  formatPortionString,
   METRIC_CUP_ML,
   TABLESPOON_ML,
   TEASPOON_ML,
@@ -65,26 +67,28 @@ function unitVolumeInMl(unitLabel: string): number | undefined {
 export function adaptServing(serving: FoodServing, food: FoodItem, index: number): NormalizedServing {
   const unitType = serving.unitType ?? (serving.unitLabel?.toLowerCase() === 'g' ? 'WEIGHT' : 'HOUSEHOLD');
   const rawLabel = serving.unitLabel || 'g';
+  const parsed = parseServingUnitLabel(rawLabel);
+
   const qty = typeof serving.displayQuantity === 'number' && serving.displayQuantity > 0
     ? serving.displayQuantity
-    : (unitType === 'WEIGHT' ? serving.weightGrams : 1);
+    : (parsed.leadingQuantity ?? (unitType === 'WEIGHT' ? serving.weightGrams : 1));
 
   // Determine volume in ml for VOLUME servings
-  const volInMl = unitType === 'VOLUME' ? unitVolumeInMl(rawLabel) : undefined;
+  const volInMl = unitType === 'VOLUME' ? unitVolumeInMl(parsed.unit) : undefined;
 
-  // Guess display label for pills (e.g. "200 ml Milk" → "200 ml")
-  const displayLabel = `${qty} ${rawLabel}`;
-  const cleanUnitName = rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1);
+  // Display label for pills (e.g. "1 medium roti (30g)")
+  const displayLabel = rawLabel;
+  const cleanUnitName = parsed.cleanUnitName;
 
   // Integer-only: egg, biscuit, piece, tablet, etc.
-  const isIntegerOnly = unitType === 'COUNT' && /\b(egg|eggs|biscuit|tablet|capsule|piece|pieces)\b/i.test(rawLabel);
+  const isIntegerOnly = unitType === 'COUNT' && /\b(egg|eggs|biscuit|tablet|capsule|piece|pieces)\b/i.test(parsed.unit);
 
   return {
     id: serving.id,
     originalLabel: rawLabel,
     cleanUnitName,
     displayLabel,
-    capsuleUnitSuffix: rawLabel,
+    capsuleUnitSuffix: parsed.unit,
     unitType,
     baseQuantity: qty,
     referenceWeightGrams: serving.weightGrams,
@@ -103,14 +107,15 @@ export function adaptFood(food: FoodItem): FoodItemInput {
   if (food.servings && food.servings.length > 0) {
     food.servings.forEach((s, i) => adaptedServings.push(adaptServing(s, food, i)));
   } else if (food.servingUnit && food.servingUnit.toLowerCase() !== 'g' && food.servingUnit.toLowerCase() !== 'grams') {
+    const parsed = parseServingUnitLabel(food.servingUnit);
     adaptedServings.push({
       id: `${food.id}-default-serving`,
       originalLabel: food.servingUnit,
-      cleanUnitName: food.servingUnit.charAt(0).toUpperCase() + food.servingUnit.slice(1),
+      cleanUnitName: parsed.cleanUnitName,
       displayLabel: food.servingUnit,
-      capsuleUnitSuffix: food.servingUnit,
+      capsuleUnitSuffix: parsed.unit,
       unitType: food.servingUnitType ?? 'HOUSEHOLD',
-      baseQuantity: food.servingDisplayQuantity ?? 1,
+      baseQuantity: food.servingDisplayQuantity ?? (parsed.leadingQuantity ?? 1),
       referenceWeightGrams: food.servingWeight || 100,
       isDefault: true,
       isSynthetic: false,
@@ -186,8 +191,8 @@ function getServingPillLabel(serving: NormalizedServing): string {
   const u = serving.cleanUnitName;
   // For WEIGHT/VOLUME servings show just the unit
   if (serving.unitType === 'WEIGHT' || serving.unitType === 'VOLUME') return u;
-  // For COUNT/HOUSEHOLD show unit name without base quantity
-  return u;
+  // For COUNT/HOUSEHOLD show display label if available, else clean unit name
+  return serving.displayLabel || u;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

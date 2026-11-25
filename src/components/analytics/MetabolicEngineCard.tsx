@@ -14,9 +14,13 @@ import { AdaptiveStatusResponse } from '@/services/api';
 
 interface MetabolicEngineCardProps {
   status: AdaptiveStatusResponse | null;
+  className?: string;
 }
 
-export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ status }) => {
+export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ 
+  status,
+  className = '',
+}) => {
   if (!status) return null;
 
   const { confidence, expenditure, targets } = status;
@@ -35,7 +39,7 @@ export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ status
   const validPercent = Math.min(100, Math.round((confidence.validFoodDays / 28) * 100));
 
   return (
-    <div className="w-full bg-card border border-border rounded-3xl p-5 shadow-sm space-y-4">
+    <div className={`bg-card border border-border rounded-3xl p-5 shadow-sm flex flex-col justify-between space-y-4 ${className}`}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -83,47 +87,55 @@ export const MetabolicEngineCard: React.FC<MetabolicEngineCardProps> = ({ status
         </p>
       </div>
 
-      {/* 3-Column Expenditure Comparison */}
+      {/* 3 Metric Cards in One Equal-Sized Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {/* Baseline Formula TDEE */}
-        <div className="p-3.5 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block mb-0.5">Formula Estimate</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-bold text-muted-foreground">
-              {Math.round(expenditure.formulaBaselineTdee)}
-            </span>
-            <span className="text-xs text-muted-foreground">kcal</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Mifflin-St Jeor prior</span>
-        </div>
-
-        {/* Observed Real TDEE */}
-        <div className="p-3.5 rounded-2xl bg-muted/20 border border-border">
-          <span className="text-[11px] text-muted-foreground block mb-0.5">Observed Real TDEE</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-bold text-foreground">
-              {expenditure.observedTdee ? Math.round(expenditure.observedTdee) : '—'}
-            </span>
-            <span className="text-xs text-foreground">kcal</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Solved from scale &amp; intake</span>
-        </div>
-
-        {/* Effective Blended Target */}
-        <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20">
-          <span className="text-[11px] font-bold text-primary block mb-0.5">Active Target Intake</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-black text-foreground">
-              {Math.round(targets.recommendedCalories)}
-            </span>
-            <span className="text-xs text-foreground font-semibold">kcal</span>
-            {targets.adjustmentKcal !== 0 && (
-              <span className={`ml-auto text-xs font-bold ${targets.adjustmentKcal > 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
-                {targets.adjustmentKcal > 0 ? `+${targets.adjustmentKcal}` : targets.adjustmentKcal}
+        {/* Card 1: Formula Baseline Estimate */}
+        <div className="p-3.5 rounded-2xl bg-muted/20 border border-border flex flex-col justify-between">
+          <div>
+            <span className="text-[11px] text-muted-foreground block mb-0.5">Formula Estimate</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-bold text-muted-foreground">
+                {Math.round(expenditure.formulaBaselineTdee)}
               </span>
-            )}
+              <span className="text-xs text-muted-foreground">kcal</span>
+            </div>
           </div>
-          <span className="text-[10px] text-primary/80 font-medium">Anti-whiplash stabilized</span>
+          <span className="text-[10px] text-muted-foreground block mt-1">Mifflin-St Jeor prior</span>
+        </div>
+
+        {/* Card 2: Observed Real TDEE */}
+        <div className="p-3.5 rounded-2xl bg-muted/20 border border-border flex flex-col justify-between">
+          <div>
+            <span className="text-[11px] text-muted-foreground block mb-0.5">Observed Real TDEE</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-bold text-foreground">
+                {expenditure.observedTdee ? Math.round(expenditure.observedTdee) : '—'}
+              </span>
+              <span className="text-xs text-foreground">kcal</span>
+            </div>
+          </div>
+          <span className="text-[10px] text-muted-foreground block mt-1">Solved from scale &amp; intake</span>
+        </div>
+
+        {/* Card 3: Active Target Intake Highlight */}
+        <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20 flex flex-col justify-between">
+          <div>
+            <span className="text-[11px] font-bold text-primary block mb-0.5">Active Target Intake</span>
+            <div className="flex items-baseline gap-1 flex-wrap">
+              <span className="text-xl font-black text-foreground">
+                {Math.round(targets.recommendedCalories)}
+              </span>
+              <span className="text-xs text-foreground font-semibold">kcal</span>
+              {targets.adjustmentKcal !== 0 && (
+                <span className={`text-[11px] font-bold ${targets.adjustmentKcal > 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                  {targets.adjustmentKcal > 0 ? `+${targets.adjustmentKcal}` : targets.adjustmentKcal} kcal
+                </span>
+              )}
+            </div>
+          </div>
+          <span className="text-[10px] text-primary/80 font-medium block mt-1">
+            Anti-whiplash stabilized
+          </span>
         </div>
       </div>
     </div>

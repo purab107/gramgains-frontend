@@ -33,9 +33,9 @@ import {
   Scale,
   Sparkles,
   X,
-  Flame,
   Loader2,
 } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { useDevSkip } from '@/components/dev-skip';
 import { isDevSkip } from '@/lib/dev-skip';
 import { isGuestSession } from '@/lib/guest-session';
@@ -48,13 +48,7 @@ import {
   startTimer,
   endTimer,
 } from '@/lib/onboarding-logger';
-
-function getLocalDateString(d: Date = new Date()): string {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+import { getLocalDateString } from '@/lib/date-utils';
 
 function DashboardHomePage() {
   const devSkip = useDevSkip();
@@ -75,9 +69,17 @@ function DashboardHomePage() {
   const [loading, setLoading] = useState(true);
   const [isAddFoodOpen, setIsAddFoodOpen] = useState(false);
   const [activeMealType, setActiveMealType] = useState<MealTypeKey>('BREAKFAST');
+  const [editingLog, setEditingLog] = useState<MealLogItem | null>(null);
 
   const handleOpenAddFood = (type: MealTypeKey = 'BREAKFAST') => {
+    setEditingLog(null);
     setActiveMealType(type);
+    setIsAddFoodOpen(true);
+  };
+
+  const handleEditMeal = (log: MealLogItem) => {
+    setEditingLog(log);
+    setActiveMealType(log.mealType);
     setIsAddFoodOpen(true);
   };
 
@@ -318,9 +320,7 @@ function DashboardHomePage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
         <div className="flex flex-col items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground animate-pulse shadow-lg">
-            <Flame className="h-6 w-6" />
-          </div>
+          <BrandLogo size="lg" className="animate-pulse" priority />
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
             <span>Loading GramGains...</span>
@@ -465,6 +465,7 @@ function DashboardHomePage() {
                 logs={logs}
                 onLogDeleted={loadProfileAndData}
                 onAddMeal={(mealKey) => handleOpenAddFood((mealKey as MealTypeKey) || 'BREAKFAST')}
+                onEditMeal={handleEditMeal}
               />
             </div>
           </div>
@@ -474,11 +475,15 @@ function DashboardHomePage() {
       {/* Side Panel: Add Food Sheet */}
       <AddFoodSheet
         open={isAddFoodOpen}
-        onOpenChange={setIsAddFoodOpen}
+        onOpenChange={(open) => {
+          setIsAddFoodOpen(open);
+          if (!open) setEditingLog(null);
+        }}
         selectedDate={selectedDate}
         mealType={activeMealType}
         onMealTypeChange={setActiveMealType}
         onFoodLogged={loadProfileAndData}
+        editingLog={editingLog}
       />
 
       {/* Daily Weight Modal */}

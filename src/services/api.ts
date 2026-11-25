@@ -1,5 +1,6 @@
 import { isGuestSession, GuestStorageService } from '@/lib/guest-session';
 import { isDevSkip, getMockData } from '@/lib/dev-skip';
+import { getLocalDateString } from '@/lib/date-utils';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -190,6 +191,35 @@ export interface AnalyticsPatternsResponse {
     lunchPercent: number;
     dinnerPercent: number;
     snackPercent: number;
+  };
+  proteinDistribution?: {
+    breakfastGrams: number;
+    lunchGrams: number;
+    dinnerGrams: number;
+    snackGrams: number;
+    totalGrams: number;
+  };
+  dailyMealSeries?: Array<{
+    date: string;
+    displayDate: string;
+    calories: number;
+    protein: number;
+    breakfast: number;
+    lunch: number;
+    dinner: number;
+    snack: number;
+    breakfastProtein: number;
+    lunchProtein: number;
+    dinnerProtein: number;
+    snackProtein: number;
+    isWeekend: boolean;
+  }>;
+  weekdayVsWeekend?: {
+    weekdayAvgCalories: number | null;
+    weekendAvgCalories: number | null;
+    deltaCalories: number;
+    weekdayAvgProtein: number | null;
+    weekendAvgProtein: number | null;
   };
   macroAverages: {
     proteinGrams: number;
@@ -555,7 +585,7 @@ export class ApiService {
       // Silent no-op in dev skip mode
       return {
         id,
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         mealType: payload.mealType as any || 'SNACK',
         foodId: 'dev-food-placeholder',
         food: {
@@ -872,7 +902,7 @@ export class ApiService {
       // Silent no-op in dev skip mode
       return {
         id,
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         rawWeightKg: 80,
         trendWeightKg: 80,
         isExcluded: false,

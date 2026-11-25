@@ -7,14 +7,12 @@ import {
   Home, 
   SquarePen, 
   Bookmark, 
-  Calculator, 
-  Settings, 
   LogOut,
-  Flame,
   UserX,
   BarChart3,
   User
 } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { signOut } from '@/lib/auth-client';
 import { useIsGuest, endGuestSession } from '@/lib/guest-session';
 import { BottomTabBar } from './BottomTabBar';
@@ -68,9 +66,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
       icon: Bookmark,
     },
     {
-      label: 'Calculator',
-      href: '/calculator',
-      icon: Calculator,
+      label: 'Profile',
+      href: '/profile',
+      icon: User,
     },
   ];
 
@@ -79,16 +77,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
       <aside className="w-64 bg-card border-r border-border flex flex-col justify-between h-screen sticky top-0 shrink-0 overflow-hidden hidden md:flex z-30 text-foreground">
         <div className="flex flex-col flex-1 min-h-0">
           {/* Brand Header */}
-          <div className="p-6 flex items-center gap-3 shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-sm">
-              <Flame className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg tracking-tight text-foreground">
-                GramGains
-              </h1>
-              <p className="text-[11px] text-muted-foreground">Macro &amp; Calorie Tracker</p>
-            </div>
+          <div className="p-6 shrink-0">
+            <BrandLogo size="md" showWordmark showSubtitle href="/" priority />
           </div>
 
           {/* Main Navigation Items */}
@@ -114,22 +104,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userProfile }) => {
           </nav>
         </div>
 
-        {/* Bottom Navigation Items (Profile & Logout/Guest) */}
+        {/* Bottom Actions (Logout/Guest) */}
         <div className="px-3.5 pb-6 pt-2 space-y-1.5 border-t border-border">
-          {!isGuest && (
-            <Link
-              href="/profile"
-              className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all text-sm font-medium ${
-                pathname === '/profile'
-                  ? 'bg-accent text-accent-foreground font-semibold'
-                  : 'text-muted-foreground hover:text-accent-foreground hover:bg-accent/50'
-              }`}
-            >
-              <User className="w-5 h-5 shrink-0 text-muted-foreground" />
-              <span>Profile &amp; Settings</span>
-            </Link>
-          )}
-
           {isGuest ? (
             <button
               onClick={handleExitGuest}
